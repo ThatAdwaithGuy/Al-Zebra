@@ -1,8 +1,31 @@
 package parser
 
+import (
+	"github.com/al-zebra/lexer"
+)
+
 // Constant is a term
 // But all terms are not Constant
 // 3x+1=10
+
+type Parser struct {
+	equation lexer.Lexer
+	currAST AST
+}
+
+
+// As, 3x means 3 * x. this function will just expand 3x to 3 * x 
+func multiplyPass(tokens []lexer.Token) []lexer.Token {
+	for i := 1; i < len(tokens) - 1; i++ {
+		
+	}
+
+	return []lexer.Token{}
+}
+type AST struct {
+	lhs Term
+	rhs Term
+}
 
 type Term interface {
 	isTerm() bool
