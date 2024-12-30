@@ -2,11 +2,70 @@ package parser
 
 import "math"
 
+const DEPTH_LIMIT int = 100 
+// The main logic for evaluation of addition, subtraction, etc
+func evaluateHelper(a Operation, operation func(float32, float32) float32, depth int) (*Constant, error) {
+	// Just to make this perform better, I added this depth limit
+	if depth > DEPTH_LIMIT {
+		return nil, DepthError{}
+	}
+	// rhs and lhs values
+	var lhsValue *float32 
+	var rhsValue *float32 
+	// Check if this a constant or not
+	lhsConstantValue, lhsOk := a.Lhs().(Constant)
+	if lhsOk {
+		lhsValue = &lhsConstantValue.value
+	} else {
+		// It SHOULD be a operation as this function only supports term having term be as Constant or a Operation 
+		lhsOperationValue, lhsOperationOk := a.Lhs().(Operation)
+		if !lhsOperationOk {
+			return nil, UnhandledTermError{}
+		}
+
+		// the recursive part of the function 
+		lhsVal, err := evaluateHelper(lhsOperationValue, operation, depth+1)
+
+		if err != nil {
+			return nil, err
+		}
+
+		lhsValue = &lhsVal.value
+	}
+	// The same logic as above but lhs is rhs now. To get more info, read the top part
+	rhsConstantValue, rhsOk := a.Rhs().(Constant)
+	if rhsOk {
+		rhsValue = &rhsConstantValue.value
+	} else {
+		rhsOperationValue, rhsOperationOk := a.Lhs().(Operation)
+		if !rhsOperationOk {
+			return nil, UnhandledTermError{}
+		}
+		
+		rhsVal, err := evaluateHelper(rhsOperationValue, operation, depth+1)
+		if err != nil {
+			return nil, err
+		}
+
+		rhsValue = &rhsVal.value
+	}
+
+	// Why the heck go does not have null safty. I badly want a Option type 
+	if lhsValue != nil && rhsValue != nil {
+		return &Constant{
+			value: operation(*lhsValue, *rhsValue),
+		}, nil
+	} else {
+		return nil, UnhandledError{}
+	}
+}
+
+// Operations
+
 type Addition struct {
 	lhs Term
 	rhs Term
 }
-
 func (a Addition) Lhs() Term {
 	return a.lhs
 }

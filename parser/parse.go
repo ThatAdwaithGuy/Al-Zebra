@@ -5,15 +5,13 @@ import (
 	"github.com/al-zebra/lexer"
 )
 
-// Constant is a term
-// But all terms are not Constant
-// 3x+1=10
 
+
+// The main parser, has a Parser method which will generate a AST
 type Parser struct {
 	equation lexer.Lexer
 	currAST AST
 }
-
 
 // As, 3x means 3 * x. this function will just expand 3x to 3 * x 
 func MultiplyPass(tokens []lexer.Token) []lexer.Token {
@@ -36,16 +34,19 @@ func MultiplyPass(tokens []lexer.Token) []lexer.Token {
 
 	return result 
 }
+
+// Just a struct to hold the AST
 type AST struct {
 	lhs Term
 	rhs Term
 }
 
+// A Term can be a constant or a unary method (like addition)
 type Term interface {
 	isTerm() bool
 }
 
-// This also should implement Term
+// A constant number. like 1, 2, 1.2, 1.5
 type Constant struct {
 	value float32
 }
@@ -54,12 +55,15 @@ func (c Constant) isTerm() bool {
 	return true
 }
 
+// operations, like addition and subtraction should implement this interface
 type Operation interface {
 	Lhs() Term
 	Rhs() Term
 	Evaluate() (*Constant, error)
 	isTerm() bool
 }
+
+// Just a bunch of errors
 
 type UnhandledTermError struct{}
 
@@ -79,57 +83,4 @@ func (e DepthError) Error() string {
 	return "Depth of the equation's term execed the limit"
 }
 
-const DEPTH_LIMIT int = 10
 
-func evaluateHelper(a Operation, operation func(float32, float32) float32, depth int) (*Constant, error) {
-	if depth > DEPTH_LIMIT {
-		return nil, DepthError{}
-	}
-
-	var lhsValue *float32 = nil
-	var rhsValue *float32 = nil
-
-	lhsConstantValue, lhsOk := a.Lhs().(Constant)
-	if lhsOk {
-		lhsValue = &lhsConstantValue.value
-	} else {
-		// It should be a operation
-		lhsOperationValue, lhsOperationOk := a.Lhs().(Operation)
-		if !lhsOperationOk {
-			return nil, UnhandledTermError{}
-		}
-		// 	lhsVal, err := lhsOperationValue.Evaluate(depth + 1)
-		lhsVal, err := evaluateHelper(lhsOperationValue, operation, depth+1)
-		if err != nil {
-			return nil, err
-		}
-
-		lhsValue = &lhsVal.value
-	}
-
-	rhsConstantValue, rhsOk := a.Rhs().(Constant)
-	if rhsOk {
-		rhsValue = &rhsConstantValue.value
-	} else {
-		// It should be a operation
-		rhsOperationValue, rhsOperationOk := a.Lhs().(Operation)
-		if !rhsOperationOk {
-			return nil, UnhandledTermError{}
-		}
-
-		rhsVal, err := evaluateHelper(rhsOperationValue, operation, depth+1)
-		if err != nil {
-			return nil, err
-		}
-
-		rhsValue = &rhsVal.value
-	}
-
-	if lhsValue != nil && rhsValue != nil {
-		return &Constant{
-			value: operation(*lhsValue, *rhsValue),
-		}, nil
-	} else {
-		return nil, UnhandledError{}
-	}
-}

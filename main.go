@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"math"
+
 	"github.com/al-zebra/lexer"
-	 "github.com/al-zebra/parser"
+	"github.com/al-zebra/parser"
 )
 
 type EqualSignErr bool
@@ -83,10 +85,11 @@ func (tokens *Validation) RootPreceding() error {
 }
 
 func main() {
-	ex := "3x+2y=10"
+	ex := "3x+(2*y)=10"
 	lex := lexer.New(ex).TokenizeAll()
 	toks := parser.MultiplyPass(lex)
-	fmt.Println(lex)
+	x := math.Pow(10, -1/2)
+	fmt.Println(x)
 	fmt.Println("tokens",toks)
 }
 
