@@ -7,6 +7,7 @@ import (
 	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/parser"
 )
+
 type Validation []lexer.Token
 
 // Checks if there are more or less than one equal sign in the given equation
@@ -18,14 +19,13 @@ func (tokens *Validation) OnlyOneEqual() error {
 				is_seen = true
 				continue
 			}
-			return errors.New("In your equation, there are not exactly one equal sign") 
+			return errors.New("In your equation, there are not exactly one equal sign")
 		}
 	}
 	if is_seen {
 		return nil
 	} else {
-
-			return errors.New("In your equation, there are not exactly one equal sign")
+		return errors.New("In your equation, there are not exactly one equal sign")
 	}
 }
 
@@ -40,7 +40,7 @@ func (tokens *Validation) OneTypeOfVariable() error {
 				variableName = &tok.Value
 			} else {
 				if variableName != &tok.Value {
-					return errors.New("in your equation, there are more than one type of errors. (multi-variable equations to be added in future versions)") 
+					return errors.New("in your equation, there are more than one type of errors. (multi-variable equations to be added in future versions)")
 				}
 			}
 		}
@@ -67,9 +67,8 @@ func (tokens *Validation) RootPreceding() error {
 }
 
 func main() {
-	ex := "2 3 +"
+	ex := "3 + 4 * 2 / ( 1 - 5 )"
 	lex := lexer.New(ex).TokenizeAll()
-	toks := parser.RPNCalc(lex)
-	fmt.Println("tokens",toks)
+	toks := parser.RPNConverstion(lex)
+	fmt.Println("tokens", toks)
 }
-

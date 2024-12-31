@@ -4,14 +4,11 @@ import (
 	"github.com/al-zebra/lexer"
 )
 
-
-
 // The main parser, has a Parser method which will generate a AST
 type Parser struct {
 	equation lexer.Lexer
 	currAST AST
 }
-
 
 // Just a struct to hold the AST
 type AST struct {
