@@ -60,3 +60,9 @@ func TestRootFail(t *testing.T) {
 	assert.NotNil(t, check, `The root use here is incorrect but the validation function returned as a valid equation`)
 }
 */
+
+func TestCasesNormal() {
+	var testCases map[string]int
+	testCases["2+3"]
+
+}
