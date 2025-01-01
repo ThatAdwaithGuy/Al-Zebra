@@ -61,8 +61,3 @@ func TestRootFail(t *testing.T) {
 }
 */
 
-func TestCasesNormal() {
-	var testCases map[string]int
-	testCases["2+3"]
-
-}

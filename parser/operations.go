@@ -1,5 +1,4 @@
 package parser
-
 import "math"
 
 const DEPTH_LIMIT int = 100 

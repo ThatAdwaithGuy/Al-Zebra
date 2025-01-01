@@ -21,6 +21,14 @@ type Term interface {
 	isTerm() bool
 }
 
+type Variable struct {
+	name string
+}
+
+func (v Variable) isTerm() bool {
+	return true
+}
+
 // A constant number. like 1, 2, 1.2, 1.5
 type Constant struct {
 	value float32
@@ -29,7 +37,7 @@ type Constant struct {
 func (c Constant) isTerm() bool {
 	return true
 }
-
+ 
 // operations, like addition and subtraction should implement this interface
 type Operation interface {
 	Lhs() Term
