@@ -1,9 +1,10 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
-	"strconv"
 	"math"
+	"strconv"
 
 	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/utils"
@@ -18,44 +19,88 @@ func strcon(s string) int {
 	return result
 }
 
-// What is error handling
-func RPNCalc(tokens []lexer.Token) []string {
+func handleOperation(first, second *string, op func(int, int) int) (string, error) {
+	// This will be nil if the stack is empty as first and second are meant to be poped off the stack in the main function
+	if first == nil || second == nil {
+		return "", errors.New("Stack is empty while calculating RPN-equation. This means that your equation is invalid or my RPNConverstion function is bugged.")
+	}	
+	
+	
+	// Extraction, Main logic
+
+	firstNumber, err := strconv.Atoi(*first)
+	if err != nil {
+		return "", fmt.Errorf("This error is not meant to be seen. As the error checking is already done above. Error:\n%s", err.Error()) 
+	}
+
+	secondNumber, err := strconv.Atoi(*second)
+	if err != nil {
+		return "", fmt.Errorf("This error is not meant to be seen. As the error checking is already done above. Error:\n%s", err.Error()) 
+	}
+	
+	result := op(firstNumber, secondNumber)
+	
+	return strconv.Itoa(result), nil
+}
+
+
+func RPNCalc(tokens []lexer.Token) ([]string, error) {
 	var stack utils.Stack[string]
 	for _, token := range tokens {
-		fmt.Println(stack, token)
 		switch token.Type {
 		case lexer.DIVIDE:
-			first := strcon(*stack.PopBack())
-			second := strcon(*stack.PopBack())
-			calc := first / second
-			stack.PushBack(strconv.Itoa(calc))
+			function := func (f, s int) int {
+				return f / s
+			}
+			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
+			if err != nil {
+				return []string{}, err 
+			}
+			stack.PushBack(res)
 		case lexer.MINUS:
-			first := strcon(*stack.PopBack())
-			second := strcon(*stack.PopBack())
-			calc := first - second
-			stack.PushBack(strconv.Itoa(calc))
+			function := func (f, s int) int {
+				return f - s
+			}
+			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
+			if err != nil {
+				return []string{}, err 
+			}
+			stack.PushBack(res)
 		case lexer.MULTIPLY:
-			first := strcon(*stack.PopBack())
-			second := strcon(*stack.PopBack())
-			calc := first * second
-			stack.PushBack(strconv.Itoa(calc))
+			function := func (f, s int) int {
+				return f * s
+			}
+			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
+			if err != nil {
+				return []string{}, err 
+			}
+			stack.PushBack(res)
 		case lexer.PLUS:
-			first := strcon(*stack.PopBack())
-			second := strcon(*stack.PopBack())
-			calc := first + second
-			stack.PushBack(strconv.Itoa(calc))
+			function := func (f, s int) int {
+				return f + s
+			}
+			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
+			if err != nil {
+				return []string{}, err 
+			}
+			stack.PushBack(res)
 		case lexer.ROOT:
-			first := strcon(*stack.PopBack())
-			second := strcon(*stack.PopBack())
-			calc := strconv.Itoa(int(math.Pow(float64(first), float64(second))))
-			stack.PushBack(calc)
+			function := func (f, s int) int {
+				return int(math.Pow(float64(f), float64( s ))) 
+			}
+			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
+			if err != nil {
+				return []string{}, err 
+			}
+			stack.PushBack(res)
 		case lexer.VARIABLE:
 			stack.PushBack(token.Value)
 		case lexer.NUMBER:
 			stack.PushBack(token.Value)
 		}
 	}
-	return stack
+	return stack, nil
+
 }
 
 func RPNConverstion(tokens []lexer.Token) []lexer.Token {
@@ -108,6 +153,7 @@ func RPNConverstion(tokens []lexer.Token) []lexer.Token {
 		}
 		fmt.Println()
 	}
+
 	result = append(result, operationStack...)
 	return result
 }

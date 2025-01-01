@@ -11,6 +11,9 @@ func main() {
 	ex := "3 + 4 * 2"
 	lex := lexer.New(ex).TokenizeAll()
 	toks := parser.RPNConverstion(lex)
-	stuff := parser.RPNCalc(toks)
+	stuff, err := parser.RPNCalc(toks)
+	if err != nil {
+		return 
+	}
 	fmt.Println("tokens", toks, stuff)
 }
