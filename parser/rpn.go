@@ -10,13 +10,8 @@ import (
 	"github.com/al-zebra/utils"
 )
 
-func strcon(s string) int {
-	result, err := strconv.Atoi(s)
-	if err != nil {
-		fmt.Println(s)
-		panic(err)
-	}
-	return result
+type RPN struct {
+	tokens []lexer.Token
 }
 
 func handleOperation(first, second *string, op func(int, int) int) (string, error) {
@@ -24,7 +19,6 @@ func handleOperation(first, second *string, op func(int, int) int) (string, erro
 	if first == nil || second == nil {
 		return "", errors.New("Stack is empty while calculating RPN-equation. This means that your equation is invalid or my RPNConverstion function is bugged.")
 	}	
-	
 	
 	// Extraction, Main logic
 
@@ -44,9 +38,9 @@ func handleOperation(first, second *string, op func(int, int) int) (string, erro
 }
 
 
-func RPNCalc(tokens []lexer.Token) ([]string, error) {
+func (tokens RPN) RPNCalc() ([]string, error) {
 	var stack utils.Stack[string]
-	for _, token := range tokens {
+	for _, token := range tokens.tokens {
 		switch token.Type {
 		case lexer.DIVIDE:
 			function := func (f, s int) int {
@@ -103,7 +97,7 @@ func RPNCalc(tokens []lexer.Token) ([]string, error) {
 
 }
 
-func RPNConverstion(tokens []lexer.Token) []lexer.Token {
+func RPNConverstion(tokens []lexer.Token) RPN {
 	var precedence map[lexer.TokenType]int = make(map[lexer.TokenType]int)
 	precedence[lexer.PLUS] = 2
 	precedence[lexer.MINUS] = 2
@@ -155,5 +149,7 @@ func RPNConverstion(tokens []lexer.Token) []lexer.Token {
 	}
 
 	result = append(result, operationStack...)
-	return result
+	return RPN{
+		tokens: result,
+	}
 }
