@@ -16,6 +16,7 @@ type AST struct {
 	rhs Term
 }
 
+
 // A Term can be a constant or a unary method (like addition)
 type Term interface {
 	isTerm() bool

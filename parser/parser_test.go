@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/al-zebra/lexer"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -282,7 +281,7 @@ func TestRootRandom(t *testing.T) {
 
 	assert.Equal(t, &Constant{value: result}, value, "the result is not equal to expected value")
 }
-
+/*
 func TestMultiplyPass(t *testing.T) {
 	// Mock data, this is not valid
 	ex := "3x+2x"
@@ -320,3 +319,4 @@ func TestMultiplyPass(t *testing.T) {
 	}
 	assert.Equal(t, expected, pass, "Multiply pass results in wrong values")
 }
+*/

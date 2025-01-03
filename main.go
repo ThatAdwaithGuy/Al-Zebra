@@ -33,8 +33,6 @@ func main() {
 	lex := lexer.New(ex).TokenizeAll()
 	toks := parser.RPNConverstion(lex)
 	stuff, err := toks.RPNCalc()
-	if err != nil {
-		return 
-	}
-	fmt.Println("tokens", toks, stuff)
+	tree := toks.Tree()
+	fmt.Println("tokens", tree)
 }

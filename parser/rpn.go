@@ -94,7 +94,77 @@ func (tokens RPN) RPNCalc() ([]string, error) {
 		}
 	}
 	return stack, nil
+}
 
+func helperNewOperation(lhs, rhs Term, ty lexer.TokenType) Term {
+	switch ty {
+	case lexer.DIVIDE:
+		op := Division{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return op
+	case lexer.MINUS:
+		op := Subtraction{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return op
+	case lexer.MULTIPLY:
+		op := Multiplication{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return op
+	case lexer.PLUS:
+		op := Addition{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return op
+	case lexer.ROOT:
+		op := Root{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return op
+	default:
+		return nil
+	}	
+}
+
+func (rpn RPN) Tree() Term {
+	var stack utils.Stack[Term] 
+	var m map[lexer.TokenType]bool
+	m[lexer.DIVIDE] = true
+	m[lexer.MINUS] = true
+	m[lexer.PLUS] = true 
+	m[lexer.MULTIPLY] = true
+	m[lexer.ROOT] = true
+	for _, tok := range rpn.tokens {
+		_, isOp := m[tok.Type]
+		if !isOp {
+			ughh, err := strconv.Atoi(tok.Value)
+			if err != nil {
+				return nil
+			}
+			
+			stack.PushFront(Constant{
+				value: float32(ughh),
+			})
+		} else {
+			left := stack.PopFront()
+			right := stack.PopFront()	
+			op := helperNewOperation(*left, *right, tok.Type)
+			stack.PushFront(op)
+		}
+	}
+	
+	if len(stack) == 1 {
+		return stack[0]
+	} else {
+		return nil
+	}
 }
 
 func RPNConverstion(tokens []lexer.Token) RPN {
