@@ -10,11 +10,11 @@ type TokenType int
 
 const (
 	NUMBER TokenType = iota
-	PLUS
-	MINUS
-	MULTIPLY
-	DIVIDE
-	ROOT
+	PLUS // 1
+	MINUS // 2
+	MULTIPLY // 3
+	DIVIDE // 4
+	ROOT // 5
 	EQUALS
 	LEFT_PAREN
 	RIGHT_PAREN

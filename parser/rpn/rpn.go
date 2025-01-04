@@ -1,10 +1,11 @@
-package parser
+package rpn
 
 import (
 	"errors"
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 
 	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/utils"
@@ -14,77 +15,81 @@ type RPN struct {
 	tokens []lexer.Token
 }
 
+func (rpn *RPN) Debug() {
+	fmt.Println("RPN tokens: ", rpn.tokens)
+}
+
 func handleOperation(first, second *string, op func(int, int) int) (string, error) {
 	// This will be nil if the stack is empty as first and second are meant to be poped off the stack in the main function
 	if first == nil || second == nil {
 		return "", errors.New("Stack is empty while calculating RPN-equation. This means that your equation is invalid or my RPNConverstion function is bugged.")
-	}	
-	
+	}
+
 	// Extraction, Main logic
 
 	firstNumber, err := strconv.Atoi(*first)
 	if err != nil {
-		return "", fmt.Errorf("This error is not meant to be seen. As the error checking is already done above. Error:\n%s", err.Error()) 
+		return "", fmt.Errorf("This error is not meant to be seen. As the error checking is already done above. Error:\n%s", err.Error())
 	}
 
 	secondNumber, err := strconv.Atoi(*second)
+  
 	if err != nil {
-		return "", fmt.Errorf("This error is not meant to be seen. As the error checking is already done above. Error:\n%s", err.Error()) 
+		return "", fmt.Errorf("This error is not meant to be seen. As the error checking is already done above. Error:\n%s", err.Error())
 	}
-	
+
 	result := op(firstNumber, secondNumber)
-	
+
 	return strconv.Itoa(result), nil
 }
-
 
 func (tokens RPN) RPNCalc() ([]string, error) {
 	var stack utils.Stack[string]
 	for _, token := range tokens.tokens {
 		switch token.Type {
 		case lexer.DIVIDE:
-			function := func (f, s int) int {
+			function := func(f, s int) int {
 				return f / s
 			}
 			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
 			if err != nil {
-				return []string{}, err 
+				return []string{}, err
 			}
 			stack.PushBack(res)
 		case lexer.MINUS:
-			function := func (f, s int) int {
+			function := func(f, s int) int {
 				return f - s
 			}
 			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
 			if err != nil {
-				return []string{}, err 
+				return []string{}, err
 			}
 			stack.PushBack(res)
 		case lexer.MULTIPLY:
-			function := func (f, s int) int {
+			function := func(f, s int) int {
 				return f * s
 			}
 			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
 			if err != nil {
-				return []string{}, err 
+				return []string{}, err
 			}
 			stack.PushBack(res)
 		case lexer.PLUS:
-			function := func (f, s int) int {
+			function := func(f, s int) int {
 				return f + s
 			}
 			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
 			if err != nil {
-				return []string{}, err 
+				return []string{}, err
 			}
 			stack.PushBack(res)
 		case lexer.ROOT:
-			function := func (f, s int) int {
-				return int(math.Pow(float64(f), float64( s ))) 
+			function := func(f, s int) int {
+				return int(math.Pow(float64(f), float64(s)))
 			}
 			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
 			if err != nil {
-				return []string{}, err 
+				return []string{}, err
 			}
 			stack.PushBack(res)
 		case lexer.VARIABLE:
@@ -130,41 +135,98 @@ func helperNewOperation(lhs, rhs Term, ty lexer.TokenType) Term {
 		return op
 	default:
 		return nil
-	}	
+	}
 }
 
-func (rpn RPN) Tree() Term {
-	var stack utils.Stack[Term] 
-	var m map[lexer.TokenType]bool
-	m[lexer.DIVIDE] = true
-	m[lexer.MINUS] = true
-	m[lexer.PLUS] = true 
-	m[lexer.MULTIPLY] = true
-	m[lexer.ROOT] = true
-	for _, tok := range rpn.tokens {
-		_, isOp := m[tok.Type]
-		if !isOp {
-			ughh, err := strconv.Atoi(tok.Value)
-			if err != nil {
-				return nil
-			}
-			
-			stack.PushFront(Constant{
-				value: float32(ughh),
-			})
-		} else {
-			left := stack.PopFront()
-			right := stack.PopFront()	
-			op := helperNewOperation(*left, *right, tok.Type)
-			stack.PushFront(op)
-		}
+type Node struct {
+	val string
+	left *Node
+	right *Node
+}
+
+func (n *Node) helpDebug(level int, prefix string) {
+	if n == nil {
+		return
 	}
-	
-	if len(stack) == 1 {
-		return stack[0]
-	} else {
-		return nil
+
+	ident := strings.Repeat(" ", level)
+	fmt.Printf("%s%s%s\n", ident, prefix, n.val)
+
+	if n.left != nil {
+		n.left.helpDebug(level + 1, "L: ")
 	}
+
+	if n.right != nil {
+		n.right.helpDebug(level + 1, "R: ")
+	}
+}
+
+func (n *Node) Debug() {
+	n.helpDebug(0, "R: ")
+}
+
+func treeifyHelper(ty lexer.TokenType, lhs, rhs Term) Term {
+  switch ty {
+	case lexer.PLUS:
+    t := Addition{
+    	lhs: lhs,
+    	rhs: rhs,
+    }
+    return t
+	case lexer.MINUS:
+    t := Subtraction{
+    	lhs: lhs,
+    	rhs: rhs,
+    }
+    return t
+	case lexer.MULTIPLY:
+    t := Multiplication{
+    	lhs: lhs,
+    	rhs: rhs,
+    }
+    return t
+  case lexer.DIVIDE:
+    t := Division{
+    	lhs: lhs,
+    	rhs: rhs,
+    }
+    return t
+	case lexer.ROOT:
+    t := Root{
+    	lhs: lhs,
+    	rhs: rhs,
+    }
+    return t
+	default:
+    return nil
+	}
+}
+
+func Treeify(tokens RPN) *Term {
+	var stack utils.Stack[Term]
+	for _, tok := range tokens.tokens {
+		switch tok.Type {
+		case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT:
+      t := treeifyHelper(tok.Type, *stack.PopBack(), *stack.PopBack())
+			stack.PushBack(t)
+	  case lexer.NUMBER:
+      fl, err :=strconv.ParseFloat(tok.Value, 32)
+      if err != nil {
+        return nil
+      }
+      t := Constant{
+        value: float32(fl),
+      }
+      stack.PushBack(t)
+
+	  case lexer.VARIABLE:
+      t := Variable{
+        name: tok.Value,
+      }
+      stack.PushBack(t)
+	  }
+	}
+	return &stack[0] 
 }
 
 func RPNConverstion(tokens []lexer.Token) RPN {
@@ -179,7 +241,7 @@ func RPNConverstion(tokens []lexer.Token) RPN {
 	var result utils.Stack[lexer.Token]
 	var operationStack utils.Stack[lexer.Token]
 	for _, token := range tokens {
-		fmt.Println(operationStack, result, token)
+		//fmt.Println(operationStack, result, token)
 		switch token.Type {
 		case lexer.PLUS, lexer.MINUS:
 			operationStack.PushBack(token)

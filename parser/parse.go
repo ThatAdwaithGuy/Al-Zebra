@@ -16,7 +16,6 @@ type AST struct {
 	rhs Term
 }
 
-
 // A Term can be a constant or a unary method (like addition)
 type Term interface {
 	isTerm() bool
@@ -56,6 +55,7 @@ func (e UnhandledTermError) Error() string {
 }
 
 type UnhandledError struct{}
+
 
 func (e UnhandledError) Error() string {
 	return "UNHANDLED ERROR"
