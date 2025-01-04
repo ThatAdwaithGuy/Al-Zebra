@@ -22,7 +22,7 @@ type Term interface {
 }
 
 type Variable struct {
-	name string
+	Name string
 }
 
 func (v Variable) isTerm() bool {
@@ -31,7 +31,7 @@ func (v Variable) isTerm() bool {
 
 // A constant number. like 1, 2, 1.2, 1.5
 type Constant struct {
-	value float32
+	Value float32
 }
 
 func (c Constant) isTerm() bool {

@@ -1,4 +1,5 @@
 package parser
+
 import "math"
 
 const DEPTH_LIMIT int = 100 
@@ -14,7 +15,7 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 	// Check if this a constant or not
 	lhsConstantValue, lhsOk := a.Lhs().(Constant)
 	if lhsOk {
-		lhsValue = &lhsConstantValue.value
+		lhsValue = &lhsConstantValue.Value
 	} else {
 		// It SHOULD be a operation as this function only supports term having term be as Constant or a Operation 
 		lhsOperationValue, lhsOperationOk := a.Lhs().(Operation)
@@ -29,12 +30,12 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 			return nil, err
 		}
 
-		lhsValue = &lhsVal.value
+		lhsValue = &lhsVal.Value
 	}
 	// The same logic as above but lhs is rhs now. To get more info, read the top part
 	rhsConstantValue, rhsOk := a.Rhs().(Constant)
 	if rhsOk {
-		rhsValue = &rhsConstantValue.value
+		rhsValue = &rhsConstantValue.Value
 	} else {
 		rhsOperationValue, rhsOperationOk := a.Lhs().(Operation)
 		if !rhsOperationOk {
@@ -46,13 +47,13 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 			return nil, err
 		}
 
-		rhsValue = &rhsVal.value
+		rhsValue = &rhsVal.Value
 	}
 
 	// Why the heck go does not have null safty. I badly want a Option type 
 	if lhsValue != nil && rhsValue != nil {
 		return &Constant{
-			value: operation(*lhsValue, *rhsValue),
+			Value: operation(*lhsValue, *rhsValue),
 		}, nil
 	} else {
 		return nil, UnhandledError{}
@@ -65,6 +66,13 @@ type Addition struct {
 	lhs Term
 	rhs Term
 }
+func NewAddition(lhs, rhs Term) Addition {
+  return Addition{
+  	lhs: lhs,
+  	rhs: rhs,
+  }
+}
+
 func (a Addition) Lhs() Term {
 	return a.lhs
 }
@@ -85,6 +93,13 @@ func (a Addition) Evaluate() (*Constant, error) {
 type Subtraction struct {
 	lhs Term
 	rhs Term
+}
+
+func NewSubtraction(lhs, rhs Term) Subtraction {
+  return Subtraction{
+    lhs: lhs,
+    rhs: rhs,
+  }
 }
 
 func (a Subtraction) Lhs() Term {
@@ -109,6 +124,13 @@ type Multiplication struct {
 	rhs Term
 }
 
+func NewMultiplication(lhs, rhs Term) Multiplication {
+  return Multiplication{
+    lhs: lhs,
+    rhs: rhs,
+  }
+}
+
 func (a Multiplication) Lhs() Term {
 	return a.lhs
 }
@@ -129,6 +151,13 @@ func (a Multiplication) Evaluate() (*Constant, error) {
 type Division struct {
 	lhs Term
 	rhs Term
+}
+
+func NewDivision(lhs, rhs Term) Division{
+  return Division{
+    lhs: lhs,
+    rhs: rhs,
+  }
 }
 
 func (a Division) Lhs() Term {
@@ -153,6 +182,15 @@ type Root struct {
 	lhs Term
 	rhs Term
 }
+
+func NewRoot(lhs, rhs Term) Root {
+  return Root{
+      lhs: lhs,
+      rhs: rhs,
+  }
+}
+
+
 
 func (a Root) Lhs() Term {
 	return a.lhs

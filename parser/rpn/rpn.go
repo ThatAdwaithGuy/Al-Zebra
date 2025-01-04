@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/al-zebra/lexer"
+	"github.com/al-zebra/parser"
 	"github.com/al-zebra/utils"
 )
 
@@ -101,34 +102,34 @@ func (tokens RPN) RPNCalc() ([]string, error) {
 	return stack, nil
 }
 
-func helperNewOperation(lhs, rhs Term, ty lexer.TokenType) Term {
+func helperNewOperation(lhs, rhs parser.Term, ty lexer.TokenType) parser.Term {
 	switch ty {
 	case lexer.DIVIDE:
-		op := Division{
+		op := parser.Division{
 			lhs: lhs,
 			rhs: rhs,
 		}
 		return op
 	case lexer.MINUS:
-		op := Subtraction{
+		op := parser.Subtraction{
 			lhs: lhs,
 			rhs: rhs,
 		}
 		return op
 	case lexer.MULTIPLY:
-		op := Multiplication{
+		op := parser.Multiplication{
 			lhs: lhs,
 			rhs: rhs,
 		}
 		return op
 	case lexer.PLUS:
-		op := Addition{
+		op := parser.Addition{
 			lhs: lhs,
 			rhs: rhs,
 		}
 		return op
 	case lexer.ROOT:
-		op := Root{
+		op := parser.Root{
 			lhs: lhs,
 			rhs: rhs,
 		}
@@ -165,34 +166,34 @@ func (n *Node) Debug() {
 	n.helpDebug(0, "R: ")
 }
 
-func treeifyHelper(ty lexer.TokenType, lhs, rhs Term) Term {
+func treeifyHelper(ty lexer.TokenType, lhs, rhs parser.Term) parser.Term {
   switch ty {
 	case lexer.PLUS:
-    t := Addition{
+    t := parser.Addition{
     	lhs: lhs,
     	rhs: rhs,
     }
     return t
 	case lexer.MINUS:
-    t := Subtraction{
+    t := parser.Subtraction{
     	lhs: lhs,
     	rhs: rhs,
     }
     return t
 	case lexer.MULTIPLY:
-    t := Multiplication{
+    t := parser.Multiplication{
     	lhs: lhs,
     	rhs: rhs,
     }
     return t
   case lexer.DIVIDE:
-    t := Division{
+    t := parser.Division{
     	lhs: lhs,
     	rhs: rhs,
     }
     return t
 	case lexer.ROOT:
-    t := Root{
+    t := parser.Root{
     	lhs: lhs,
     	rhs: rhs,
     }
@@ -202,8 +203,8 @@ func treeifyHelper(ty lexer.TokenType, lhs, rhs Term) Term {
 	}
 }
 
-func Treeify(tokens RPN) *Term {
-	var stack utils.Stack[Term]
+func Treeify(tokens RPN) *parser.Term {
+	var stack utils.Stack[parser.Term]
 	for _, tok := range tokens.tokens {
 		switch tok.Type {
 		case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT:
@@ -214,14 +215,14 @@ func Treeify(tokens RPN) *Term {
       if err != nil {
         return nil
       }
-      t := Constant{
-        value: float32(fl),
+      t := parser.Constant{
+        Value: float32(fl),
       }
       stack.PushBack(t)
 
 	  case lexer.VARIABLE:
-      t := Variable{
-        name: tok.Value,
+      t := parser.Variable{
+        Name: tok.Value,
       }
       stack.PushBack(t)
 	  }
