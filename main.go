@@ -2,8 +2,7 @@ package main
 
 import (
 	"github.com/al-zebra/lexer"
-	"github.com/al-zebra/parser/rpn"
-	"github.com/al-zebra/parser"
+	"github.com/al-zebra/rpn"
 )
 
 func MultiplyPass(tokens []lexer.Token) []lexer.Token {

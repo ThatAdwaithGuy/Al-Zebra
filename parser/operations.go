@@ -66,6 +66,7 @@ type Addition struct {
 	lhs Term
 	rhs Term
 }
+
 func NewAddition(lhs, rhs Term) Addition {
   return Addition{
   	lhs: lhs,

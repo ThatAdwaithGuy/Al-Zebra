@@ -105,34 +105,19 @@ func (tokens RPN) RPNCalc() ([]string, error) {
 func helperNewOperation(lhs, rhs parser.Term, ty lexer.TokenType) parser.Term {
 	switch ty {
 	case lexer.DIVIDE:
-		op := parser.Division{
-			lhs: lhs,
-			rhs: rhs,
-		}
+		op := parser.NewDivision(lhs, rhs)
 		return op
 	case lexer.MINUS:
-		op := parser.Subtraction{
-			lhs: lhs,
-			rhs: rhs,
-		}
+		op := parser.NewSubtraction(lhs, rhs)
 		return op
 	case lexer.MULTIPLY:
-		op := parser.Multiplication{
-			lhs: lhs,
-			rhs: rhs,
-		}
+		op := parser.NewMultiplication(lhs, rhs)
 		return op
 	case lexer.PLUS:
-		op := parser.Addition{
-			lhs: lhs,
-			rhs: rhs,
-		}
+		op := parser.NewAddition(lhs, rhs)
 		return op
 	case lexer.ROOT:
-		op := parser.Root{
-			lhs: lhs,
-			rhs: rhs,
-		}
+		op := parser.NewRoot(lhs, rhs)
 		return op
 	default:
 		return nil
@@ -169,34 +154,19 @@ func (n *Node) Debug() {
 func treeifyHelper(ty lexer.TokenType, lhs, rhs parser.Term) parser.Term {
   switch ty {
 	case lexer.PLUS:
-    t := parser.Addition{
-    	lhs: lhs,
-    	rhs: rhs,
-    }
+    t := parser.NewAddition(lhs, rhs)
     return t
 	case lexer.MINUS:
-    t := parser.Subtraction{
-    	lhs: lhs,
-    	rhs: rhs,
-    }
+    t := parser.NewSubtraction(lhs, rhs)
     return t
 	case lexer.MULTIPLY:
-    t := parser.Multiplication{
-    	lhs: lhs,
-    	rhs: rhs,
-    }
+    t := parser.NewMultiplication(lhs, rhs)
     return t
   case lexer.DIVIDE:
-    t := parser.Division{
-    	lhs: lhs,
-    	rhs: rhs,
-    }
+    t := parser.NewDivision(lhs, rhs)
     return t
 	case lexer.ROOT:
-    t := parser.Root{
-    	lhs: lhs,
-    	rhs: rhs,
-    }
+    t := parser.NewRoot(lhs, rhs)
     return t
 	default:
     return nil
