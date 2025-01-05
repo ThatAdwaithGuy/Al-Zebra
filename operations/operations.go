@@ -1,4 +1,4 @@
-package parser
+package operations
 
 import (
   "math"
@@ -26,14 +26,12 @@ func (e DepthError) Error() string {
 	return "Depth of the equation's term execed the limit"
 }
 
-
-
 // operations, like addition and subtraction should implement this interface
 type Operation interface {
 	Lhs() parser.Term
 	Rhs() parser.Term
 	Evaluate() (*parser.Constant, error)
-	isTerm() bool
+	IsTerm() bool
 }
 
 const DEPTH_LIMIT int = 100 
@@ -117,7 +115,7 @@ func (a Addition) Rhs() parser.Term {
 	return a.rhs
 }
 
-func (a Addition) isTerm() bool {
+func (a Addition) IsTerm() bool {
 	return true
 }
 func (a Addition) Evaluate() (*parser.Constant, error) {
@@ -146,7 +144,7 @@ func (a Subtraction) Rhs() parser.Term {
 	return a.rhs
 }
 
-func (a Subtraction) isTerm() bool {
+func (a Subtraction) IsTerm() bool {
 	return true
 }
 func (a Subtraction) Evaluate() (*parser.Constant, error) {
@@ -175,7 +173,7 @@ func (a Multiplication) Rhs() parser.Term {
 	return a.rhs
 }
 
-func (a Multiplication) isTerm() bool {
+func (a Multiplication) IsTerm() bool {
 	return true
 }
 func (a Multiplication) Evaluate() (*parser.Constant, error) {
@@ -204,7 +202,7 @@ func (a Division) Rhs() parser.Term {
 	return a.rhs
 }
 
-func (a Division) isTerm() bool { 
+func (a Division) IsTerm() bool { 
   return true
 }
 
@@ -236,7 +234,7 @@ func (a Root) Rhs() parser.Term {
 	return a.rhs
 }
 
-func (a Root) isTerm() bool {
+func (a Root) IsTerm() bool {
 	return true
 }
 

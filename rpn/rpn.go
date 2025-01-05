@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"math"
 	"strconv"
-	"strings"
 
 	"github.com/al-zebra/lexer"
-	"github.com/al-zebra/operations"
+	"github.com/al-zebra/parser"
 	"github.com/al-zebra/utils"
+	"github.com/al-zebra/operations"
 )
 
 type RPN struct {
@@ -121,82 +121,6 @@ func helperNewOperation(lhs, rhs parser.Term, ty lexer.TokenType) parser.Term {
 	default:
 		return nil
 	}
-}
-
-type Node struct {
-	val string
-	left *Node
-	right *Node
-}
-
-func (n *Node) helpDebug(level int, prefix string) {
-	if n == nil {
-		return
-	}
-
-	ident := strings.Repeat(" ", level)
-	fmt.Printf("%s%s%s\n", ident, prefix, n.val)
-
-	if n.left != nil {
-		n.left.helpDebug(level + 1, "L: ")
-	}
-
-	if n.right != nil {
-		n.right.helpDebug(level + 1, "R: ")
-	}
-}
-
-func (n *Node) Debug() {
-	n.helpDebug(0, "R: ")
-}
-
-func treeifyHelper(ty lexer.TokenType, lhs, rhs parser.Term) parser.Term {
-  switch ty {
-	case lexer.PLUS:
-    t := parser.NewAddition(lhs, rhs)
-    return t
-	case lexer.MINUS:
-    t := parser.NewSubtraction(lhs, rhs)
-    return t
-	case lexer.MULTIPLY:
-    t := parser.NewMultiplication(lhs, rhs)
-    return t
-  case lexer.DIVIDE:
-    t := parser.NewDivision(lhs, rhs)
-    return t
-	case lexer.ROOT:
-    t := parser.NewRoot(lhs, rhs)
-    return t
-	default:
-    return nil
-	}
-}
-
-func Treeify(tokens RPN) *parser.Term {
-	var stack utils.Stack[parser.Term]
-	for _, tok := range tokens.tokens {
-		switch tok.Type {
-		case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT:
-      t := treeifyHelper(tok.Type, *stack.PopBack(), *stack.PopBack())
-			stack.PushBack(t)
-	  case lexer.NUMBER:
-      fl, err :=strconv.ParseFloat(tok.Value, 32)
-      if err != nil {
-        return nil
-      }
-      t := parser.Constant{
-        Value: float32(fl),
-      }
-      stack.PushBack(t)
-
-	  case lexer.VARIABLE:
-      t := parser.Variable{
-        Name: tok.Value,
-      }
-      stack.PushBack(t)
-	  }
-	}
-	return &stack[0] 
 }
 
 func RPNConverstion(tokens []lexer.Token) RPN {

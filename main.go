@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/al-zebra/lexer"
+	"github.com/al-zebra/operations"
 	"github.com/al-zebra/rpn"
 )
 
@@ -35,4 +36,5 @@ func main() {
 	toks.Debug()
 	tree := rpn.Treeify(toks)
 	fmt.Println(tree)
+  fmt.Println(operations.Addition{})
 }

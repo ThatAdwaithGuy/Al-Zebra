@@ -18,14 +18,14 @@ type AST struct {
 
 // A Term can be a constant or a unary method (like addition)
 type Term interface {
-	isTerm() bool
+	IsTerm() bool
 }
 
 type Variable struct {
 	Name string
 }
 
-func (v Variable) isTerm() bool {
+func (v Variable) IsTerm() bool {
 	return true
 }
 
@@ -34,6 +34,6 @@ type Constant struct {
 	Value float32
 }
 
-func (c Constant) isTerm() bool {
+func (c Constant) IsTerm() bool {
 	return true
 }

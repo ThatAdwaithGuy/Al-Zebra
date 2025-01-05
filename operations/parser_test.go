@@ -1,11 +1,11 @@
-package parser
+package operations
 
 import (
 	"math"
 	"math/rand"
 	"testing"
-	
 
+	"github.com/al-zebra/parser"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,24 +14,24 @@ import (
 
 func TestAdditionNoRecursion(t *testing.T) {
 	addition := Addition{
-		lhs: Constant{Value: 1.0},
-		rhs: Constant{Value: 1.0},
+		lhs: parser.Constant{Value: 1.0},
+		rhs: parser.Constant{Value: 1.0},
 	}
 	value, err := addition.Evaluate()
 	if err != nil {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
-	assert.Equal(t, &Constant{Value: 2.0}, value, "AHADAHD")
+	assert.Equal(t, &parser.Constant{Value: 2.0}, value, "AHADAHD")
 }
 
 func TestAdditionRecursion(t *testing.T) {
 	oneAddition := Addition{
-		lhs: Constant{Value: 1.0},
-		rhs: Constant{Value: 1.0},
+		lhs: parser.Constant{Value: 1.0},
+		rhs: parser.Constant{Value: 1.0},
 	}
 	addition := Addition{
 		lhs: oneAddition,
-		rhs: Constant{Value: 2.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 
 	value, err := addition.Evaluate()
@@ -39,7 +39,7 @@ func TestAdditionRecursion(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: 4.0}, value, "the result is not equal to 4")
+	assert.Equal(t, &parser.Constant{Value: 4.0}, value, "the result is not equal to 4")
 }
 
 func TestAdditionRandom(t *testing.T) {
@@ -50,12 +50,12 @@ func TestAdditionRandom(t *testing.T) {
 	result := (value1 + value2) + value3
 
 	oneAddition := Addition{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		lhs: parser.Constant{Value: float32(value1)},
+		rhs: parser.Constant{Value: float32(value2)},
 	}
 	addition := Addition{
 		lhs: oneAddition,
-		rhs: Constant{Value: float32(value3)},
+		rhs: parser.Constant{Value: float32(value3)},
 	}
 
 	value, err := addition.Evaluate()
@@ -63,29 +63,29 @@ func TestAdditionRandom(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: float32(result)}, value, "the result is not equal to 4")
+	assert.Equal(t, &parser.Constant{Value: float32(result)}, value, "the result is not equal to 4")
 }
 
 func TestSubtractionNoRecursion(t *testing.T) {
 	addition := Subtraction{
-		lhs: Constant{Value: 5.0},
-		rhs: Constant{Value: 3.0},
+		lhs: parser.Constant{Value: 5.0},
+		rhs: parser.Constant{Value: 3.0},
 	}
 	value, err := addition.Evaluate()
 	if err != nil {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
-	assert.Equal(t, &Constant{Value: 2.0}, value, "AHADAHD")
+	assert.Equal(t, &parser.Constant{Value: 2.0}, value, "AHADAHD")
 }
 
 func TestSubtractionRecursion(t *testing.T) {
 	oneSubtraction := Subtraction{
-		lhs: Constant{Value: 5.0},
-		rhs: Constant{Value: 3.0},
+		lhs: parser.Constant{Value: 5.0},
+		rhs: parser.Constant{Value: 3.0},
 	}
 	addition := Subtraction{
 		lhs: oneSubtraction,
-		rhs: Constant{Value: 3.0},
+		rhs: parser.Constant{Value: 3.0},
 	}
 
 	value, err := addition.Evaluate()
@@ -93,7 +93,7 @@ func TestSubtractionRecursion(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: -1.0}, value, "the result is not equal to 4")
+	assert.Equal(t, &parser.Constant{Value: -1.0}, value, "the result is not equal to 4")
 }
 
 func TestSubtractionRandom(t *testing.T) {
@@ -104,12 +104,12 @@ func TestSubtractionRandom(t *testing.T) {
 	result := (value1 - value2) - value3
 
 	oneSubtraction := Subtraction{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		lhs: parser.Constant{Value: float32(value1)},
+		rhs: parser.Constant{Value: float32(value2)},
 	}
 	subtraction := Subtraction{
 		lhs: oneSubtraction,
-		rhs: Constant{Value: float32(value3)},
+		rhs: parser.Constant{Value: float32(value3)},
 	}
 
 	value, err := subtraction.Evaluate()
@@ -117,29 +117,29 @@ func TestSubtractionRandom(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: float32(result)}, value, "the result is not equal to expected value")
+	assert.Equal(t, &parser.Constant{Value: float32(result)}, value, "the result is not equal to expected value")
 }
 
 func TestMultiplicationNoRecursion(t *testing.T) {
 	addition := Multiplication{
-		lhs: Constant{Value: 10.0},
-		rhs: Constant{Value: 2.0},
+		lhs: parser.Constant{Value: 10.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 	value, err := addition.Evaluate()
 	if err != nil {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
-	assert.Equal(t, &Constant{Value: 20.0}, value, "AHADAHD")
+	assert.Equal(t, &parser.Constant{Value: 20.0}, value, "AHADAHD")
 }
 
 func TestMultiplicationRecursion(t *testing.T) {
 	oneMultiplication := Multiplication{
-		lhs: Constant{Value: 10.0},
-		rhs: Constant{Value: 2.0},
+		lhs: parser.Constant{Value: 10.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 	addition := Multiplication{
 		lhs: oneMultiplication,
-		rhs: Constant{Value: -1.0},
+		rhs: parser.Constant{Value: -1.0},
 	}
 
 	value, err := addition.Evaluate()
@@ -147,7 +147,7 @@ func TestMultiplicationRecursion(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: -20.0}, value, "the result is not equal to 4")
+	assert.Equal(t, &parser.Constant{Value: -20.0}, value, "the result is not equal to 4")
 }
 
 func TestMultiplicationRandom(t *testing.T) {
@@ -158,12 +158,12 @@ func TestMultiplicationRandom(t *testing.T) {
 	result := (value1 * value2) * value3
 
 	oneMultiplication := Multiplication{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		lhs: parser.Constant{Value: float32(value1)},
+		rhs: parser.Constant{Value: float32(value2)},
 	}
 	multiplication := Multiplication{
 		lhs: oneMultiplication,
-		rhs: Constant{Value: float32(value3)},
+		rhs: parser.Constant{Value: float32(value3)},
 	}
 
 	value, err := multiplication.Evaluate()
@@ -171,30 +171,30 @@ func TestMultiplicationRandom(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: float32(result)}, value, "the result is not equal to expected value")
+	assert.Equal(t, &parser.Constant{Value: float32(result)}, value, "the result is not equal to expected value")
 }
 
 func TestDivisionNoRecursion(t *testing.T) {
 	division := Division{
-		lhs: Constant{Value: 10.0},
-		rhs: Constant{Value: 2.0},
+		lhs: parser.Constant{Value: 10.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 	value, err := division.Evaluate()
 	if err != nil {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: 5.0}, value, "Expected 10/2 to equal 5")
+	assert.Equal(t, &parser.Constant{Value: 5.0}, value, "Expected 10/2 to equal 5")
 }
 
 func TestDivisionRecursion(t *testing.T) {
 	oneDivision := Division{
-		lhs: Constant{Value: 20.0},
-		rhs: Constant{Value: 2.0},
+		lhs: parser.Constant{Value: 20.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 	division := Division{
 		lhs: oneDivision,
-		rhs: Constant{Value: 2.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 
 	value, err := division.Evaluate()
@@ -202,7 +202,7 @@ func TestDivisionRecursion(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: 5.0}, value, "Expected (20/2)/2 to equal 5")
+	assert.Equal(t, &parser.Constant{Value: 5.0}, value, "Expected (20/2)/2 to equal 5")
 }
 
 func TestDivisionRandom(t *testing.T) {
@@ -213,12 +213,12 @@ func TestDivisionRandom(t *testing.T) {
 	result := (float32(value1) / float32(value2)) / float32(value3)
 
 	oneDivision := Division{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		lhs: parser.Constant{Value: float32(value1)},
+		rhs: parser.Constant{Value: float32(value2)},
 	}
 	division := Division{
 		lhs: oneDivision,
-		rhs: Constant{Value: float32(value3)},
+		rhs: parser.Constant{Value: float32(value3)},
 	}
 
 	value, err := division.Evaluate()
@@ -226,29 +226,29 @@ func TestDivisionRandom(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: result}, value, "the result is not equal to expected value")
+	assert.Equal(t, &parser.Constant{Value: result}, value, "the result is not equal to expected value")
 }
 
 func TestRootNoRecursion(t *testing.T) {
 	root := Root{
-		lhs: Constant{Value: 16.0},
-		rhs: Constant{Value: 2.0},
+		lhs: parser.Constant{Value: 16.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 	value, err := root.Evaluate()
 	if err != nil {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
-	assert.Equal(t, &Constant{Value: 4.0}, value, "Expected square root of 16 to equal 4")
+	assert.Equal(t, &parser.Constant{Value: 4.0}, value, "Expected square root of 16 to equal 4")
 }
 
 func TestRootRecursion(t *testing.T) {
 	oneRoot := Root{
-		lhs: Constant{Value: 16.0},
-		rhs: Constant{Value: 2.0},
+		lhs: parser.Constant{Value: 16.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 	root := Root{
 		lhs: oneRoot,
-		rhs: Constant{Value: 2.0},
+		rhs: parser.Constant{Value: 2.0},
 	}
 
 	value, err := root.Evaluate()
@@ -256,7 +256,7 @@ func TestRootRecursion(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: 2.0}, value, "Expected root of (root of 16) to equal 2")
+	assert.Equal(t, &parser.Constant{Value: 2.0}, value, "Expected root of (root of 16) to equal 2")
 }
 
 func TestRootRandom(t *testing.T) {
@@ -267,12 +267,12 @@ func TestRootRandom(t *testing.T) {
 	result := float32(math.Pow(math.Pow(float64(value1), 1/float64(value2)), 1/float64(value3)))
 
 	oneRoot := Root{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		lhs: parser.Constant{Value: float32(value1)},
+		rhs: parser.Constant{Value: float32(value2)},
 	}
 	root := Root{
 		lhs: oneRoot,
-		rhs: Constant{Value: float32(value3)},
+		rhs: parser.Constant{Value: float32(value3)},
 	}
 
 	value, err := root.Evaluate()
@@ -280,5 +280,5 @@ func TestRootRandom(t *testing.T) {
 		t.Errorf("Got error from evaluate %s", err.Error())
 	}
 
-	assert.Equal(t, &Constant{Value: result}, value, "the result is not equal to expected value")
+	assert.Equal(t, &parser.Constant{Value: result}, value, "the result is not equal to expected value")
 }
