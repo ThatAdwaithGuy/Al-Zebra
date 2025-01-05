@@ -43,7 +43,7 @@ func handleOperation(first, second *string, op func(int, int) int) (string, erro
 	return strconv.Itoa(result), nil
 }
 
-func (tokens RPN) RPNCalc() ([]string, error) {
+func (tokens RPN) Evaluate() ([]string, error) {
 	var stack utils.Stack[string]
 	for _, token := range tokens.tokens {
 		switch token.Type {
@@ -123,7 +123,7 @@ func helperNewOperation(lhs, rhs parser.Term, ty lexer.TokenType) parser.Term {
 	}
 }
 
-func RPNConverstion(tokens []lexer.Token) RPN {
+func Converstion(tokens []lexer.Token) RPN {
 	var precedence map[lexer.TokenType]int = make(map[lexer.TokenType]int)
 	precedence[lexer.PLUS] = 2
 	precedence[lexer.MINUS] = 2

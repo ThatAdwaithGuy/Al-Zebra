@@ -32,7 +32,7 @@ func MultiplyPass(tokens []lexer.Token) []lexer.Token {
 func main() {
 	ex := "3 + 4 * 2"
 	lex := lexer.New(ex).TokenizeAll()
-	toks := rpn.RPNConverstion(lex)
+	toks := rpn.Converstion(lex)
 	toks.Debug()
 	tree := rpn.Treeify(toks)
 	fmt.Println(tree)
