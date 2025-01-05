@@ -120,7 +120,76 @@ func helperNewOperation(lhs, rhs Term, ty lexer.TokenType) Term {
 		return nil
 	}
 }
+func Conversion(tokens []lexer.Token) RPN {
+    // Initialize precedence map
+    precedence := map[lexer.TokenType]int{
+        lexer.PLUS:     2,
+        lexer.MINUS:    2,
+        lexer.MULTIPLY: 3,
+        lexer.DIVIDE:   3,
+        lexer.ROOT:     4,
+    }
 
+    var result []lexer.Token
+    var operationStack []lexer.Token
+
+    for _, token := range tokens {
+        fmt.Println(token, operationStack, result)
+
+        switch token.Type {
+        case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE:
+            for len(operationStack) > 0 {
+                top := operationStack[len(operationStack)-1]
+                if top.Type == lexer.LEFT_PAREN || precedence[top.Type] < precedence[token.Type] {
+                    break
+                }
+                result = append(result, operationStack[len(operationStack)-1])
+                operationStack = operationStack[:len(operationStack)-1]
+            }
+            operationStack = append(operationStack, token)
+
+        case lexer.ROOT:
+            for len(operationStack) > 0 {
+                top := operationStack[len(operationStack)-1]
+                if top.Type == lexer.LEFT_PAREN || precedence[top.Type] < precedence[lexer.ROOT] {
+                    break
+                }
+                result = append(result, operationStack[len(operationStack)-1])
+                operationStack = operationStack[:len(operationStack)-1]
+            }
+            operationStack = append(operationStack, token)
+
+        case lexer.LEFT_PAREN:
+            operationStack = append(operationStack, token)
+
+        case lexer.RIGHT_PAREN:
+            for len(operationStack) > 0 && operationStack[len(operationStack)-1].Type != lexer.LEFT_PAREN {
+                result = append(result, operationStack[len(operationStack)-1])
+                operationStack = operationStack[:len(operationStack)-1]
+            }
+            if len(operationStack) > 0 && operationStack[len(operationStack)-1].Type == lexer.LEFT_PAREN {
+                operationStack = operationStack[:len(operationStack)-1] // Remove LEFT_PAREN
+            }
+
+        case lexer.NUMBER, lexer.VARIABLE:
+            result = append(result, token)
+        }
+
+        fmt.Println()
+    }
+
+    // Pop remaining operators to result
+    for len(operationStack) > 0 {
+        result = append(result, operationStack[len(operationStack)-1])
+        operationStack = operationStack[:len(operationStack)-1]
+    }
+
+    return RPN{
+        tokens: result,
+    }
+}
+
+/*
 func Converstion(tokens []lexer.Token) RPN {
 	var precedence map[lexer.TokenType]int = make(map[lexer.TokenType]int)
 	precedence[lexer.PLUS] = 2
@@ -138,32 +207,8 @@ func Converstion(tokens []lexer.Token) RPN {
 		switch token.Type {
 		case lexer.PLUS, lexer.MINUS:
 			operationStack.PushBack(token)
-		case lexer.MULTIPLY, lexer.DIVIDE:
-
-			// i.e. addition or subtraction
-			if len(operationStack) == 0 {
-        fmt.Println("not here")
-				operationStack.PushBack(token)
-			} else if precedence[operationStack.PeekBack().Type] < precedence[lexer.MULTIPLY] {
-        fmt.Println("not not here")
-				operationStack.PushBack(token)
-			} else {
-        fmt.Println("here")
-				item := *operationStack.PopBack()
-				result = append(result, item)
-				operationStack.PushBack(token)
-			}
-		case lexer.ROOT:
-			// i.e. addition, subtraction, multiplication, division
-			if len(operationStack) == 0 {
-				operationStack.PushBack(token)
-			} else if precedence[operationStack.PeekBack().Type] < precedence[lexer.ROOT] {
-				operationStack.PushBack(token)
-			} else {
-				item := *operationStack.PopBack()
-				result = append(result, item)
-				operationStack.PushBack(token)
-			}
+		case lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT:
+      
 		case lexer.LEFT_PAREN:
 			operationStack.PushBack(token)
 		case lexer.RIGHT_PAREN:
@@ -186,3 +231,4 @@ func Converstion(tokens []lexer.Token) RPN {
 		tokens: result,
 	}
 }
+*/

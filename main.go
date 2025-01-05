@@ -13,7 +13,7 @@ func main() {
 	lex := lexer.New(new_ex).TokenizeAll()
 	lex = parser.MultiplyPass(lex)
 	fmt.Println(lex)
-	con := parser.Converstion(lex)
+	con := parser.Conversion(lex)
 
 	//parse, err := parser.Parse(*lex)
 	//if err != nil {

@@ -60,7 +60,7 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 		}
 	}
 	fmt.Println(lhs)
-	lhsRPN := Converstion(lhs)
+	lhsRPN := Conversion(lhs)
 	//rhsRPN := Converstion(rhs)
 	fmt.Println(lhsRPN)
 
