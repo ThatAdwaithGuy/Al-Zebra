@@ -25,7 +25,6 @@ func handleOperation(first, second *string, op func(int, int) int) (string, erro
 	if first == nil || second == nil {
 		return "", errors.New("Stack is empty while calculating RPN-equation. This means that your equation is invalid or my RPNConverstion function is bugged.")
 	}
-
 	// Extraction, Main logic
 
 	firstNumber, err := strconv.Atoi(*first)

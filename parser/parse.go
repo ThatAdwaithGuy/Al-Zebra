@@ -40,6 +40,7 @@ func (c Constant) isTerm() bool {
  
 // operations, like addition and subtraction should implement this interface
 type Operation interface {
+  Rpn() RPN
 	Lhs() Term
 	Rhs() Term
 	Evaluate() (*Constant, error)

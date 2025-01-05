@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/rpn"
 )
@@ -31,5 +33,6 @@ func main() {
 	lex := lexer.New(ex).TokenizeAll()
 	toks := rpn.RPNConverstion(lex)
 	toks.Debug()
-	//tree := parser.Treeify(toks)
+	tree := rpn.Treeify(toks)
+	fmt.Println(tree)
 }
