@@ -1,4 +1,4 @@
-package lexer 
+package lexer
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 type TokenType int
 
 const (
-	NUMBER TokenType = iota
-	PLUS // 1
-	MINUS // 2
-	MULTIPLY // 3
-	DIVIDE // 4
-	ROOT // 5
+	NUMBER   TokenType = iota
+	PLUS               // 1
+	MINUS              // 2
+	MULTIPLY           // 3
+	DIVIDE             // 4
+	ROOT               // 5
 	EQUALS
 	LEFT_PAREN
 	RIGHT_PAREN
@@ -167,4 +167,3 @@ func (l *Lexer) TokenizeAll() []Token {
 	}
 	return tokens
 }
-

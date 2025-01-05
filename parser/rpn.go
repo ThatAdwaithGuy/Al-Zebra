@@ -31,7 +31,7 @@ func handleOperation(first, second *string, op func(int, int) int) (string, erro
 	}
 
 	secondNumber, err := strconv.Atoi(*second)
-  
+
 	if err != nil {
 		return "", fmt.Errorf("This error is not meant to be seen. As the error checking is already done above. Error:\n%s", err.Error())
 	}
@@ -133,22 +133,31 @@ func Converstion(tokens []lexer.Token) RPN {
 	var result utils.Stack[lexer.Token]
 	var operationStack utils.Stack[lexer.Token]
 	for _, token := range tokens {
+		fmt.Println(token, operationStack, result)
 		//fmt.Println(operationStack, result, token)
 		switch token.Type {
 		case lexer.PLUS, lexer.MINUS:
 			operationStack.PushBack(token)
 		case lexer.MULTIPLY, lexer.DIVIDE:
+
 			// i.e. addition or subtraction
-			if precedence[*&operationStack.PeekBack().Type] < precedence[lexer.MULTIPLY] {
+			if len(operationStack) == 0 {
+        fmt.Println("not here")
+				operationStack.PushBack(token)
+			} else if precedence[operationStack.PeekBack().Type] < precedence[lexer.MULTIPLY] {
+        fmt.Println("not not here")
 				operationStack.PushBack(token)
 			} else {
+        fmt.Println("here")
 				item := *operationStack.PopBack()
 				result = append(result, item)
 				operationStack.PushBack(token)
 			}
 		case lexer.ROOT:
 			// i.e. addition, subtraction, multiplication, division
-			if precedence[*&operationStack.PeekBack().Type] < precedence[lexer.ROOT] {
+			if len(operationStack) == 0 {
+				operationStack.PushBack(token)
+			} else if precedence[operationStack.PeekBack().Type] < precedence[lexer.ROOT] {
 				operationStack.PushBack(token)
 			} else {
 				item := *operationStack.PopBack()

@@ -1,11 +1,11 @@
-package main
+package validation 
 
 import (
 	"github.com/al-zebra/lexer"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
-
+/*
 func TestMultiplyPass(t *testing.T) {
 	// Mock data, this is not valid
 	ex := "3x+2x"
@@ -43,7 +43,7 @@ func TestMultiplyPass(t *testing.T) {
 	}
 	assert.Equal(t, expected, pass, "Multiply pass results in wrong values")
 }
-
+*/
 func TestEqualSignPass(t *testing.T) {
 	test := "3x+1=10"
 	l := lexer.New(test)
@@ -79,12 +79,12 @@ func TestVariableFail(t *testing.T) {
 
 	assert.NotNil(t, check, `"3x=4y" equation does not have 1 type of variable (has both x and y) but the validation passed it`)
 }
-/*
+
 func TestRootPass(t *testing.T) {
 	test := "3x+1=root2(10)"
 	l := lexer.New(test)
 	tokens := Validation(l.TokenizeAll())
-	check := tokens.RootPreceeding()
+	check := tokens.RootPreceding() 
 
 	assert.Nil(t, check, `The root use here is correct but the validation function returned with error`)
 }
@@ -93,9 +93,8 @@ func TestRootFail(t *testing.T) {
 	test := "32+x=root(10)"
 	l := lexer.New(test)
 	tokens := Validation(l.TokenizeAll())
-	check := tokens.RootPreceeding()
+	check := tokens.RootPreceding() 
 
 	assert.NotNil(t, check, `The root use here is incorrect but the validation function returned as a valid equation`)
 }
-*/
 

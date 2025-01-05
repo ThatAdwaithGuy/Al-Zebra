@@ -1,8 +1,8 @@
 package parser
 
 import (
-  "math"
-  "errors"
+	"errors"
+	"math"
 )
 
 // Just a bunch of errors
@@ -13,7 +13,6 @@ func (e UnhandledTermError) Error() string {
 }
 
 type UnhandledError struct{}
-
 
 func (e UnhandledError) Error() string {
 	return "UNHANDLED ERROR"
@@ -33,7 +32,8 @@ type Operation interface {
 	IsTerm() bool
 }
 
-const DEPTH_LIMIT int = 100 
+const DEPTH_LIMIT int = 100
+
 // The main logic for evaluation of addition, subtraction, etc
 func evaluateHelper(a Operation, operation func(float32, float32) float32, depth int) (*Constant, error) {
 	// Just to make this perform better, I added this depth limit
@@ -41,20 +41,20 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 		return nil, DepthError{}
 	}
 	// rhs and lhs values
-	var lhsValue *float32 
-	var rhsValue *float32 
+	var lhsValue *float32
+	var rhsValue *float32
 	// Check if this a constant or not
 	lhsConstantValue, lhsOk := a.Lhs().(Constant)
 	if lhsOk {
 		lhsValue = &lhsConstantValue.Value
 	} else {
-		// It SHOULD be a operation as this function only supports term having term be as Constant or a Operation 
+		// It SHOULD be a operation as this function only supports term having term be as Constant or a Operation
 		lhsOperationValue, lhsOperationOk := a.Lhs().(Operation)
 		if !lhsOperationOk {
 			return nil, errors.New("UNHANDLED ERROR")
 		}
 
-		// the recursive part of the function 
+		// the recursive part of the function
 		lhsVal, err := evaluateHelper(lhsOperationValue, operation, depth+1)
 
 		if err != nil {
@@ -73,7 +73,7 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 			return nil, errors.New("UNHANDLED ERROR")
 
 		}
-		
+
 		rhsVal, err := evaluateHelper(rhsOperationValue, operation, depth+1)
 		if err != nil {
 			return nil, err
@@ -82,7 +82,7 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 		rhsValue = &rhsVal.Value
 	}
 
-	// Why the heck go does not have null safty. I badly want a Option type 
+	// Why the heck go does not have null safty. I badly want a Option type
 	if lhsValue != nil && rhsValue != nil {
 		return &Constant{
 			Value: operation(*lhsValue, *rhsValue),
@@ -100,10 +100,10 @@ type Addition struct {
 }
 
 func NewAddition(lhs, rhs Term) Addition {
-  return Addition{
-  	lhs: lhs,
-  	rhs: rhs,
-  }
+	return Addition{
+		lhs: lhs,
+		rhs: rhs,
+	}
 }
 
 func (a Addition) Lhs() Term {
@@ -129,10 +129,10 @@ type Subtraction struct {
 }
 
 func NewSubtraction(lhs, rhs Term) Subtraction {
-  return Subtraction{
-    lhs: lhs,
-    rhs: rhs,
-  }
+	return Subtraction{
+		lhs: lhs,
+		rhs: rhs,
+	}
 }
 
 func (a Subtraction) Lhs() Term {
@@ -158,10 +158,10 @@ type Multiplication struct {
 }
 
 func NewMultiplication(lhs, rhs Term) Multiplication {
-  return Multiplication{
-    lhs: lhs,
-    rhs: rhs,
-  }
+	return Multiplication{
+		lhs: lhs,
+		rhs: rhs,
+	}
 }
 
 func (a Multiplication) Lhs() Term {
@@ -186,11 +186,11 @@ type Division struct {
 	rhs Term
 }
 
-func NewDivision(lhs, rhs Term) Division{
-  return Division{
-    lhs: lhs,
-    rhs: rhs,
-  }
+func NewDivision(lhs, rhs Term) Division {
+	return Division{
+		lhs: lhs,
+		rhs: rhs,
+	}
 }
 
 func (a Division) Lhs() Term {
@@ -201,8 +201,8 @@ func (a Division) Rhs() Term {
 	return a.rhs
 }
 
-func (a Division) IsTerm() bool { 
-  return true
+func (a Division) IsTerm() bool {
+	return true
 }
 
 func (a Division) Evaluate() (*Constant, error) {
@@ -217,13 +217,11 @@ type Root struct {
 }
 
 func NewRoot(lhs, rhs Term) Root {
-  return Root{
-      lhs: lhs,
-      rhs: rhs,
-  }
+	return Root{
+		lhs: lhs,
+		rhs: rhs,
+	}
 }
-
-
 
 func (a Root) Lhs() Term {
 	return a.lhs

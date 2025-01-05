@@ -1,4 +1,4 @@
-package main
+package validation
 
 
 import (
@@ -7,6 +7,25 @@ import (
 )
 
 type Validation []lexer.Token
+
+func (tokens *Validation) IsValid() error {
+  onlyOne := tokens.OneTypeOfVariable()
+  if onlyOne != nil {
+    return onlyOne
+  }
+  
+  onlyEqual := tokens.OnlyOneEqual()
+  if onlyEqual != nil {
+    return onlyEqual
+  }
+
+  root := tokens.RootPreceding()
+  if root != nil {
+    return root
+  }
+
+  return nil
+}
 
 // Checks if there are more or less than one equal sign in the given equation
 func (tokens *Validation) OnlyOneEqual() error {
