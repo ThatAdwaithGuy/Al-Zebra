@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	"github.com/al-zebra/lexer"
-	"github.com/al-zebra/operations"
-	"github.com/al-zebra/rpn"
+	"github.com/al-zebra/parser"
 )
 
 func MultiplyPass(tokens []lexer.Token) []lexer.Token {
@@ -32,9 +31,9 @@ func MultiplyPass(tokens []lexer.Token) []lexer.Token {
 func main() {
 	ex := "3 + 4 * 2"
 	lex := lexer.New(ex).TokenizeAll()
-	toks := rpn.Converstion(lex)
+	toks := parser.Converstion(lex)
 	toks.Debug()
-	tree := rpn.Treeify(toks)
+	tree := parser.Treeify(toks)
 	fmt.Println(tree)
   fmt.Println(operations.Addition{})
 }

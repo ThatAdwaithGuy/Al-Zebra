@@ -1,9 +1,8 @@
-package operations
+package parser
 
 import (
   "math"
   "errors"
-	"github.com/al-zebra/parser"
 )
 
 // Just a bunch of errors
@@ -28,15 +27,15 @@ func (e DepthError) Error() string {
 
 // operations, like addition and subtraction should implement this interface
 type Operation interface {
-	Lhs() parser.Term
-	Rhs() parser.Term
-	Evaluate() (*parser.Constant, error)
+	Lhs() Term
+	Rhs() Term
+	Evaluate() (*Constant, error)
 	IsTerm() bool
 }
 
 const DEPTH_LIMIT int = 100 
 // The main logic for evaluation of addition, subtraction, etc
-func evaluateHelper(a Operation, operation func(float32, float32) float32, depth int) (*parser.Constant, error) {
+func evaluateHelper(a Operation, operation func(float32, float32) float32, depth int) (*Constant, error) {
 	// Just to make this perform better, I added this depth limit
 	if depth > DEPTH_LIMIT {
 		return nil, DepthError{}
@@ -45,7 +44,7 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 	var lhsValue *float32 
 	var rhsValue *float32 
 	// Check if this a constant or not
-	lhsConstantValue, lhsOk := a.Lhs().(parser.Constant)
+	lhsConstantValue, lhsOk := a.Lhs().(Constant)
 	if lhsOk {
 		lhsValue = &lhsConstantValue.Value
 	} else {
@@ -65,7 +64,7 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 		lhsValue = &lhsVal.Value
 	}
 	// The same logic as above but lhs is rhs now. To get more info, read the top part
-	rhsConstantValue, rhsOk := a.Rhs().(parser.Constant)
+	rhsConstantValue, rhsOk := a.Rhs().(Constant)
 	if rhsOk {
 		rhsValue = &rhsConstantValue.Value
 	} else {
@@ -85,7 +84,7 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 
 	// Why the heck go does not have null safty. I badly want a Option type 
 	if lhsValue != nil && rhsValue != nil {
-		return &parser.Constant{
+		return &Constant{
 			Value: operation(*lhsValue, *rhsValue),
 		}, nil
 	} else {
@@ -96,109 +95,109 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 // Operations
 
 type Addition struct {
-	lhs parser.Term
-	rhs parser.Term
+	lhs Term
+	rhs Term
 }
 
-func NewAddition(lhs, rhs parser.Term) Addition {
+func NewAddition(lhs, rhs Term) Addition {
   return Addition{
   	lhs: lhs,
   	rhs: rhs,
   }
 }
 
-func (a Addition) Lhs() parser.Term {
+func (a Addition) Lhs() Term {
 	return a.lhs
 }
 
-func (a Addition) Rhs() parser.Term {
+func (a Addition) Rhs() Term {
 	return a.rhs
 }
 
 func (a Addition) IsTerm() bool {
 	return true
 }
-func (a Addition) Evaluate() (*parser.Constant, error) {
+func (a Addition) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return f1 + f2
 	}, 0)
 }
 
 type Subtraction struct {
-	lhs parser.Term
-	rhs parser.Term
+	lhs Term
+	rhs Term
 }
 
-func NewSubtraction(lhs, rhs parser.Term) Subtraction {
+func NewSubtraction(lhs, rhs Term) Subtraction {
   return Subtraction{
     lhs: lhs,
     rhs: rhs,
   }
 }
 
-func (a Subtraction) Lhs() parser.Term {
+func (a Subtraction) Lhs() Term {
 	return a.lhs
 }
 
-func (a Subtraction) Rhs() parser.Term {
+func (a Subtraction) Rhs() Term {
 	return a.rhs
 }
 
 func (a Subtraction) IsTerm() bool {
 	return true
 }
-func (a Subtraction) Evaluate() (*parser.Constant, error) {
+func (a Subtraction) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return f1 - f2
 	}, 0)
 }
 
 type Multiplication struct {
-	lhs parser.Term
-	rhs parser.Term
+	lhs Term
+	rhs Term
 }
 
-func NewMultiplication(lhs, rhs parser.Term) Multiplication {
+func NewMultiplication(lhs, rhs Term) Multiplication {
   return Multiplication{
     lhs: lhs,
     rhs: rhs,
   }
 }
 
-func (a Multiplication) Lhs() parser.Term {
+func (a Multiplication) Lhs() Term {
 	return a.lhs
 }
 
-func (a Multiplication) Rhs() parser.Term {
+func (a Multiplication) Rhs() Term {
 	return a.rhs
 }
 
 func (a Multiplication) IsTerm() bool {
 	return true
 }
-func (a Multiplication) Evaluate() (*parser.Constant, error) {
+func (a Multiplication) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return f1 * f2
 	}, 0)
 }
 
 type Division struct {
-	lhs parser.Term
-	rhs parser.Term
+	lhs Term
+	rhs Term
 }
 
-func NewDivision(lhs, rhs parser.Term) Division{
+func NewDivision(lhs, rhs Term) Division{
   return Division{
     lhs: lhs,
     rhs: rhs,
   }
 }
 
-func (a Division) Lhs() parser.Term {
+func (a Division) Lhs() Term {
 	return a.lhs
 }
 
-func (a Division) Rhs() parser.Term {
+func (a Division) Rhs() Term {
 	return a.rhs
 }
 
@@ -206,18 +205,18 @@ func (a Division) IsTerm() bool {
   return true
 }
 
-func (a Division) Evaluate() (*parser.Constant, error) {
+func (a Division) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return f1 / f2
 	}, 0)
 }
 
 type Root struct {
-	lhs parser.Term
-	rhs parser.Term
+	lhs Term
+	rhs Term
 }
 
-func NewRoot(lhs, rhs parser.Term) Root {
+func NewRoot(lhs, rhs Term) Root {
   return Root{
       lhs: lhs,
       rhs: rhs,
@@ -226,11 +225,11 @@ func NewRoot(lhs, rhs parser.Term) Root {
 
 
 
-func (a Root) Lhs() parser.Term {
+func (a Root) Lhs() Term {
 	return a.lhs
 }
 
-func (a Root) Rhs() parser.Term {
+func (a Root) Rhs() Term {
 	return a.rhs
 }
 
@@ -238,7 +237,7 @@ func (a Root) IsTerm() bool {
 	return true
 }
 
-func (a Root) Evaluate() (*parser.Constant, error) {
+func (a Root) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return float32(math.Pow(float64(f1), float64(1/f2)))
 	}, 0)

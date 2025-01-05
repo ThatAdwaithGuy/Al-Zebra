@@ -1,4 +1,4 @@
-package rpn
+package parser
 
 import (
 	"errors"
@@ -7,9 +7,7 @@ import (
 	"strconv"
 
 	"github.com/al-zebra/lexer"
-	"github.com/al-zebra/parser"
 	"github.com/al-zebra/utils"
-	"github.com/al-zebra/operations"
 )
 
 type RPN struct {
@@ -101,22 +99,22 @@ func (tokens RPN) Evaluate() ([]string, error) {
 	return stack, nil
 }
 
-func helperNewOperation(lhs, rhs parser.Term, ty lexer.TokenType) parser.Term {
+func helperNewOperation(lhs, rhs Term, ty lexer.TokenType) Term {
 	switch ty {
 	case lexer.DIVIDE:
-		op := operations.NewDivision(lhs, rhs)
+		op := NewDivision(lhs, rhs)
 		return op
 	case lexer.MINUS:
-		op := operations.NewSubtraction(lhs, rhs)
+		op := NewSubtraction(lhs, rhs)
 		return op
 	case lexer.MULTIPLY:
-		op := operations.NewMultiplication(lhs, rhs)
+		op := NewMultiplication(lhs, rhs)
 		return op
 	case lexer.PLUS:
-		op := operations.NewAddition(lhs, rhs)
+		op := NewAddition(lhs, rhs)
 		return op
 	case lexer.ROOT:
-		op := operations.NewRoot(lhs, rhs)
+		op := NewRoot(lhs, rhs)
 		return op
 	default:
 		return nil
