@@ -37,35 +37,3 @@ type Constant struct {
 func (c Constant) isTerm() bool {
 	return true
 }
- 
-// operations, like addition and subtraction should implement this interface
-type Operation interface {
-  Rpn() RPN
-	Lhs() Term
-	Rhs() Term
-	Evaluate() (*Constant, error)
-	isTerm() bool
-}
-
-// Just a bunch of errors
-
-type UnhandledTermError struct{}
-
-func (e UnhandledTermError) Error() string {
-	return "Got a unhandled term (Term which is not a operation nor a constant)"
-}
-
-type UnhandledError struct{}
-
-
-func (e UnhandledError) Error() string {
-	return "UNHANDLED ERROR"
-}
-
-type DepthError struct{}
-
-func (e DepthError) Error() string {
-	return "Depth of the equation's term execed the limit"
-}
-
-

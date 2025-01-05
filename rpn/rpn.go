@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/al-zebra/lexer"
-	"github.com/al-zebra/parser"
+	"github.com/al-zebra/operations"
 	"github.com/al-zebra/utils"
 )
 
@@ -104,19 +104,19 @@ func (tokens RPN) RPNCalc() ([]string, error) {
 func helperNewOperation(lhs, rhs parser.Term, ty lexer.TokenType) parser.Term {
 	switch ty {
 	case lexer.DIVIDE:
-		op := parser.NewDivision(lhs, rhs)
+		op := operations.NewDivision(lhs, rhs)
 		return op
 	case lexer.MINUS:
-		op := parser.NewSubtraction(lhs, rhs)
+		op := operations.NewSubtraction(lhs, rhs)
 		return op
 	case lexer.MULTIPLY:
-		op := parser.NewMultiplication(lhs, rhs)
+		op := operations.NewMultiplication(lhs, rhs)
 		return op
 	case lexer.PLUS:
-		op := parser.NewAddition(lhs, rhs)
+		op := operations.NewAddition(lhs, rhs)
 		return op
 	case lexer.ROOT:
-		op := parser.NewRoot(lhs, rhs)
+		op := operations.NewRoot(lhs, rhs)
 		return op
 	default:
 		return nil
