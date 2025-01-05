@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+
 	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/validation"
 )
@@ -61,10 +62,17 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 	}
 	fmt.Println(lhs)
 	lhsRPN := Conversion(lhs)
-	//rhsRPN := Converstion(rhs)
-	fmt.Println(lhsRPN)
+	rhsRPN := Conversion(rhs)
 
-	return nil, nil
+  lhsTree := Treeify(lhsRPN)
+  rhsTree := Treeify(rhsRPN)
+
+  ast := AST{
+  	Lhs: *lhsTree,
+  	Rhs: *rhsTree,
+  }
+
+	return &ast, nil
 }
 
 // A Term can be a constant or a unary method (like addition)

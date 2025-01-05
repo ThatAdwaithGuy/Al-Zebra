@@ -80,6 +80,14 @@ func TestVariableFail(t *testing.T) {
 	assert.NotNil(t, check, `"3x=4y" equation does not have 1 type of variable (has both x and y) but the validation passed it`)
 }
 
+func TestVariablePassComplex(t *testing.T) {
+	test := "(3x/x+4)=5"
+	l := lexer.New(test)
+	tokens := Validation(l.TokenizeAll())
+	check := tokens.OneTypeOfVariable()
+
+	assert.Nil(t, check, `"(3x/x+4)=5" equation does not have 1 type of variable (has both x and y) but the validation passed it`)
+}
 func TestRootPass(t *testing.T) {
 	test := "3x+1=root2(10)"
 	l := lexer.New(test)

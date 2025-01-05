@@ -1,9 +1,11 @@
 package validation
 
-
 import (
 	"errors"
+	"fmt"
+
 	"github.com/al-zebra/lexer"
+	"github.com/al-zebra/utils"
 )
 
 type Validation []lexer.Token
@@ -46,22 +48,30 @@ func (tokens *Validation) OnlyOneEqual() error {
 	}
 }
 
+type ErrorNoVariables []lexer.Token
+
+func (e ErrorNoVariables) Error() string {
+  return fmt.Sprintf("Your equation %s has no variables", e)
+}
+
+
 // OneTypeOfVariable Checks if there are only one type of variable in the equation
 func (tokens *Validation) OneTypeOfVariable() error {
 	var variableName *string
-	variableName = nil
+  variables := utils.Filter(*tokens, func(tok lexer.Token) bool {
+    return tok.Type == lexer.VARIABLE
+  })
 
-	for _, tok := range *tokens {
-		if tok.Type == lexer.VARIABLE {
-			if variableName == nil {
-				variableName = &tok.Value
-			} else {
-				if variableName != &tok.Value {
-					return errors.New("in your equation, there are more than one type of errors. (multi-variable equations to be added in future versions)")
-				}
-			}
-		}
-	}
+  if len(variables) == 0 {
+    return ErrorNoVariables(*tokens)
+  }
+  variableName = &variables[0].Value
+  
+  for _, ele := range variables {
+    if ele.Value != *variableName {
+      return errors.New("Equation has many variable types")
+    }
+  }
 
 	return nil
 }
