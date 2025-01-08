@@ -30,6 +30,7 @@ type Operation interface {
 	Rhs() Term
 	Evaluate() (*Constant, error)
 	IsTerm() bool
+  getName() string
 }
 
 const DEPTH_LIMIT int = 100
@@ -123,6 +124,10 @@ func (a Addition) Evaluate() (*Constant, error) {
 	}, 0)
 }
 
+func (a Addition) getName() string {
+  return "+"
+}
+
 type Subtraction struct {
 	lhs Term
 	rhs Term
@@ -146,10 +151,15 @@ func (a Subtraction) Rhs() Term {
 func (a Subtraction) IsTerm() bool {
 	return true
 }
+
 func (a Subtraction) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return f1 - f2
 	}, 0)
+}
+
+func (a Subtraction) getName() string {
+  return "-"
 }
 
 type Multiplication struct {
@@ -175,10 +185,15 @@ func (a Multiplication) Rhs() Term {
 func (a Multiplication) IsTerm() bool {
 	return true
 }
+
 func (a Multiplication) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return f1 * f2
 	}, 0)
+}
+
+func (a Multiplication) getName() string {
+  return "*"
 }
 
 type Division struct {
@@ -211,6 +226,10 @@ func (a Division) Evaluate() (*Constant, error) {
 	}, 0)
 }
 
+func (a Division) getName() string {
+  return "*"
+}
+
 type Root struct {
 	lhs Term
 	rhs Term
@@ -239,4 +258,8 @@ func (a Root) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return float32(math.Pow(float64(f1), float64(1/f2)))
 	}, 0)
+}
+
+func (a Root) getName() string {
+  return "root"
 }

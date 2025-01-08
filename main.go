@@ -14,6 +14,5 @@ func main() {
   if err != nil {
     fmt.Println("ERROR: ", err.Error())
   }
-  fmt.Println(par)
-  
+  par.Debug()  
 }

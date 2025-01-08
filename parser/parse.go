@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/validation"
@@ -32,6 +33,27 @@ func MultiplyPass(tokens []lexer.Token) []lexer.Token {
 type AST struct {
 	Lhs Term
 	Rhs Term
+}
+
+func helperDebug(term Term, level int) {
+  if term == nil {
+    return
+  }
+  
+  indent := strings.Repeat(" ", level)
+  fmt.Printf("%s%s\n", indent, term.getName())
+  if op, isOp := term.(Operation); isOp {
+    helperDebug(op.Lhs(), level + 1)
+    helperDebug(op.Rhs(), level + 1)
+  }
+}
+
+func (ast *AST) Debug() {
+  fmt.Println("Lhs")
+  helperDebug(ast.Lhs, 0)
+  fmt.Println("")
+  fmt.Println("Rhs")
+  helperDebug(ast.Rhs, 0)
 }
 
 func Parse(lex lexer.Lexer) (*AST, error) {
@@ -78,6 +100,7 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 // A Term can be a constant or a unary method (like addition)
 type Term interface {
 	IsTerm() bool
+  getName() string
 }
 
 type Variable struct {
@@ -88,6 +111,10 @@ func (v Variable) IsTerm() bool {
 	return true
 }
 
+func (v Variable) getName() string {
+  return fmt.Sprintf("%s", v.Name)
+}
+
 // A constant number. like 1, 2, 1.2, 1.5
 type Constant struct {
 	Value float32
@@ -95,4 +122,8 @@ type Constant struct {
 
 func (c Constant) IsTerm() bool {
 	return true
+}
+
+func (c Constant) getName() string {
+  return fmt.Sprintf("%f", c.Value)
 }

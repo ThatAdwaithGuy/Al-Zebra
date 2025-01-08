@@ -5,12 +5,50 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/al-zebra/lexer"
 	"github.com/stretchr/testify/assert"
 )
 
 // TODO: Make this test more concise and less verbose
 // Disclosure: The random tests will sometimes fail as of floating point inaccuracy
 
+func TestMultiplyPass(t *testing.T) {
+	// Mock data, this is not valid
+	ex := "3x+2x"
+	tokens := lexer.New(ex).TokenizeAll()
+  pass := MultiplyPass(tokens)
+	expected := []lexer.Token{
+		{
+			Type:  lexer.NUMBER,
+			Value: "3",
+		},
+		{
+			Type: lexer.MULTIPLY,
+			Value: "",
+		},
+		{
+			Type: lexer.VARIABLE,
+			Value: "x",
+		},
+		{
+			Type: lexer.PLUS,
+			Value: "",
+		},
+		{
+			Type: lexer.NUMBER,
+			Value: "2",
+		},
+		{
+			Type: lexer.MULTIPLY,
+			Value: "",
+		},
+		{
+			Type: lexer.VARIABLE,
+			Value: "x",
+		},
+	}
+	assert.Equal(t, expected, pass, "Multiply pass results in wrong values")
+}
 func TestAdditionNoRecursion(t *testing.T) {
 	addition := Addition{
 		lhs: Constant{Value: 1.0},
