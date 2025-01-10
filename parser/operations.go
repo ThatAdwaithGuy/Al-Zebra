@@ -298,5 +298,5 @@ func (a Exponentiation) Evaluate() (*Constant, error) {
 }
 
 func (a Exponentiation) getName() string {
-  return "exp"
+  return "^"
 }

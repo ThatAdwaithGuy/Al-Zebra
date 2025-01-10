@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/al-zebra/lexer"
@@ -47,10 +46,10 @@ func TestParseSimple(t *testing.T) {
 func TestParseComplex(t *testing.T) {
 	ex := "3x/4 = 6"
 	lex := lexer.New(ex)
-	par, err := Parse(*lex)
+	_, err := Parse(*lex)
 	if err != nil {
 		t.Error(err.Error())
 	}
-  fmt.Println("This debug????")
-  par.Debug()
+  //fmt.Println("This debug????")
+  //par.Debug()
 }

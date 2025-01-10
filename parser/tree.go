@@ -23,6 +23,9 @@ func treeifyHelper(ty lexer.TokenType, lhs, rhs Term) Term {
 	case lexer.ROOT:
 		t := NewRoot(lhs, rhs)
 		return t
+	case lexer.EXPONENTIATION:
+		t := NewExponentiation(lhs, rhs)
+		return t
 	default:
 		return nil
 	}
@@ -32,7 +35,7 @@ func Treeify(tokens RPN) *Term {
 	var stack utils.Stack[Term]
 	for _, tok := range tokens.tokens {
 		switch tok.Type {
-		case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT:
+    case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT, lexer.EXPONENTIATION:
 			t := treeifyHelper(tok.Type, *stack.PopBack(), *stack.PopBack())
 			stack.PushBack(t)
 		case lexer.NUMBER:
