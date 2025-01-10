@@ -15,10 +15,11 @@ const (
 	MULTIPLY           // 3
 	DIVIDE             // 4
 	ROOT               // 5
+  EXPONENTIATION
 	EQUALS
 	LEFT_PAREN
 	RIGHT_PAREN
-	VARIABLE // New token type for variables
+	VARIABLE 
 	EOF
 )
 
@@ -31,10 +32,11 @@ func (t TokenType) String() string {
 		"MULTIPLY",
 		"DIVIDE",
 		"ROOT",
+    "EXPONENTIATION",
 		"EQUALS",
 		"LEFT_PAREN",
 		"RIGHT_PAREN",
-		"VARIABLE", // String representation for VARIABLE
+		"VARIABLE", 
 		"EOF",
 	}[t]
 }
@@ -125,6 +127,8 @@ func (l *Lexer) NextToken() Token {
 		tok = Token{Type: MULTIPLY}
 	case '/':
 		tok = Token{Type: DIVIDE}
+	case '^':
+		tok = Token{Type: EXPONENTIATION}
 	case '=':
 		tok = Token{Type: EQUALS}
 	case '(':

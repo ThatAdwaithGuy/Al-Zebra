@@ -45,11 +45,12 @@ func TestParseSimple(t *testing.T) {
 }
 
 func TestParseComplex(t *testing.T) {
-	ex := "(3x)/(x+4) = 5"
+	ex := "3x/4 = 6"
 	lex := lexer.New(ex)
 	par, err := Parse(*lex)
 	if err != nil {
 		t.Error(err.Error())
 	}
-	fmt.Println(par)
+  fmt.Println("This debug????")
+  par.Debug()
 }

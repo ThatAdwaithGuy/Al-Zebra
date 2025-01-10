@@ -82,7 +82,6 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 			lhs = append(lhs, ele)
 		}
 	}
-	fmt.Println(lhs)
 	lhsRPN := Conversion(lhs)
 	rhsRPN := Conversion(rhs)
 

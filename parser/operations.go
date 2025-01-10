@@ -227,7 +227,7 @@ func (a Division) Evaluate() (*Constant, error) {
 }
 
 func (a Division) getName() string {
-  return "*"
+  return "/"
 }
 
 type Root struct {
@@ -262,4 +262,41 @@ func (a Root) Evaluate() (*Constant, error) {
 
 func (a Root) getName() string {
   return "root"
+}
+
+type Exponentiation struct {
+	lhs Term
+	rhs Term
+}
+
+func NewExponentiation(lhs, rhs Term) Exponentiation {
+	return Exponentiation{
+		lhs: lhs,
+		rhs: rhs,
+	}
+}
+
+func (a Exponentiation) Lhs() Term {
+	return a.lhs
+}
+
+func (a Exponentiation) Rhs() Term {
+	return a.rhs
+}
+
+func (a Exponentiation) IsTerm() bool {
+	return true
+}
+
+func (a Exponentiation) Evaluate() (*Constant, error) {
+	return evaluateHelper(a, func(f1, f2 float32) float32 {
+    return 	float32(math.Pow(
+    	float64(f1),
+    	float64(f2),
+    ))
+  }, 0)
+}
+
+func (a Exponentiation) getName() string {
+  return "exp"
 }

@@ -83,6 +83,15 @@ func (tokens RPN) Evaluate() ([]string, error) {
 			stack.PushBack(res)
 		case lexer.ROOT:
 			function := func(f, s int) int {
+				return int(math.Pow(float64(f), float64(1/s)))
+			}
+			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
+			if err != nil {
+				return []string{}, err
+			}
+			stack.PushBack(res)
+		case lexer.EXPONENTIATION:
+			function := func(f, s int) int {
 				return int(math.Pow(float64(f), float64(s)))
 			}
 			res, err := handleOperation(stack.PopBack(), stack.PopBack(), function)
@@ -116,6 +125,9 @@ func helperNewOperation(lhs, rhs Term, ty lexer.TokenType) Term {
 	case lexer.ROOT:
 		op := NewRoot(lhs, rhs)
 		return op
+	case lexer.EXPONENTIATION:
+		op := NewExponentiation(lhs, rhs)
+		return op
 	default:
 		return nil
 	}
@@ -128,13 +140,13 @@ func Conversion(tokens []lexer.Token) RPN {
         lexer.MULTIPLY: 3,
         lexer.DIVIDE:   3,
         lexer.ROOT:     4,
+        lexer.EXPONENTIATION:     4,
     }
 
     var result []lexer.Token
     var operationStack []lexer.Token
 
     for _, token := range tokens {
-        fmt.Println(token, operationStack, result)
 
         switch token.Type {
         case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE:
@@ -148,7 +160,7 @@ func Conversion(tokens []lexer.Token) RPN {
             }
             operationStack = append(operationStack, token)
 
-        case lexer.ROOT:
+        case lexer.ROOT, lexer.EXPONENTIATION:
             for len(operationStack) > 0 {
                 top := operationStack[len(operationStack)-1]
                 if top.Type == lexer.LEFT_PAREN || precedence[top.Type] < precedence[lexer.ROOT] {
@@ -174,8 +186,6 @@ func Conversion(tokens []lexer.Token) RPN {
         case lexer.NUMBER, lexer.VARIABLE:
             result = append(result, token)
         }
-
-        fmt.Println()
     }
 
     // Pop remaining operators to result

@@ -1,7 +1,5 @@
 package utils
 
-import "fmt"
-
 type Stack[T any] []T
 
 func (s *Stack[T]) PushBack(item T) {
@@ -47,7 +45,6 @@ func (s *Stack[T]) PopBack() *T {
 }
 
 func (s *Stack[T]) PopFront() *T {
-	fmt.Println("my stack", s)
 	length := len(*s)
 	if length == 0 {
 		return nil

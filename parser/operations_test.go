@@ -319,3 +319,57 @@ func TestRootRandom(t *testing.T) {
 
 	assert.Equal(t, &Constant{Value: result}, value, "the result is not equal to expected value")
 }
+
+func TestExponentiationNoRecursion(t *testing.T) {
+	root := Exponentiation{
+		lhs: Constant{Value: 16.0},
+		rhs: Constant{Value: 2.0},
+	}
+	value, err := root.Evaluate()
+	if err != nil {
+		t.Errorf("Got error from evaluate %s", err.Error())
+	}
+	assert.Equal(t, &Constant{Value: 256.0}, value, "Expected square root of 16 to equal 4")
+}
+
+func TestExponentiationRecursion(t *testing.T) {
+	oneExponentiation := Exponentiation{
+		lhs: Constant{Value: 4.0},
+		rhs: Constant{Value: 2.0},
+	}
+	root := Exponentiation{
+		lhs: oneExponentiation,
+		rhs: Constant{Value: 2.0},
+	}
+
+	value, err := root.Evaluate()
+	if err != nil {
+		t.Errorf("Got error from evaluate %s", err.Error())
+	}
+
+	assert.Equal(t, &Constant{Value: 256.0}, value, "Expected root of (root of 16) to equal 2")
+}
+
+func TestExponentiationRandom(t *testing.T) {
+	value1 := rand.Intn(100)
+	value2 := rand.Intn(5) + 1 // Keep root index reasonable and non-zero
+	value3 := rand.Intn(5) + 1 // Keep root index reasonable and non-zero
+
+	result := float32(math.Pow(math.Pow(float64(value1), float64(value2)), float64(value3)))
+
+	oneExponentiation := Exponentiation{
+		lhs: Constant{Value: float32(value1)},
+		rhs: Constant{Value: float32(value2)},
+	}
+	root := Exponentiation{
+		lhs: oneExponentiation,
+		rhs: Constant{Value: float32(value3)},
+	}
+
+	value, err := root.Evaluate()
+	if err != nil {
+		t.Errorf("Got error from evaluate %s", err.Error())
+	}
+
+	assert.Equal(t, &Constant{Value: result}, value, "the result is not equal to expected value")
+}
