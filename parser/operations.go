@@ -26,8 +26,8 @@ func (e DepthError) Error() string {
 
 // operations, like addition and subtraction should implement this interface
 type Operation interface {
-	Lhs() Term
-	Rhs() Term
+	Lhs() *Term
+	Rhs() *Term
 	Evaluate() (*Constant, error)
 	IsTerm() bool
   getName() string
@@ -45,12 +45,12 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 	var lhsValue *float32
 	var rhsValue *float32
 	// Check if this a constant or not
-	lhsConstantValue, lhsOk := a.Lhs().(Constant)
+	lhsConstantValue, lhsOk := (*a.Lhs()).(Constant)
 	if lhsOk {
 		lhsValue = &lhsConstantValue.Value
 	} else {
 		// It SHOULD be a operation as this function only supports term having term be as Constant or a Operation
-		lhsOperationValue, lhsOperationOk := a.Lhs().(Operation)
+		lhsOperationValue, lhsOperationOk := (*a.Lhs()).(Operation)
 		if !lhsOperationOk {
 			return nil, errors.New("UNHANDLED ERROR")
 		}
@@ -65,11 +65,11 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 		lhsValue = &lhsVal.Value
 	}
 	// The same logic as above but lhs is rhs now. To get more info, read the top part
-	rhsConstantValue, rhsOk := a.Rhs().(Constant)
+	rhsConstantValue, rhsOk := (*a.Rhs()).(Constant)
 	if rhsOk {
 		rhsValue = &rhsConstantValue.Value
 	} else {
-		rhsOperationValue, rhsOperationOk := a.Lhs().(Operation)
+		rhsOperationValue, rhsOperationOk := (*a.Lhs()).(Operation)
 		if !rhsOperationOk {
 			return nil, errors.New("UNHANDLED ERROR")
 
@@ -83,7 +83,7 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 		rhsValue = &rhsVal.Value
 	}
 
-	// Why the heck go does not have null safty. I badly want a Option type
+	// Why the heck go does not have PROPER null safty. I badly want a Option type
 	if lhsValue != nil && rhsValue != nil {
 		return &Constant{
 			Value: operation(*lhsValue, *rhsValue),
@@ -107,12 +107,12 @@ func NewAddition(lhs, rhs Term) Addition {
 	}
 }
 
-func (a Addition) Lhs() Term {
-	return a.lhs
+func (a Addition) Lhs() *Term {
+	return &a.lhs
 }
 
-func (a Addition) Rhs() Term {
-	return a.rhs
+func (a Addition) Rhs() *Term {
+	return &a.rhs
 }
 
 func (a Addition) IsTerm() bool {
@@ -140,12 +140,12 @@ func NewSubtraction(lhs, rhs Term) Subtraction {
 	}
 }
 
-func (a Subtraction) Lhs() Term {
-	return a.lhs
+func (a Subtraction) Lhs() *Term {
+	return &a.lhs
 }
 
-func (a Subtraction) Rhs() Term {
-	return a.rhs
+func (a Subtraction) Rhs() *Term {
+	return &a.rhs
 }
 
 func (a Subtraction) IsTerm() bool {
@@ -174,12 +174,12 @@ func NewMultiplication(lhs, rhs Term) Multiplication {
 	}
 }
 
-func (a Multiplication) Lhs() Term {
-	return a.lhs
+func (a Multiplication) Lhs() *Term {
+	return &a.lhs
 }
 
-func (a Multiplication) Rhs() Term {
-	return a.rhs
+func (a Multiplication) Rhs() *Term {
+	return &a.rhs
 }
 
 func (a Multiplication) IsTerm() bool {
@@ -208,12 +208,12 @@ func NewDivision(lhs, rhs Term) Division {
 	}
 }
 
-func (a Division) Lhs() Term {
-	return a.lhs
+func (a Division) Lhs() *Term {
+	return &a.lhs
 }
 
-func (a Division) Rhs() Term {
-	return a.rhs
+func (a Division) Rhs() *Term {
+	return &a.rhs
 }
 
 func (a Division) IsTerm() bool {
@@ -242,12 +242,12 @@ func NewRoot(lhs, rhs Term) Root {
 	}
 }
 
-func (a Root) Lhs() Term {
-	return a.lhs
+func (a Root) Lhs() *Term {
+	return &a.lhs
 }
 
-func (a Root) Rhs() Term {
-	return a.rhs
+func (a Root) Rhs() *Term {
+	return &a.rhs
 }
 
 func (a Root) IsTerm() bool {
@@ -276,12 +276,12 @@ func NewExponentiation(lhs, rhs Term) Exponentiation {
 	}
 }
 
-func (a Exponentiation) Lhs() Term {
-	return a.lhs
+func (a Exponentiation) Lhs() *Term {
+	return &a.lhs
 }
 
-func (a Exponentiation) Rhs() Term {
-	return a.rhs
+func (a Exponentiation) Rhs() *Term {
+	return &a.rhs
 }
 
 func (a Exponentiation) IsTerm() bool {

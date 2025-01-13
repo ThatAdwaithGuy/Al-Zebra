@@ -1,5 +1,14 @@
 package utils
 
+func Any(slice []bool) bool {
+  for _, ele := range slice {
+    if !ele {
+      return false
+    }
+  }
+  return true
+}
+
 func Map[T, R any](slice []T, predicate func(T) R) []R {
   var result []R
   for _, ele := range slice {

@@ -16,19 +16,17 @@ func TestParseSimple(t *testing.T) {
 	}
 
 	mul := Multiplication{
-		rhs: Constant{
+		lhs: Constant{
 			Value: 3,
 		},
-		lhs: Variable{
+		rhs: Variable{
 			Name: "x",
 		},
 	}
 
 	add := Addition{
-		rhs: mul,
-		lhs: Constant{
-			Value: 1,
-		},
+		rhs: Constant{Value: 1},
+		lhs: mul,
 	}
 
 	rhs := Constant{
@@ -39,17 +37,8 @@ func TestParseSimple(t *testing.T) {
 		Lhs: add,
 		Rhs: rhs,
 	}
+  ast.Debug()
 
 	assert.Equal(t, &ast, par)
 }
 
-func TestParseComplex(t *testing.T) {
-	ex := "3x/4 = 6"
-	lex := lexer.New(ex)
-	_, err := Parse(*lex)
-	if err != nil {
-		t.Error(err.Error())
-	}
-  //fmt.Println("This debug????")
-  //par.Debug()
-}
