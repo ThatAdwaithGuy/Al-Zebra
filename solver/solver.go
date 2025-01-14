@@ -1,5 +1,4 @@
 package solver
-
 import (
 	//	"errors"
 

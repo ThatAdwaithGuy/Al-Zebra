@@ -145,11 +145,11 @@ type Addition struct {
 	rhs Term
 }
 
-func (a Addition) Lhs() *Term {
+func (a *Addition) Lhs() *Term {
 	return &a.lhs
 }
 
-func (a Addition) Rhs() *Term {
+func (a *Addition) Rhs() *Term {
 	return &a.rhs
 }
 
