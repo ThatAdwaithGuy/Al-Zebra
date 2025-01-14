@@ -84,10 +84,9 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 			lhs = append(lhs, ele)
 		}
 	}
+
 	lhsRPN := Conversion(lhs)
 	rhsRPN := Conversion(rhs)
-	fmt.Println(lhsRPN.tokens)
-	fmt.Println(rhsRPN.tokens)
 
 	lhsTree := Treeify(lhsRPN)
 	rhsTree := Treeify(rhsRPN)
@@ -96,8 +95,6 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 		Lhs: *lhsTree,
 		Rhs: *rhsTree,
 	}
-
-  ast.Debug()
 
 	return &ast, nil
 }

@@ -11,17 +11,48 @@ import (
 type UnhandledTermError struct{}
 
 // Some helper function
+
 // Returns nil if tt is not a operation
 func OperationBuilder(tt lexer.TokenType, lhs, rhs Term) Term {
-  switch tt {
-  case lexer.DIVIDE:
-	case lexer.EXPONENTIATION:
-	case lexer.MINUS:
-	case lexer.MULTIPLY:
+	switch tt {
 	case lexer.PLUS:
+		ret := Addition{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return ret
+	case lexer.MINUS:
+		ret := Subtraction{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return ret
+	case lexer.MULTIPLY:
+		ret := Multiplication{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return ret
+	case lexer.DIVIDE:
+		ret := Division{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return ret
+	case lexer.EXPONENTIATION:
+		ret := Exponentiation{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return ret
 	case lexer.ROOT:
+		ret := Root{
+			lhs: lhs,
+			rhs: rhs,
+		}
+		return ret
 	}
-  return nil
+	return nil
 }
 
 func (e UnhandledTermError) Error() string {
@@ -73,7 +104,6 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 
 		// the recursive part of the function
 		lhsVal, err := evaluateHelper(lhsOperationValue, operation, depth+1)
-
 		if err != nil {
 			return nil, err
 		}
@@ -88,7 +118,6 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 		rhsOperationValue, rhsOperationOk := (*a.Rhs()).(Operation)
 		if !rhsOperationOk {
 			return nil, errors.New("UNHANDLED ERROR")
-
 		}
 
 		rhsVal, err := evaluateHelper(rhsOperationValue, operation, depth+1)
@@ -116,7 +145,6 @@ type Addition struct {
 	rhs Term
 }
 
-
 func (a Addition) Lhs() *Term {
 	return &a.lhs
 }
@@ -128,6 +156,7 @@ func (a Addition) Rhs() *Term {
 func (a Addition) IsTerm() bool {
 	return true
 }
+
 func (a Addition) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
 		return f1 + f2
@@ -142,7 +171,6 @@ type Subtraction struct {
 	lhs Term
 	rhs Term
 }
-
 
 func (a Subtraction) Lhs() *Term {
 	return &a.lhs
@@ -171,7 +199,6 @@ type Multiplication struct {
 	rhs Term
 }
 
-
 func (a Multiplication) Lhs() *Term {
 	return &a.lhs
 }
@@ -198,7 +225,6 @@ type Division struct {
 	lhs Term
 	rhs Term
 }
-
 
 func (a Division) Lhs() *Term {
 	return &a.lhs
@@ -227,7 +253,6 @@ type Root struct {
 	rhs Term
 }
 
-
 func (a Root) Lhs() *Term {
 	return &a.lhs
 }
@@ -254,7 +279,6 @@ type Exponentiation struct {
 	lhs Term
 	rhs Term
 }
-
 
 func (a Exponentiation) Lhs() *Term {
 	return &a.lhs
