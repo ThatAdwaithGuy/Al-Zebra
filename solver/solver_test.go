@@ -10,31 +10,35 @@ import (
 
 func TestCarry(t *testing.T) {
 	ex := "3x+1=10"
-	lex := lexer.New(ex) 
-  par, err := parser.Parse(*lex)
-  if err != nil {
-    t.Fatalf("parsing raised a error %s", err.Error())
-  }
-  car, err := CarryOperation(par)
-  if err != nil {
-    t.Fatalf("carry function raised a error %s", err.Error())
-  }
-  // TODO: 3x and 1 terms are reversed 
-  lhs := parser.Constant{
-  	Value: 1,
-  }
+	lex := lexer.New(ex)
+	par, err := parser.Parse(*lex)
+	if err != nil {
+		t.Fatalf("parsing raised a error %s", err.Error())
+	}
+	car, err := CarryOperation(par)
+	if err != nil {
+		t.Fatalf("carry function raised a error %s", err.Error())
+	}
+	// TODO: 3x and 1 terms are reversed
+	lhs := parser.Constant{
+		Value: 1,
+	}
+	var threex parser.Multiplication
+	*threex.Lhs() = parser.Variable{
+		Name: "x",
+	}
+	*threex.Rhs() = parser.Constant{
+		Value: 3,
+	}
 
-  threex := parser.NewMultiplication(parser.Variable{
-  	Name: "x",
-  }, parser.Constant{
-  	Value: 3,
-  })
-  rhs := parser.NewSubtraction(parser.Constant{Value: 10}, threex)
-  ast := parser.AST{
-  	Lhs: lhs,
-  	Rhs: rhs,
-  }
+	var rhs parser.Subtraction
+	*threex.Lhs() = parser.Constant{Value: 10}
+	*threex.Rhs() = threex
 
-  assert.Equal(t, ast, car)
+	ast := parser.AST{
+		Lhs: lhs,
+		Rhs: rhs,
+	}
+
+	assert.Equal(t, ast, car)
 }
-

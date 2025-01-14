@@ -3,10 +3,26 @@ package parser
 import (
 	"errors"
 	"math"
+
+	"github.com/al-zebra/lexer"
 )
 
 // Just a bunch of errors
 type UnhandledTermError struct{}
+
+// Some helper function
+// Returns nil if tt is not a operation
+func OperationBuilder(tt lexer.TokenType, lhs, rhs Term) Term {
+  switch tt {
+  case lexer.DIVIDE:
+	case lexer.EXPONENTIATION:
+	case lexer.MINUS:
+	case lexer.MULTIPLY:
+	case lexer.PLUS:
+	case lexer.ROOT:
+	}
+  return nil
+}
 
 func (e UnhandledTermError) Error() string {
 	return "Got a unhandled term (Term which is not a operation nor a constant)"
@@ -30,7 +46,7 @@ type Operation interface {
 	Rhs() *Term
 	Evaluate() (*Constant, error)
 	IsTerm() bool
-  getName() string
+	getName() string
 }
 
 const DEPTH_LIMIT int = 100
@@ -69,7 +85,7 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 	if rhsOk {
 		rhsValue = &rhsConstantValue.Value
 	} else {
-		rhsOperationValue, rhsOperationOk := (*a.Lhs()).(Operation)
+		rhsOperationValue, rhsOperationOk := (*a.Rhs()).(Operation)
 		if !rhsOperationOk {
 			return nil, errors.New("UNHANDLED ERROR")
 
@@ -100,12 +116,6 @@ type Addition struct {
 	rhs Term
 }
 
-func NewAddition(lhs, rhs Term) Addition {
-	return Addition{
-		lhs: lhs,
-		rhs: rhs,
-	}
-}
 
 func (a Addition) Lhs() *Term {
 	return &a.lhs
@@ -125,7 +135,7 @@ func (a Addition) Evaluate() (*Constant, error) {
 }
 
 func (a Addition) getName() string {
-  return "+"
+	return "+"
 }
 
 type Subtraction struct {
@@ -133,12 +143,6 @@ type Subtraction struct {
 	rhs Term
 }
 
-func NewSubtraction(lhs, rhs Term) Subtraction {
-	return Subtraction{
-		lhs: lhs,
-		rhs: rhs,
-	}
-}
 
 func (a Subtraction) Lhs() *Term {
 	return &a.lhs
@@ -159,7 +163,7 @@ func (a Subtraction) Evaluate() (*Constant, error) {
 }
 
 func (a Subtraction) getName() string {
-  return "-"
+	return "-"
 }
 
 type Multiplication struct {
@@ -167,12 +171,6 @@ type Multiplication struct {
 	rhs Term
 }
 
-func NewMultiplication(lhs, rhs Term) Multiplication {
-	return Multiplication{
-		lhs: lhs,
-		rhs: rhs,
-	}
-}
 
 func (a Multiplication) Lhs() *Term {
 	return &a.lhs
@@ -193,7 +191,7 @@ func (a Multiplication) Evaluate() (*Constant, error) {
 }
 
 func (a Multiplication) getName() string {
-  return "*"
+	return "*"
 }
 
 type Division struct {
@@ -201,12 +199,6 @@ type Division struct {
 	rhs Term
 }
 
-func NewDivision(lhs, rhs Term) Division {
-	return Division{
-		lhs: lhs,
-		rhs: rhs,
-	}
-}
 
 func (a Division) Lhs() *Term {
 	return &a.lhs
@@ -227,7 +219,7 @@ func (a Division) Evaluate() (*Constant, error) {
 }
 
 func (a Division) getName() string {
-  return "/"
+	return "/"
 }
 
 type Root struct {
@@ -235,12 +227,6 @@ type Root struct {
 	rhs Term
 }
 
-func NewRoot(lhs, rhs Term) Root {
-	return Root{
-		lhs: lhs,
-		rhs: rhs,
-	}
-}
 
 func (a Root) Lhs() *Term {
 	return &a.lhs
@@ -261,7 +247,7 @@ func (a Root) Evaluate() (*Constant, error) {
 }
 
 func (a Root) getName() string {
-  return "root"
+	return "root"
 }
 
 type Exponentiation struct {
@@ -269,12 +255,6 @@ type Exponentiation struct {
 	rhs Term
 }
 
-func NewExponentiation(lhs, rhs Term) Exponentiation {
-	return Exponentiation{
-		lhs: lhs,
-		rhs: rhs,
-	}
-}
 
 func (a Exponentiation) Lhs() *Term {
 	return &a.lhs
@@ -290,13 +270,13 @@ func (a Exponentiation) IsTerm() bool {
 
 func (a Exponentiation) Evaluate() (*Constant, error) {
 	return evaluateHelper(a, func(f1, f2 float32) float32 {
-    return 	float32(math.Pow(
-    	float64(f1),
-    	float64(f2),
-    ))
-  }, 0)
+		return float32(math.Pow(
+			float64(f1),
+			float64(f2),
+		))
+	}, 0)
 }
 
 func (a Exponentiation) getName() string {
-  return "^"
+	return "^"
 }

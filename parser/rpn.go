@@ -108,30 +108,6 @@ func (tokens RPN) Evaluate() ([]string, error) {
 	return stack, nil
 }
 
-func helperNewOperation(lhs, rhs Term, ty lexer.TokenType) Term {
-	switch ty {
-	case lexer.DIVIDE:
-		op := NewDivision(lhs, rhs)
-		return op
-	case lexer.MINUS:
-		op := NewSubtraction(lhs, rhs)
-		return op
-	case lexer.MULTIPLY:
-		op := NewMultiplication(lhs, rhs)
-		return op
-	case lexer.PLUS:
-		op := NewAddition(lhs, rhs)
-		return op
-	case lexer.ROOT:
-		op := NewRoot(lhs, rhs)
-		return op
-	case lexer.EXPONENTIATION:
-		op := NewExponentiation(lhs, rhs)
-		return op
-	default:
-		return nil
-	}
-}
 func Conversion(tokens []lexer.Token) RPN {
     // Initialize precedence map
     precedence := map[lexer.TokenType]int{

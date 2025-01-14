@@ -16,45 +16,57 @@ func createOpposite(op parser.Operation, lhs, rhs parser.Term) parser.Operation 
 	_, isExp := op.(parser.Exponentiation)
 	_, isRoo := op.(parser.Root)
 
-	check := false
-	slice := []bool{isAdd, isSub, isMul, isDiv, isExp, isRoo}
-	for _, ele := range slice {
-		if check && ele {
-			return nil
-		} else if !check && ele {
-			check = true
-		}
-	}
-
+	// Bozo time
 	if isAdd {
-		return parser.NewSubtraction(lhs, rhs)
+		var ret parser.Subtraction
+		*ret.Lhs() = lhs
+		*ret.Rhs() = rhs
+		return ret
 	} else if isSub {
-		return parser.NewAddition(lhs, rhs)
+		var ret parser.Addition
+		*ret.Lhs() = lhs
+		*ret.Rhs() = rhs
+		return ret
 	} else if isMul {
-		return parser.NewDivision(lhs, rhs)
+		var ret parser.Division
+		*ret.Lhs() = lhs
+		*ret.Rhs() = rhs
+		return ret
 	} else if isDiv {
-		return parser.NewMultiplication(lhs, rhs)
+		var ret parser.Multiplication
+		*ret.Lhs() = lhs
+		*ret.Rhs() = rhs
+		return ret
 	} else if isExp {
-		return parser.NewRoot(lhs, rhs)
+		var ret parser.Root
+		*ret.Lhs() = lhs
+		*ret.Rhs() = rhs
+		return ret
 	} else if isRoo {
-		return parser.NewExponentiation(lhs, rhs)
+		var ret parser.Exponentiation
+		*ret.Lhs() = lhs
+		*ret.Rhs() = rhs
+		return ret
 	} else {
 		return nil
 	}
 }
 
 func CarryOperation(ast *parser.AST) (parser.AST, error) {
-  lhsOp, isLhsOp := ast.Lhs.(parser.Operation)
-  if !isLhsOp {
-    return parser.AST{}, errors.New("Lhs is constant and cannot be carried")
+	lhsOp, isLhsOp := ast.Lhs.(parser.Operation)
+	if !isLhsOp {
+		return parser.AST{}, errors.New("Lhs is constant and cannot be carried")
+	}
+	getTop := lhsOp.Rhs()
+	newRhs := createOpposite(lhsOp, ast.Rhs, *getTop)
+  if newRhs == nil {
+    return parser.AST{}, errors.New("Unhandled Error at solver.CarryOperation")
   }
-  getTop := lhsOp.Rhs()
-  newRhs := createOpposite(lhsOp, ast.Rhs, *getTop)
-  newLhs := *lhsOp.Lhs()
-  retAST := parser.AST{
-  	Lhs: newLhs,
-  	Rhs: newRhs,
-  }
-  
-  return retAST, nil
+	newLhs := *lhsOp.Lhs()
+	retAST := parser.AST{
+		Lhs: newLhs,
+		Rhs: newRhs,
+	}
+
+	return retAST, nil
 }

@@ -42,3 +42,38 @@ func TestParseSimple(t *testing.T) {
 	assert.Equal(t, &ast, par)
 }
 
+
+func TestParseSimple2(t *testing.T) {
+	ex := "3x+1=root2(10)"
+	lex := lexer.New(ex)
+	par, err := Parse(*lex)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	mul := Multiplication{
+		lhs: Constant{
+			Value: 3,
+		},
+		rhs: Variable{
+			Name: "x",
+		},
+	}
+
+	add := Addition{
+		rhs: Constant{Value: 1},
+		lhs: mul,
+	}
+
+	rhs := Root{
+		lhs: Constant{Value: 2},
+		rhs: Constant{Value: 10},
+	}
+	ast := AST{
+		Lhs: add,
+		Rhs: rhs,
+	}
+  ast.Debug()
+
+	assert.Equal(t, &ast, par)
+}

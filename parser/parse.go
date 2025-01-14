@@ -36,25 +36,27 @@ type AST struct {
 }
 
 func helperDebug(term Term, level int) {
-  if term == nil {
-    return
-  }
-  
-  indent := strings.Repeat(" ", level)
-  fmt.Printf("%s%s\n", indent, term.getName())
-  if op, isOp := term.(Operation); isOp {
-    helperDebug(*op.Lhs(), level + 1)
-    helperDebug(*op.Rhs(), level + 1)
-  }
+	if term == nil {
+		return
+	}
+
+	indent := strings.Repeat(" ", level)
+	fmt.Printf("%s%s\n", indent, term.getName())
+	if op, isOp := term.(Operation); isOp {
+		helperDebug(*op.Lhs(), level+1)
+		helperDebug(*op.Rhs(), level+1)
+	}
 }
 
 func (ast *AST) Debug() {
-  fmt.Println("Lhs")
-  helperDebug(ast.Lhs, 0)
-  fmt.Println("")
-  fmt.Println("Rhs")
-  helperDebug(ast.Rhs, 0)
+	fmt.Println("Lhs")
+	helperDebug(ast.Lhs, 0)
+	fmt.Println("")
+	fmt.Println("Rhs")
+	helperDebug(ast.Rhs, 0)
 }
+
+const DEBUG = true
 
 func Parse(lex lexer.Lexer) (*AST, error) {
 	tokens := lex.TokenizeAll()
@@ -65,8 +67,8 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 	if isValid != nil {
 		return nil, isValid
 	}
-	tokens = MultiplyPass(tokens)
 
+	tokens = MultiplyPass(tokens)
 	var lhs []lexer.Token
 	var rhs []lexer.Token
 	isRhs := false
@@ -84,14 +86,18 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 	}
 	lhsRPN := Conversion(lhs)
 	rhsRPN := Conversion(rhs)
+	fmt.Println(lhsRPN.tokens)
+	fmt.Println(rhsRPN.tokens)
 
-  lhsTree := Treeify(lhsRPN)
-  rhsTree := Treeify(rhsRPN)
+	lhsTree := Treeify(lhsRPN)
+	rhsTree := Treeify(rhsRPN)
 
-  ast := AST{
-  	Lhs: *lhsTree,
-  	Rhs: *rhsTree,
-  }
+	ast := AST{
+		Lhs: *lhsTree,
+		Rhs: *rhsTree,
+	}
+
+  ast.Debug()
 
 	return &ast, nil
 }
@@ -99,7 +105,7 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 // A Term can be a constant or a unary method (like addition)
 type Term interface {
 	IsTerm() bool
-  getName() string
+	getName() string
 }
 
 type Variable struct {
@@ -111,7 +117,7 @@ func (v Variable) IsTerm() bool {
 }
 
 func (v Variable) getName() string {
-  return fmt.Sprintf("%s", v.Name)
+	return v.Name
 }
 
 // A constant number. like 1, 2, 1.2, 1.5
@@ -124,5 +130,5 @@ func (c Constant) IsTerm() bool {
 }
 
 func (c Constant) getName() string {
-  return fmt.Sprintf("%f", c.Value)
+	return fmt.Sprintf("%f", c.Value)
 }

@@ -51,7 +51,7 @@ func (tokens *Validation) OnlyOneEqual() error {
 type ErrorNoVariables []lexer.Token
 
 func (e ErrorNoVariables) Error() string {
-  return fmt.Sprintf("Your equation %s has no variables", e)
+  return fmt.Sprintf("Your equation %s has no variables", []lexer.Token(e))
 }
 
 
