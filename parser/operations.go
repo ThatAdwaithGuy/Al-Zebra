@@ -17,8 +17,8 @@ func OperationBuilder(tt lexer.TokenType, lhs, rhs Term) Term {
 	switch tt {
 	case lexer.PLUS:
 		ret := Addition{
-			lhs: lhs,
-			rhs: rhs,
+			Lhs: lhs,
+			Rhs: rhs,
 		}
 		return ret
 	case lexer.MINUS:
@@ -73,8 +73,8 @@ func (e DepthError) Error() string {
 
 // operations, like addition and subtraction should implement this interface
 type Operation interface {
-	Lhs() *Term
-	Rhs() *Term
+	GetLhs() *Term
+	GetRhs() *Term
 	Evaluate() (*Constant, error)
 	IsTerm() bool
 	getName() string
@@ -92,12 +92,12 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 	var lhsValue *float32
 	var rhsValue *float32
 	// Check if this a constant or not
-	lhsConstantValue, lhsOk := (*a.Lhs()).(Constant)
+	lhsConstantValue, lhsOk := (*a.GetLhs()).(Constant)
 	if lhsOk {
 		lhsValue = &lhsConstantValue.Value
 	} else {
 		// It SHOULD be a operation as this function only supports term having term be as Constant or a Operation
-		lhsOperationValue, lhsOperationOk := (*a.Lhs()).(Operation)
+		lhsOperationValue, lhsOperationOk := (*a.GetLhs()).(Operation)
 		if !lhsOperationOk {
 			return nil, errors.New("UNHANDLED ERROR")
 		}
@@ -111,11 +111,11 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 		lhsValue = &lhsVal.Value
 	}
 	// The same logic as above but lhs is rhs now. To get more info, read the top part
-	rhsConstantValue, rhsOk := (*a.Rhs()).(Constant)
+	rhsConstantValue, rhsOk := (*a.GetRhs()).(Constant)
 	if rhsOk {
 		rhsValue = &rhsConstantValue.Value
 	} else {
-		rhsOperationValue, rhsOperationOk := (*a.Rhs()).(Operation)
+		rhsOperationValue, rhsOperationOk := (*a.GetRhs()).(Operation)
 		if !rhsOperationOk {
 			return nil, errors.New("UNHANDLED ERROR")
 		}
@@ -141,16 +141,16 @@ func evaluateHelper(a Operation, operation func(float32, float32) float32, depth
 // Operations
 
 type Addition struct {
-	lhs Term
-	rhs Term
+	Lhs Term
+	Rhs Term
 }
 
-func (a *Addition) Lhs() *Term {
-	return &a.lhs
+func (a Addition) GetLhs() *Term {
+	return &a.Lhs
 }
 
-func (a *Addition) Rhs() *Term {
-	return &a.rhs
+func (a Addition) GetRhs() *Term {
+	return &a.Rhs
 }
 
 func (a Addition) IsTerm() bool {
@@ -172,11 +172,11 @@ type Subtraction struct {
 	rhs Term
 }
 
-func (a Subtraction) Lhs() *Term {
+func (a Subtraction) GetLhs() *Term {
 	return &a.lhs
 }
 
-func (a Subtraction) Rhs() *Term {
+func (a Subtraction) GetRhs() *Term {
 	return &a.rhs
 }
 
@@ -199,11 +199,11 @@ type Multiplication struct {
 	rhs Term
 }
 
-func (a Multiplication) Lhs() *Term {
+func (a Multiplication) GetLhs() *Term {
 	return &a.lhs
 }
 
-func (a Multiplication) Rhs() *Term {
+func (a Multiplication) GetRhs() *Term {
 	return &a.rhs
 }
 
@@ -226,11 +226,11 @@ type Division struct {
 	rhs Term
 }
 
-func (a Division) Lhs() *Term {
+func (a Division) GetLhs() *Term {
 	return &a.lhs
 }
 
-func (a Division) Rhs() *Term {
+func (a Division) GetRhs() *Term {
 	return &a.rhs
 }
 
@@ -253,11 +253,11 @@ type Root struct {
 	rhs Term
 }
 
-func (a Root) Lhs() *Term {
+func (a Root) GetLhs() *Term {
 	return &a.lhs
 }
 
-func (a Root) Rhs() *Term {
+func (a Root) GetRhs() *Term {
 	return &a.rhs
 }
 
@@ -280,11 +280,11 @@ type Exponentiation struct {
 	rhs Term
 }
 
-func (a Exponentiation) Lhs() *Term {
+func (a Exponentiation) GetLhs() *Term {
 	return &a.lhs
 }
 
-func (a Exponentiation) Rhs() *Term {
+func (a Exponentiation) GetRhs() *Term {
 	return &a.rhs
 }
 

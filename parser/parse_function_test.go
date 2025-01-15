@@ -25,8 +25,8 @@ func TestParseSimple(t *testing.T) {
 	}
 
 	add := Addition{
-		rhs: Constant{Value: 1},
-		lhs: mul,
+		Rhs: Constant{Value: 1},
+		Lhs: mul,
 	}
 
 	rhs := Constant{
@@ -61,8 +61,8 @@ func TestParseSimple2(t *testing.T) {
 	}
 
 	add := Addition{
-		rhs: Constant{Value: 1},
-		lhs: mul,
+		Rhs: Constant{Value: 1},
+		Lhs: mul,
 	}
 
 	rhs := Root{

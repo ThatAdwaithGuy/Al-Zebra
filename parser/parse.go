@@ -43,8 +43,8 @@ func helperDebug(term Term, level int) {
 	indent := strings.Repeat(" ", level)
 	fmt.Printf("%s%s\n", indent, term.getName())
 	if op, isOp := term.(Operation); isOp {
-		helperDebug(*op.Lhs(), level+1)
-		helperDebug(*op.Rhs(), level+1)
+		helperDebug(*op.GetLhs(), level+1)
+		helperDebug(*op.GetRhs(), level+1)
 	}
 }
 

@@ -51,8 +51,8 @@ func TestMultiplyPass(t *testing.T) {
 }
 func TestAdditionNoRecursion(t *testing.T) {
 	addition := Addition{
-		lhs: Constant{Value: 1.0},
-		rhs: Constant{Value: 1.0},
+		Lhs: Constant{Value: 1.0},
+		Rhs: Constant{Value: 1.0},
 	}
 	value, err := addition.Evaluate()
 	if err != nil {
@@ -63,12 +63,12 @@ func TestAdditionNoRecursion(t *testing.T) {
 
 func TestAdditionRecursion(t *testing.T) {
 	oneAddition := Addition{
-		lhs: Constant{Value: 1.0},
-		rhs: Constant{Value: 1.0},
+		Lhs: Constant{Value: 1.0},
+		Rhs: Constant{Value: 1.0},
 	}
 	addition := Addition{
-		lhs: oneAddition,
-		rhs: Constant{Value: 2.0},
+		Lhs: oneAddition,
+		Rhs: Constant{Value: 2.0},
 	}
 
 	value, err := addition.Evaluate()
@@ -87,12 +87,12 @@ func TestAdditionRandom(t *testing.T) {
 	result := (value1 + value2) + value3
 
 	oneAddition := Addition{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		Lhs: Constant{Value: float32(value1)},
+		Rhs: Constant{Value: float32(value2)},
 	}
 	addition := Addition{
-		lhs: oneAddition,
-		rhs: Constant{Value: float32(value3)},
+		Lhs: oneAddition,
+		Rhs: Constant{Value: float32(value3)},
 	}
 
 	value, err := addition.Evaluate()

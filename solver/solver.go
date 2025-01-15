@@ -18,33 +18,33 @@ func createOpposite(op parser.Operation, lhs, rhs parser.Term) parser.Operation 
 	// Bozo time
 	if isAdd {
 		var ret parser.Subtraction
-		*ret.Lhs() = lhs
-		*ret.Rhs() = rhs
+		*ret.GetLhs() = lhs
+		*ret.GetRhs() = rhs
 		return ret
 	} else if isSub {
 		var ret parser.Addition
-		*ret.Lhs() = lhs
-		*ret.Rhs() = rhs
+		*ret.GetLhs() = lhs
+		*ret.GetRhs() = rhs
 		return ret
 	} else if isMul {
 		var ret parser.Division
-		*ret.Lhs() = lhs
-		*ret.Rhs() = rhs
+		*ret.GetLhs() = lhs
+		*ret.GetRhs() = rhs
 		return ret
 	} else if isDiv {
 		var ret parser.Multiplication
-		*ret.Lhs() = lhs
-		*ret.Rhs() = rhs
+		*ret.GetLhs() = lhs
+		*ret.GetRhs() = rhs
 		return ret
 	} else if isExp {
 		var ret parser.Root
-		*ret.Lhs() = lhs
-		*ret.Rhs() = rhs
+		*ret.GetLhs() = lhs
+		*ret.GetRhs() = rhs
 		return ret
 	} else if isRoo {
 		var ret parser.Exponentiation
-		*ret.Lhs() = lhs
-		*ret.Rhs() = rhs
+		*ret.GetLhs() = lhs
+		*ret.GetRhs() = rhs
 		return ret
 	} else {
 		return nil
@@ -56,12 +56,12 @@ func CarryOperation(ast *parser.AST) (parser.AST, error) {
 	if !isLhsOp {
 		return parser.AST{}, errors.New("Lhs is constant and cannot be carried")
 	}
-	getTop := lhsOp.Rhs()
+	getTop := lhsOp.GetRhs()
 	newRhs := createOpposite(lhsOp, ast.Rhs, *getTop)
   if newRhs == nil {
     return parser.AST{}, errors.New("Unhandled Error at solver.CarryOperation")
   }
-	newLhs := *lhsOp.Lhs()
+	newLhs := *lhsOp.GetLhs()
 	retAST := parser.AST{
 		Lhs: newLhs,
 		Rhs: newRhs,
