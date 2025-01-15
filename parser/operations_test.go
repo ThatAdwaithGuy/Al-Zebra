@@ -105,8 +105,8 @@ func TestAdditionRandom(t *testing.T) {
 
 func TestSubtractionNoRecursion(t *testing.T) {
 	addition := Subtraction{
-		lhs: Constant{Value: 5.0},
-		rhs: Constant{Value: 3.0},
+		Lhs: Constant{Value: 5.0},
+		Rhs: Constant{Value: 3.0},
 	}
 	value, err := addition.Evaluate()
 	if err != nil {
@@ -117,12 +117,12 @@ func TestSubtractionNoRecursion(t *testing.T) {
 
 func TestSubtractionRecursion(t *testing.T) {
 	oneSubtraction := Subtraction{
-		lhs: Constant{Value: 5.0},
-		rhs: Constant{Value: 3.0},
+		Lhs: Constant{Value: 5.0},
+		Rhs: Constant{Value: 3.0},
 	}
 	addition := Subtraction{
-		lhs: oneSubtraction,
-		rhs: Constant{Value: 3.0},
+		Lhs: oneSubtraction,
+		Rhs: Constant{Value: 3.0},
 	}
 
 	value, err := addition.Evaluate()
@@ -141,12 +141,12 @@ func TestSubtractionRandom(t *testing.T) {
 	result := (value1 - value2) - value3
 
 	oneSubtraction := Subtraction{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		Lhs: Constant{Value: float32(value1)},
+		Rhs: Constant{Value: float32(value2)},
 	}
 	subtraction := Subtraction{
-		lhs: oneSubtraction,
-		rhs: Constant{Value: float32(value3)},
+		Lhs: oneSubtraction,
+		Rhs: Constant{Value: float32(value3)},
 	}
 
 	value, err := subtraction.Evaluate()
@@ -159,8 +159,8 @@ func TestSubtractionRandom(t *testing.T) {
 
 func TestMultiplicationNoRecursion(t *testing.T) {
 	addition := Multiplication{
-		lhs: Constant{Value: 10.0},
-		rhs: Constant{Value: 2.0},
+		Lhs: Constant{Value: 10.0},
+		Rhs: Constant{Value: 2.0},
 	}
 	value, err := addition.Evaluate()
 	if err != nil {
@@ -171,12 +171,12 @@ func TestMultiplicationNoRecursion(t *testing.T) {
 
 func TestMultiplicationRecursion(t *testing.T) {
 	oneMultiplication := Multiplication{
-		lhs: Constant{Value: 10.0},
-		rhs: Constant{Value: 2.0},
+		Lhs: Constant{Value: 10.0},
+		Rhs: Constant{Value: 2.0},
 	}
 	addition := Multiplication{
-		lhs: oneMultiplication,
-		rhs: Constant{Value: -1.0},
+		Lhs: oneMultiplication,
+		Rhs: Constant{Value: -1.0},
 	}
 
 	value, err := addition.Evaluate()
@@ -195,12 +195,12 @@ func TestMultiplicationRandom(t *testing.T) {
 	result := (value1 * value2) * value3
 
 	oneMultiplication := Multiplication{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		Lhs: Constant{Value: float32(value1)},
+		Rhs: Constant{Value: float32(value2)},
 	}
 	multiplication := Multiplication{
-		lhs: oneMultiplication,
-		rhs: Constant{Value: float32(value3)},
+		Lhs: oneMultiplication,
+		Rhs: Constant{Value: float32(value3)},
 	}
 
 	value, err := multiplication.Evaluate()
@@ -213,8 +213,8 @@ func TestMultiplicationRandom(t *testing.T) {
 
 func TestDivisionNoRecursion(t *testing.T) {
 	division := Division{
-		lhs: Constant{Value: 10.0},
-		rhs: Constant{Value: 2.0},
+		Lhs: Constant{Value: 10.0},
+		Rhs: Constant{Value: 2.0},
 	}
 	value, err := division.Evaluate()
 	if err != nil {
@@ -226,12 +226,12 @@ func TestDivisionNoRecursion(t *testing.T) {
 
 func TestDivisionRecursion(t *testing.T) {
 	oneDivision := Division{
-		lhs: Constant{Value: 20.0},
-		rhs: Constant{Value: 2.0},
+		Lhs: Constant{Value: 20.0},
+		Rhs: Constant{Value: 2.0},
 	}
 	division := Division{
-		lhs: oneDivision,
-		rhs: Constant{Value: 2.0},
+		Lhs: oneDivision,
+		Rhs: Constant{Value: 2.0},
 	}
 
 	value, err := division.Evaluate()
@@ -250,12 +250,12 @@ func TestDivisionRandom(t *testing.T) {
 	result := (float32(value1) / float32(value2)) / float32(value3)
 
 	oneDivision := Division{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		Lhs: Constant{Value: float32(value1)},
+		Rhs: Constant{Value: float32(value2)},
 	}
 	division := Division{
-		lhs: oneDivision,
-		rhs: Constant{Value: float32(value3)},
+		Lhs: oneDivision,
+		Rhs: Constant{Value: float32(value3)},
 	}
 
 	value, err := division.Evaluate()
@@ -268,8 +268,8 @@ func TestDivisionRandom(t *testing.T) {
 
 func TestRootNoRecursion(t *testing.T) {
 	root := Root{
-		lhs: Constant{Value: 16.0},
-		rhs: Constant{Value: 2.0},
+		Lhs: Constant{Value: 16.0},
+		Rhs: Constant{Value: 2.0},
 	}
 	value, err := root.Evaluate()
 	if err != nil {
@@ -280,12 +280,12 @@ func TestRootNoRecursion(t *testing.T) {
 
 func TestRootRecursion(t *testing.T) {
 	oneRoot := Root{
-		lhs: Constant{Value: 16.0},
-		rhs: Constant{Value: 2.0},
+		Lhs: Constant{Value: 16.0},
+		Rhs: Constant{Value: 2.0},
 	}
 	root := Root{
-		lhs: oneRoot,
-		rhs: Constant{Value: 2.0},
+		Lhs: oneRoot,
+		Rhs: Constant{Value: 2.0},
 	}
 
 	value, err := root.Evaluate()
@@ -304,12 +304,12 @@ func TestRootRandom(t *testing.T) {
 	result := float32(math.Pow(math.Pow(float64(value1), 1/float64(value2)), 1/float64(value3)))
 
 	oneRoot := Root{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		Lhs: Constant{Value: float32(value1)},
+		Rhs: Constant{Value: float32(value2)},
 	}
 	root := Root{
-		lhs: oneRoot,
-		rhs: Constant{Value: float32(value3)},
+		Lhs: oneRoot,
+		Rhs: Constant{Value: float32(value3)},
 	}
 
 	value, err := root.Evaluate()
@@ -322,8 +322,8 @@ func TestRootRandom(t *testing.T) {
 
 func TestExponentiationNoRecursion(t *testing.T) {
 	root := Exponentiation{
-		lhs: Constant{Value: 16.0},
-		rhs: Constant{Value: 2.0},
+		Lhs: Constant{Value: 16.0},
+		Rhs: Constant{Value: 2.0},
 	}
 	value, err := root.Evaluate()
 	if err != nil {
@@ -334,12 +334,12 @@ func TestExponentiationNoRecursion(t *testing.T) {
 
 func TestExponentiationRecursion(t *testing.T) {
 	oneExponentiation := Exponentiation{
-		lhs: Constant{Value: 4.0},
-		rhs: Constant{Value: 2.0},
+		Lhs: Constant{Value: 4.0},
+		Rhs: Constant{Value: 2.0},
 	}
 	root := Exponentiation{
-		lhs: oneExponentiation,
-		rhs: Constant{Value: 2.0},
+		Lhs: oneExponentiation,
+		Rhs: Constant{Value: 2.0},
 	}
 
 	value, err := root.Evaluate()
@@ -358,12 +358,12 @@ func TestExponentiationRandom(t *testing.T) {
 	result := float32(math.Pow(math.Pow(float64(value1), float64(value2)), float64(value3)))
 
 	oneExponentiation := Exponentiation{
-		lhs: Constant{Value: float32(value1)},
-		rhs: Constant{Value: float32(value2)},
+		Lhs: Constant{Value: float32(value1)},
+		Rhs: Constant{Value: float32(value2)},
 	}
 	root := Exponentiation{
-		lhs: oneExponentiation,
-		rhs: Constant{Value: float32(value3)},
+		Lhs: oneExponentiation,
+		Rhs: Constant{Value: float32(value3)},
 	}
 
 	value, err := root.Evaluate()

@@ -23,32 +23,32 @@ func OperationBuilder(tt lexer.TokenType, lhs, rhs Term) Term {
 		return ret
 	case lexer.MINUS:
 		ret := Subtraction{
-			lhs: lhs,
-			rhs: rhs,
+			Lhs: lhs,
+			Rhs: rhs,
 		}
 		return ret
 	case lexer.MULTIPLY:
 		ret := Multiplication{
-			lhs: lhs,
-			rhs: rhs,
+			Lhs: lhs,
+			Rhs: rhs,
 		}
 		return ret
 	case lexer.DIVIDE:
 		ret := Division{
-			lhs: lhs,
-			rhs: rhs,
+			Lhs: lhs,
+			Rhs: rhs,
 		}
 		return ret
 	case lexer.EXPONENTIATION:
 		ret := Exponentiation{
-			lhs: lhs,
-			rhs: rhs,
+			Lhs: lhs,
+			Rhs: rhs,
 		}
 		return ret
 	case lexer.ROOT:
 		ret := Root{
-			lhs: lhs,
-			rhs: rhs,
+			Lhs: lhs,
+			Rhs: rhs,
 		}
 		return ret
 	}
@@ -168,16 +168,16 @@ func (a Addition) getName() string {
 }
 
 type Subtraction struct {
-	lhs Term
-	rhs Term
+	Lhs Term
+	Rhs Term
 }
 
 func (a Subtraction) GetLhs() *Term {
-	return &a.lhs
+	return &a.Lhs
 }
 
 func (a Subtraction) GetRhs() *Term {
-	return &a.rhs
+	return &a.Rhs
 }
 
 func (a Subtraction) IsTerm() bool {
@@ -195,16 +195,16 @@ func (a Subtraction) getName() string {
 }
 
 type Multiplication struct {
-	lhs Term
-	rhs Term
+	Lhs Term
+	Rhs Term
 }
 
 func (a Multiplication) GetLhs() *Term {
-	return &a.lhs
+	return &a.Lhs
 }
 
 func (a Multiplication) GetRhs() *Term {
-	return &a.rhs
+	return &a.Rhs
 }
 
 func (a Multiplication) IsTerm() bool {
@@ -222,16 +222,16 @@ func (a Multiplication) getName() string {
 }
 
 type Division struct {
-	lhs Term
-	rhs Term
+	Lhs Term
+	Rhs Term
 }
 
 func (a Division) GetLhs() *Term {
-	return &a.lhs
+	return &a.Lhs
 }
 
 func (a Division) GetRhs() *Term {
-	return &a.rhs
+	return &a.Rhs
 }
 
 func (a Division) IsTerm() bool {
@@ -249,16 +249,16 @@ func (a Division) getName() string {
 }
 
 type Root struct {
-	lhs Term
-	rhs Term
+	Lhs Term
+	Rhs Term
 }
 
 func (a Root) GetLhs() *Term {
-	return &a.lhs
+	return &a.Lhs
 }
 
 func (a Root) GetRhs() *Term {
-	return &a.rhs
+	return &a.Rhs
 }
 
 func (a Root) IsTerm() bool {
@@ -276,16 +276,16 @@ func (a Root) getName() string {
 }
 
 type Exponentiation struct {
-	lhs Term
-	rhs Term
+	Lhs Term
+	Rhs Term
 }
 
 func (a Exponentiation) GetLhs() *Term {
-	return &a.lhs
+	return &a.Lhs
 }
 
 func (a Exponentiation) GetRhs() *Term {
-	return &a.rhs
+	return &a.Rhs
 }
 
 func (a Exponentiation) IsTerm() bool {

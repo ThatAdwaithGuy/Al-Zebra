@@ -16,10 +16,10 @@ func TestParseSimple(t *testing.T) {
 	}
 
 	mul := Multiplication{
-		lhs: Constant{
+		Lhs: Constant{
 			Value: 3,
 		},
-		rhs: Variable{
+		Rhs: Variable{
 			Name: "x",
 		},
 	}
@@ -52,10 +52,10 @@ func TestParseSimple2(t *testing.T) {
 	}
 
 	mul := Multiplication{
-		lhs: Constant{
+		Lhs: Constant{
 			Value: 3,
 		},
-		rhs: Variable{
+		Rhs: Variable{
 			Name: "x",
 		},
 	}
@@ -66,8 +66,8 @@ func TestParseSimple2(t *testing.T) {
 	}
 
 	rhs := Root{
-		lhs: Constant{Value: 2},
-		rhs: Constant{Value: 10},
+		Lhs: Constant{Value: 2},
+		Rhs: Constant{Value: 10},
 	}
 	ast := AST{
 		Lhs: add,

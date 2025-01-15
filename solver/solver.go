@@ -17,37 +17,43 @@ func createOpposite(op parser.Operation, lhs, rhs parser.Term) parser.Operation 
 
 	// Bozo time
 	if isAdd {
-		var ret parser.Subtraction
-		*ret.GetLhs() = lhs
-		*ret.GetRhs() = rhs
-		return ret
+    ret := parser.Subtraction{
+      Lhs: lhs,
+      Rhs: rhs,
+    }
+    return ret
 	} else if isSub {
-		var ret parser.Addition
-		*ret.GetLhs() = lhs
-		*ret.GetRhs() = rhs
-		return ret
+    ret := parser.Addition{
+      Lhs: lhs,
+      Rhs: rhs,
+    }
+    return ret
 	} else if isMul {
-		var ret parser.Division
-		*ret.GetLhs() = lhs
-		*ret.GetRhs() = rhs
-		return ret
+    ret := parser.Division{
+      Lhs: lhs,
+      Rhs: rhs,
+    }
+    return ret
 	} else if isDiv {
-		var ret parser.Multiplication
-		*ret.GetLhs() = lhs
-		*ret.GetRhs() = rhs
-		return ret
+    ret := parser.Multiplication{
+      Lhs: lhs,
+      Rhs: rhs,
+    }
+    return ret
 	} else if isExp {
-		var ret parser.Root
-		*ret.GetLhs() = lhs
-		*ret.GetRhs() = rhs
-		return ret
+    ret := parser.Root{
+      Lhs: lhs,
+      Rhs: rhs,
+    }
+    return ret
 	} else if isRoo {
-		var ret parser.Exponentiation
-		*ret.GetLhs() = lhs
-		*ret.GetRhs() = rhs
-		return ret
+    ret := parser.Exponentiation{
+      Lhs: lhs,
+      Rhs: rhs,
+    }
+    return ret
 	} else {
-		return nil
+    return nil
 	}
 }
 
