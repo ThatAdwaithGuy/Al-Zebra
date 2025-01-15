@@ -1,6 +1,6 @@
 module github.com/al-zebra
 
-go 1.23
+go 1.23.3
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
