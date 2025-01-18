@@ -7,6 +7,20 @@ import (
 	"github.com/al-zebra/lexer"
 )
 
+// Helper
+func IsLeafNode(term Term) Term {
+	c, isConstant := term.(Constant)
+	v, isVariable := term.(Variable)
+
+  if isConstant {
+    return c
+  } else if isVariable {
+    return v
+  } else {
+    return nil
+  }
+}
+
 // Just a bunch of errors
 type UnhandledTermError struct{}
 
