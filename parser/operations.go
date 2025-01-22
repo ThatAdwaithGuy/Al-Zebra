@@ -91,7 +91,7 @@ type Operation interface {
 	GetRhs() *Term
 	Evaluate() (*Constant, error)
 	IsTerm() bool
-	getName() string
+	GetName() string
 }
 
 const DEPTH_LIMIT int = 100
@@ -177,7 +177,7 @@ func (a Addition) Evaluate() (*Constant, error) {
 	}, 0)
 }
 
-func (a Addition) getName() string {
+func (a Addition) GetName() string {
 	return "+"
 }
 
@@ -204,7 +204,7 @@ func (a Subtraction) Evaluate() (*Constant, error) {
 	}, 0)
 }
 
-func (a Subtraction) getName() string {
+func (a Subtraction) GetName() string {
 	return "-"
 }
 
@@ -231,7 +231,7 @@ func (a Multiplication) Evaluate() (*Constant, error) {
 	}, 0)
 }
 
-func (a Multiplication) getName() string {
+func (a Multiplication) GetName() string {
 	return "*"
 }
 
@@ -258,7 +258,7 @@ func (a Division) Evaluate() (*Constant, error) {
 	}, 0)
 }
 
-func (a Division) getName() string {
+func (a Division) GetName() string {
 	return "/"
 }
 
@@ -285,7 +285,7 @@ func (a Root) Evaluate() (*Constant, error) {
 	}, 0)
 }
 
-func (a Root) getName() string {
+func (a Root) GetName() string {
 	return "root"
 }
 
@@ -315,6 +315,6 @@ func (a Exponentiation) Evaluate() (*Constant, error) {
 	}, 0)
 }
 
-func (a Exponentiation) getName() string {
+func (a Exponentiation) GetName() string {
 	return "^"
 }

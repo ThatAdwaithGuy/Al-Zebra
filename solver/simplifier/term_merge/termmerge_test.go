@@ -15,7 +15,7 @@ func TestMatchPositive(t *testing.T) {
 
   twoTerm := TwoTermMerge{} 
 
-  assert.Equalf(t, parser.Addition{
+  assert.Equalf(t, parser.Multiplication{
     Lhs: parser.Variable{Name: "x"},
     Rhs: parser.Constant{Value: 2},
   }, twoTerm.GetSimplified(testTerm) , "Should be equal")
@@ -28,5 +28,5 @@ func TestMatchNegative(t *testing.T) {
   }
 
   twoTerm := TwoTermMerge{} 
-  assert.Equalf(t, nil, twoTerm.GetSimplified(testTerm) , "Should be equal")
+  assert.Nil(t,twoTerm.GetSimplified(testTerm) , "Should be equal")
 }

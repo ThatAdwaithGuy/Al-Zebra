@@ -28,25 +28,16 @@ func (s *Simplifier) Register(p Pattern) {
 	s.patterns = append(s.patterns, p)
 }
 
-// Returns nil if there is no pattern that matches the equation.
-func (s *Simplifier) Simplify() parser.Term {
-	pattern := s.matchPattern()
-	if pattern != nil {
-		return pattern.GetSimplified(s.equation)
-	}
-	return nil
-}
-
-func (s *Simplifier) matchPatternSequential() Pattern {
-	var bestPattern Pattern
+func (s *Simplifier) matchPatternSequential() parser.Term {
+	var bestPattern parser.Term
 	bestPerformance := -1 * int(^uint(0)>>1)
 
 	for _, pattern := range s.patterns {
-    sim := pattern.GetSimplified(s.equation)
+		sim := pattern.GetSimplified(s.equation)
 		if sim != nil {
 			performance := pattern.GetPerformance()
 			if performance > bestPerformance {
-				bestPattern = pattern
+				bestPattern = sim
 				bestPerformance = performance
 			}
 		}
@@ -55,28 +46,28 @@ func (s *Simplifier) matchPatternSequential() Pattern {
 	return bestPattern
 }
 
-// Gets the best pattern that matches the equation.
-func (s *Simplifier) matchPattern() Pattern {
-  if len(s.patterns) < 4 {
-    return s.matchPatternSequential()
-  }
+// Gets the best pattern that matches the equation and simplifies it.
+func (s *Simplifier) Simplify() parser.Term {
+	if len(s.patterns) < 4 {
+		return s.matchPatternSequential()
+	}
 
-	results := make(chan utils.Tuple[Pattern, int], len(s.patterns))
+	results := make(chan utils.Tuple[parser.Term, int], len(s.patterns))
 	for _, pattern := range s.patterns {
 		go func(p Pattern) {
-      sim := p.GetSimplified(s.equation)
+			sim := p.GetSimplified(s.equation)
 			if sim != nil {
-				results <- utils.Tuple[Pattern, int]{
-					F: p,
+				results <- utils.Tuple[parser.Term, int]{
+					F: sim,
 					S: p.GetPerformance(),
 				}
 			} else {
-				results <- utils.Tuple[Pattern, int]{}
+				results <- utils.Tuple[parser.Term, int]{}
 			}
 		}(pattern)
 	}
 
-	var bestPattern Pattern
+	var bestPattern parser.Term
 	bestPerformance := -1 * int(^uint(0)>>1)
 
 	for i := 0; i < len(s.patterns); i++ {

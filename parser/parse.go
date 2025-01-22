@@ -41,7 +41,7 @@ func helperDebug(term Term, level int) {
 	}
 
 	indent := strings.Repeat(" ", level)
-	fmt.Printf("%s%s\n", indent, term.getName())
+	fmt.Printf("%s%s\n", indent, term.GetName())
 	if op, isOp := term.(Operation); isOp {
 		helperDebug(*op.GetLhs(), level+1)
 		helperDebug(*op.GetRhs(), level+1)
@@ -102,7 +102,7 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 // A Term can be a constant or a unary method (like addition)
 type Term interface {
 	IsTerm() bool
-	getName() string
+	GetName() string
 }
 
 type Variable struct {
@@ -113,7 +113,7 @@ func (v Variable) IsTerm() bool {
 	return true
 }
 
-func (v Variable) getName() string {
+func (v Variable) GetName() string {
 	return v.Name
 }
 
@@ -126,6 +126,6 @@ func (c Constant) IsTerm() bool {
 	return true
 }
 
-func (c Constant) getName() string {
+func (c Constant) GetName() string {
 	return fmt.Sprintf("%f", c.Value)
 }
