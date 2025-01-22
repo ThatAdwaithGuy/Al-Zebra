@@ -6,7 +6,6 @@ import (
 )
 
 type Pattern interface {
-	Matches(parser.Term) bool
 	GetPerformance() int
 	GetSimplified(parser.Term) parser.Term
 }
@@ -43,7 +42,8 @@ func (s *Simplifier) matchPatternSequential() Pattern {
 	bestPerformance := -1 * int(^uint(0)>>1)
 
 	for _, pattern := range s.patterns {
-		if pattern.Matches(s.equation) {
+    sim := pattern.GetSimplified(s.equation)
+		if sim != nil {
 			performance := pattern.GetPerformance()
 			if performance > bestPerformance {
 				bestPattern = pattern
@@ -64,7 +64,8 @@ func (s *Simplifier) matchPattern() Pattern {
 	results := make(chan utils.Tuple[Pattern, int], len(s.patterns))
 	for _, pattern := range s.patterns {
 		go func(p Pattern) {
-			if p.Matches(s.equation) {
+      sim := p.GetSimplified(s.equation)
+			if sim != nil {
 				results <- utils.Tuple[Pattern, int]{
 					F: p,
 					S: p.GetPerformance(),

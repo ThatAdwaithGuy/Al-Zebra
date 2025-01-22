@@ -10,15 +10,11 @@ import (
 
 type PatternMock struct {
 	id          int
-	matchFunc   func(parser.Term) bool
+	matchFunc   func(parser.Term) parser.Term 
 	performance int
 }
 
 // Implment the Pattern interface
-
-func (p PatternMock) Matches(term parser.Term) bool {
-	return p.matchFunc(term)
-}
 
 func (p PatternMock) GetPerformance() int {
 	return p.performance
@@ -27,7 +23,7 @@ func (p PatternMock) GetPerformance() int {
 // Do nothing here as we are not testing simplication logic.
 // That testing will be done by each simplication module.
 func (p PatternMock) GetSimplified(term parser.Term) parser.Term {
-	return term
+	return p.matchFunc(term) 
 }
 
 
@@ -36,40 +32,40 @@ func TestSimplify(t *testing.T) {
 	patterns := []PatternMock{
 		{
 			id: 0,
-			matchFunc: func(term parser.Term) bool {
-				_, isOp := term.(parser.Constant)
+			matchFunc: func(term parser.Term) parser.Term {
+				isOp,_ := term.(parser.Constant)
 				return isOp
 			},
 			performance: 100,
 		},
 		{
 			id: 1,
-			matchFunc: func(term parser.Term) bool {
-				_, isOp := term.(parser.Operation)
+			matchFunc: func(term parser.Term) parser.Term {
+				isOp,_ := term.(parser.Operation)
 				return isOp
 			},
 			performance: 10,
 		},
 		{
 			id: 2,
-			matchFunc: func(term parser.Term) bool {
-				_, isOp := term.(parser.Multiplication)
+			matchFunc: func(term parser.Term) parser.Term {
+				isOp,_ := term.(parser.Multiplication)
 				return isOp
 			},
 			performance: 20,
 		},
 		{
 			id: 3,
-			matchFunc: func(term parser.Term) bool {
-				_, isAdd := term.(parser.Addition)
+			matchFunc: func(term parser.Term) parser.Term {
+				isAdd,_ := term.(parser.Addition)
 				return isAdd
 			},
 			performance: 15,
 		},
 		{
 			id: 4,
-			matchFunc: func(term parser.Term) bool {
-				_, isAdd := term.(parser.Subtraction)
+			matchFunc: func(term parser.Term) parser.Term {
+				isAdd,_ := term.(parser.Subtraction)
 				return isAdd
 			},
 			performance: 14,
@@ -107,6 +103,8 @@ func TestSimplify(t *testing.T) {
 			assert.Equal(t, 4, mock.id, "Simplification is not working for test case id 4")
 		}
 	}
-
-	fmt.Println(patterns)
+  
+  for _, p := range patterns {
+    fmt.Println(p.id) 
+  }
 }

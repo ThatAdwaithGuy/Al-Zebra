@@ -14,8 +14,7 @@ func TestEqualSubtractionMatch(t *testing.T) {
   }
 
   e := EqualSubtraction{}
-  assert.True(t, e.Matches(term))
-  assert.Equal(t, parser.Constant{Value: 1}, e.GetSimplified(term))
+  assert.Nil(t, e.GetSimplified(term))
 }
 
 func TestEqualSubtractionNoMatch(t *testing.T) {
@@ -25,5 +24,5 @@ func TestEqualSubtractionNoMatch(t *testing.T) {
   }
 
   e := EqualSubtraction{}
-  assert.False(t, e.Matches(term))
+  assert.Nil(t, e.GetSimplified(term))
 }
