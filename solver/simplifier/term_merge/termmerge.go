@@ -17,6 +17,7 @@ func (t TwoTermMerge) GetSimplified(term parser.Term) parser.Term {
 	if !isOp {
 		return nil
 	}
+
 	if op.Lhs == op.Rhs {
 		return parser.Multiplication{
 			Lhs: op.Lhs,
