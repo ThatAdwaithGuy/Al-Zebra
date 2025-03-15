@@ -61,7 +61,7 @@ func (s *Simplifier) Simplify() parser.Term {
 					F: sim,
 					S: p.GetPerformance(),
 				}
-			} else {
+
 				results <- utils.Tuple[parser.Term, int]{}
 			}
 		}(pattern)
