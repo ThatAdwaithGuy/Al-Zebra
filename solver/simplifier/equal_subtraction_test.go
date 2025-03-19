@@ -7,8 +7,8 @@ import (
 )
 
 func TestEqualSubtraction_GetPerformance(t *testing.T) {
-	_, performance := EqualSubtraction()
-	if  performance != 50 {
+	_, performance := EqualSubtraction(nil)
+	if performance != 50 {
 		t.Errorf("Performance = %v, want %v", performance, 50)
 	}
 }
@@ -53,14 +53,13 @@ func TestEqualSubtraction_GetSimplified(t *testing.T) {
 }
 
 func TestZeroOperation_GetPerformance(t *testing.T) {
-	zo := ZeroOperation{}
-	if got := zo.GetPerformance(); got != 25 {
+	_, got := ZeroOperation(nil)
+	if got != 25 {
 		t.Errorf("GetPerformance() = %v, want %v", got, 25)
 	}
 }
 
 func TestZeroOperation_GetSimplified(t *testing.T) {
-	zo := ZeroOperation{}
 	zero := parser.Constant{Value: 0}
 	five := parser.Constant{Value: 5}
 
@@ -126,7 +125,7 @@ func TestZeroOperation_GetSimplified(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := zo.GetSimplified(tt.input)
+			got, _ := ZeroOperation(tt.input)
 			if got != tt.expected {
 				t.Errorf("GetSimplified() = %v, want %v", got, tt.expected)
 			}

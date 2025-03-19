@@ -21,7 +21,7 @@ func TwoTermMerge(term parser.Term) (parser.Term, int) {
 	}
 }
 
-func checkVariable(term *parser.Term) bool {
+func constantOperation(term *parser.Term) bool {
 	add, isAdd := (*term).(parser.Addition)
 	if isAdd {
 		return parser.IsLeafNode(add.Lhs) != nil && parser.IsLeafNode(add.Rhs) != nil
@@ -53,7 +53,7 @@ func ExpandVariableConstantOperation(term parser.Term) (parser.Term, int) {
 		return nil, 50
 	}
 
-	if !checkVariable(&op.Rhs) {
+	if !constantOperation(&op.Rhs) {
 		return nil, 50
 	}
 
@@ -139,7 +139,18 @@ func ZeroOperation(term parser.Term) (parser.Term, int) {
 			return nil, 25
 		}
 	} else if isSub {
-		return sub.Lhs, 25
+		if sub.Lhs == zero {
+			return parser.Multiplication{
+				Lhs: parser.Constant{
+					Value: -1,
+				},
+				Rhs: sub.Rhs,
+			}, 25
+		} else if add.Rhs == zero {
+			return add.Lhs, 25
+		} else {
+			return nil, 25
+		}
 	} else if isMul {
 		return zero, 25
 	} else if isDiv {

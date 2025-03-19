@@ -5,7 +5,6 @@ import (
 
 	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/parser"
-	equalsubtraction "github.com/al-zebra/solver/simplifier/equal_subtraction"
 )
 
 type PointerTest struct {
@@ -29,9 +28,4 @@ func main() {
 		fmt.Println("ERROR: ", err.Error())
 	}
 	par.Debug()
-
-	pt := equalsubtraction.EqualSubtraction{}
-  simp := pt.GetSimplified(par.Lhs)
-  da := simp.(parser.Constant)
-	fmt.Println(da)
 }
