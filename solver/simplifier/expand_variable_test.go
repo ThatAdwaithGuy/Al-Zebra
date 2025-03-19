@@ -1,4 +1,4 @@
-package expandvariable
+package simplifier
 
 import (
 	"testing"
@@ -8,7 +8,6 @@ import (
 )
 
 func TestExpandVariableConstantPositive(t *testing.T) {
-	pattern := ExpandVariableConstantOperation{}
 	// 3(x+2)
 	actual := parser.Multiplication{
 		Lhs: parser.Constant{Value: 3},
@@ -18,22 +17,22 @@ func TestExpandVariableConstantPositive(t *testing.T) {
 		},
 	}
 
-  expected := parser.Addition{
-  	Lhs: parser.Multiplication{
-      Lhs: parser.Constant{Value: 3},
-  		Rhs: parser.Variable{Name: "x"},
-  	},
-  	Rhs: parser.Multiplication{
-      Lhs: parser.Constant{Value: 3},
-      Rhs: parser.Constant{Value: 2},
-  	},
-  }
+	expected := parser.Addition{
+		Lhs: parser.Multiplication{
+			Lhs: parser.Constant{Value: 3},
+			Rhs: parser.Variable{Name: "x"},
+		},
+		Rhs: parser.Multiplication{
+			Lhs: parser.Constant{Value: 3},
+			Rhs: parser.Constant{Value: 2},
+		},
+	}
 
-  assert.Equal(t, expected, pattern.GetSimplified(actual))
+	pattern, _ := ExpandVariableConstantOperation(actual)
+	assert.Equal(t, expected, pattern)
 }
 
 func TestExpandVariableConstantNegative(t *testing.T) {
-	pattern := ExpandVariableConstantOperation{}
 	// 3(x+2)
 	actual := parser.Addition{
 		Lhs: parser.Constant{Value: 3},
@@ -43,6 +42,6 @@ func TestExpandVariableConstantNegative(t *testing.T) {
 		},
 	}
 
-
-  assert.Nil(t, pattern.GetSimplified(actual))
+	pattern, _ := ExpandVariableConstantOperation(actual)
+	assert.Nil(t, pattern)
 }

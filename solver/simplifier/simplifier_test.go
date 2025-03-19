@@ -6,7 +6,6 @@ import (
 
 	"github.com/al-zebra/parser"
 	"github.com/stretchr/testify/assert"
-	// "github.com/stretchr/testify/assert"
 )
 
 type PatternMock struct {

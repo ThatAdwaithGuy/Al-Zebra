@@ -5,10 +5,7 @@ import (
 	"github.com/al-zebra/utils"
 )
 
-type Pattern interface {
-	GetPerformance() int
-	GetSimplified(parser.Term) parser.Term
-}
+type Pattern = func(parser.Term) (parser.Term, int)
 
 type Simplifier struct {
 	patterns []Pattern
@@ -33,9 +30,8 @@ func (s *Simplifier) matchPatternSequential() parser.Term {
 	bestPerformance := -1 * int(^uint(0)>>1)
 
 	for _, pattern := range s.patterns {
-		sim := pattern.GetSimplified(s.equation)
+		sim, performance := pattern(s.equation)
 		if sim != nil {
-			performance := pattern.GetPerformance()
 			if performance > bestPerformance {
 				bestPattern = sim
 				bestPerformance = performance
@@ -55,11 +51,11 @@ func (s *Simplifier) Simplify() parser.Term {
 	results := make(chan utils.Tuple[parser.Term, int], len(s.patterns))
 	for _, pattern := range s.patterns {
 		go func(p Pattern) {
-			sim := p.GetSimplified(s.equation)
+			sim, per := p(s.equation)
 			if sim != nil {
 				results <- utils.Tuple[parser.Term, int]{
 					F: sim,
-					S: p.GetPerformance(),
+					S: per,
 				}
 
 				results <- utils.Tuple[parser.Term, int]{}

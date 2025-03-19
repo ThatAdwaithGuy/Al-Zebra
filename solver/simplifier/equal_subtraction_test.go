@@ -1,4 +1,4 @@
-package equalsubtraction
+package simplifier
 
 import (
 	"testing"
@@ -7,14 +7,13 @@ import (
 )
 
 func TestEqualSubtraction_GetPerformance(t *testing.T) {
-	es := EqualSubtraction{}
-	if got := es.GetPerformance(); got != 50 {
-		t.Errorf("GetPerformance() = %v, want %v", got, 50)
+	_, performance := EqualSubtraction()
+	if  performance != 50 {
+		t.Errorf("Performance = %v, want %v", performance, 50)
 	}
 }
 
 func TestEqualSubtraction_GetSimplified(t *testing.T) {
-	es := EqualSubtraction{}
 	tests := []struct {
 		name     string
 		input    parser.Term
@@ -45,7 +44,7 @@ func TestEqualSubtraction_GetSimplified(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := es.GetSimplified(tt.input)
+			got, _ := EqualSubtraction(tt.input)
 			if got != tt.expected {
 				t.Errorf("GetSimplified() = %v, want %v", got, tt.expected)
 			}
