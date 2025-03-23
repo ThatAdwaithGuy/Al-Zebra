@@ -24,7 +24,7 @@ func (id testID) GetName() string {
 // TODO: Add more tests.
 func TestSimplifySquential(t *testing.T) {
 	patterns := []Pattern{
-		 func(term parser.Term) (parser.Term, int) {
+		func(term parser.Term) (parser.Term, int) {
 			_, isOp := term.(parser.Constant)
 			if !isOp {
 				return nil, 100
@@ -33,44 +33,35 @@ func TestSimplifySquential(t *testing.T) {
 				id: 0,
 			}, 100
 		},
-		{
-			id: 1,
-			matchFunc: func(term parser.Term) parser.Term {
-				_, isOp := term.(parser.Operation)
-				if !isOp {
-					return nil
-				}
-				return testID{
-					id: 1,
-				}
-			},
-			performance: 10,
+
+		func(term parser.Term) (parser.Term, int) {
+			_, isOp := term.(parser.Operation)
+			if !isOp {
+				return nil, 10
+			}
+			return testID{
+				id: 1,
+			}, 10
 		},
-		{
-			id: 2,
-			matchFunc: func(term parser.Term) parser.Term {
-				_, isOp := term.(parser.Multiplication)
-				if !isOp {
-					return nil
-				}
-				return testID{
-					id: 2,
-				}
-			},
-			performance: 20,
+
+		func(term parser.Term) (parser.Term, int) {
+			_, isOp := term.(parser.Multiplication)
+			if !isOp {
+				return nil, 20
+			}
+			return testID{
+				id: 2,
+			}, 20
 		},
-		{
-			id: 3,
-			matchFunc: func(term parser.Term) parser.Term {
-				_, isOp := term.(parser.Addition)
-				if !isOp {
-					return nil
-				}
-				return testID{
-					id: 3,
-				}
-			},
-			performance: 15,
+
+		func(term parser.Term) (parser.Term, int) {
+			_, isOp := term.(parser.Addition)
+			if !isOp {
+				return nil, 15
+			}
+			return testID{
+				id: 3,
+			}, 15
 		},
 	}
 
@@ -105,71 +96,55 @@ func TestSimplifySquential(t *testing.T) {
 }
 
 func TestSimplify(t *testing.T) {
-	patterns := []PatternMock{
-		{
-			id: 0,
-			matchFunc: func(term parser.Term) parser.Term {
-				_, isOp := term.(parser.Constant)
-				if !isOp {
-					return nil
-				}
-				return testID{
-					id: 0,
-				}
-			},
-			performance: 100,
+	patterns := []Pattern{
+		func(term parser.Term) (parser.Term, int) {
+			_, isOp := term.(parser.Constant)
+			if !isOp {
+				return nil, 100
+			}
+			return testID{
+				id: 0,
+			}, 100
 		},
-		{
-			id: 1,
-			matchFunc: func(term parser.Term) parser.Term {
-				_, isOp := term.(parser.Operation)
-				if !isOp {
-					return nil
-				}
-				return testID{
-					id: 1,
-				}
-			},
-			performance: 10,
+
+		func(term parser.Term) (parser.Term, int) {
+			_, isOp := term.(parser.Operation)
+			if !isOp {
+				return nil, 10
+			}
+			return testID{
+				id: 1,
+			}, 10
 		},
-		{
-			id: 2,
-			matchFunc: func(term parser.Term) parser.Term {
-				_, isOp := term.(parser.Multiplication)
-				if !isOp {
-					return nil
-				}
-				return testID{
-					id: 2,
-				}
-			},
-			performance: 20,
+
+		func(term parser.Term) (parser.Term, int) {
+			_, isOp := term.(parser.Multiplication)
+			if !isOp {
+				return nil, 20
+			}
+			return testID{
+				id: 2,
+			}, 20
 		},
-		{
-			id: 3,
-			matchFunc: func(term parser.Term) parser.Term {
-				_, isOp := term.(parser.Addition)
-				if !isOp {
-					return nil
-				}
-				return testID{
-					id: 3,
-				}
-			},
-			performance: 15,
+
+		func(term parser.Term) (parser.Term, int) {
+			_, isOp := term.(parser.Addition)
+			if !isOp {
+				return nil, 15
+			}
+			return testID{
+				id: 3,
+			}, 15
 		},
-		{
-			id: 4,
-			matchFunc: func(term parser.Term) parser.Term {
-				_, isOp := term.(parser.Subtraction)
-				if !isOp {
-					return nil
-				}
-				return testID{
-					id: 4,
-				}
-			},
-			performance: 14,
+
+		func(term parser.Term) (parser.Term, int) {
+			_, isOp := term.(parser.Subtraction)
+			if !isOp {
+				return nil, 14
+			}
+			return testID{
+				id: 4,
+			}, 14
 		},
 	}
 
