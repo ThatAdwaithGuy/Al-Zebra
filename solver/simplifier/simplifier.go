@@ -1,6 +1,8 @@
 package simplifier
 
 import (
+	"sync"
+
 	"github.com/al-zebra/parser"
 	"github.com/al-zebra/utils"
 )
@@ -49,8 +51,12 @@ func (s *Simplifier) Simplify() parser.Term {
 	}
 
 	results := make(chan utils.Tuple[parser.Term, int], len(s.patterns))
+	var wg sync.WaitGroup
+
 	for _, pattern := range s.patterns {
+		wg.Add(1)
 		go func(p Pattern) {
+			defer wg.Done()
 			sim, per := p(s.equation)
 			if sim != nil {
 				results <- utils.Tuple[parser.Term, int]{
@@ -62,6 +68,11 @@ func (s *Simplifier) Simplify() parser.Term {
 			}
 		}(pattern)
 	}
+
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
 
 	var bestPattern parser.Term
 	bestPerformance := -1 * int(^uint(0)>>1)
