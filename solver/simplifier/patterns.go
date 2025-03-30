@@ -130,6 +130,7 @@ func ZeroOperation(term parser.Term) (parser.Term, int) {
 	sub, isSub := term.(parser.Subtraction)
 	_, isMul := term.(parser.Multiplication)
 	div, isDiv := term.(parser.Division)
+  // TODO: Make this whole thing into a switch statement
 	if isAdd {
 		if add.Lhs == zero {
 			return add.Rhs, 25
@@ -146,8 +147,8 @@ func ZeroOperation(term parser.Term) (parser.Term, int) {
 				},
 				Rhs: sub.Rhs,
 			}, 25
-		} else if add.Rhs == zero {
-			return add.Lhs, 25
+		} else if sub.Rhs == zero {
+			return sub.Lhs, 25
 		} else {
 			return nil, 25
 		}
