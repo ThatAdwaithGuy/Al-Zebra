@@ -1,69 +1,58 @@
 package simplifier
 
 import (
-	"fmt"
-
 	"github.com/al-zebra/parser"
 )
 
 type SimplificationPattern interface {
-	IsValid(ast *parser.AST) bool
-	Solver(ast *parser.AST, fmtger *Logger)
+	IsValid(*parser.AST) bool
+	Solver(*parser.AST, *Logger)
 }
 
 type BasicAlgebra struct{}
 
-func helper(t parser.Term, terms *[]parser.Term) {
+func helper(t parser.Term) bool {
 	if t == nil {
-		return
+		return false
 	}
-
-	(*terms) = append((*terms), t)
+  if _, v := t.(parser.Variable); v {
+    return true
+  }
 
 	if op, isOp := t.(parser.Operation); isOp {
-		(*terms) = append((*terms), op)
-		helper(*op.GetLhs(), terms)
-		helper(*op.GetRhs(), terms)
+		return helper(*op.GetLhs()) || helper(*op.GetRhs())
 	}
+  return false
 }
 
 func hasVariable(term parser.Term) bool {
-	terms := []parser.Term{}
+	return helper(term)
+}
 
-	helper(term, &terms)
-
-	fmt.Println(terms)
-
-	for _, t := range terms {
-		if _, isVari := t.(parser.Variable); isVari {
-			return true
-		}
+func isValidHelper(t parser.Term) bool {
+	if t == nil {
+		return true 
 	}
 
-	return false
+	if op, isOp := t.(parser.Operation); isOp {
+		if exp, isExp := op.(parser.Exponentiation); isExp {
+      return !hasVariable(exp)
+		}
+		if exp, isExp := op.(parser.Root); isExp {
+      return !hasVariable(exp)
+		}
+
+		return isValidHelper(*op.GetLhs()) && isValidHelper(*op.GetRhs())
+		
+	}
+
+	return true 
 }
 
 func (_ BasicAlgebra) IsValid(ast *parser.AST) bool {
-	stack := []parser.Term{ast.Lhs, ast.Rhs}
-	for len(stack) > 0 {
-		fmt.Println("before", stack)
-		term := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
-		fmt.Println(stack)
-		if op, isOp := term.(parser.Operation); isOp {
-			if exp, isExp := op.(parser.Exponentiation); isExp {
-				if hasVariable(exp) {
-					return false
-				}
-			}
-			if exp, isExp := op.(parser.Root); isExp {
-				if hasVariable(exp) {
-					return false
-				}
-			}
-			stack = append(stack, *op.GetLhs())
-			stack = append(stack, *op.GetRhs())
-		}
-	}
-	return true
+	// TODO OPTIMIZATION: Can extract Lhs checker to stop the redundent Rhs check.
+	return isValidHelper(ast.Lhs) && isValidHelper(ast.Rhs)
 }
+
+
+
