@@ -33,6 +33,8 @@ func MultiplyPass(tokens []lexer.Token) []lexer.Token {
 type AST struct {
 	Lhs Term
 	Rhs Term
+  LhsRPN RPN
+  RhsRPN RPN
 }
 
 func helperDebug(term Term, level int) {
@@ -94,6 +96,8 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 	ast := AST{
 		Lhs: *lhsTree,
 		Rhs: *rhsTree,
+    LhsRPN: lhsRPN,
+    RhsRPN: rhsRPN,
 	}
 
 	return &ast, nil

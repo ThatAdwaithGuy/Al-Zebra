@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/al-zebra/lexer"
-	"github.com/al-zebra/parser"
 )
 
 type PointerTest struct {
@@ -21,11 +20,6 @@ func (pt *PointerTest) GetBye() *string {
 }
 
 func main() {
-	ex := "1-1=10+x"
-	lex := lexer.New(ex)
-	par, err := parser.Parse(*lex)
-	if err != nil {
-		fmt.Println("ERROR: ", err.Error())
-	}
-	par.Debug()
+  fmt.Println( int(lexer.NUMBER) )
 }
+

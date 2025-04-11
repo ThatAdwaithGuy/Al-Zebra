@@ -28,6 +28,7 @@ func visualizeConstants(t parser.Term) (string, error) {
 	return "", fmt.Errorf("Bad term")
 }
 
+
 func (v AsciiVisualization) Visualize() string {
 	return ""
 }

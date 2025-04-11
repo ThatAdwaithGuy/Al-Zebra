@@ -11,11 +11,11 @@ import (
 )
 
 type RPN struct {
-	tokens []lexer.Token
+	Tokens []lexer.Token
 }
 
 func (rpn *RPN) Debug() {
-	fmt.Println("RPN tokens: ", rpn.tokens)
+	fmt.Println("RPN tokens: ", rpn.Tokens)
 }
 
 func handleOperation(first, second *string, op func(int, int) int) (string, error) {
@@ -31,7 +31,6 @@ func handleOperation(first, second *string, op func(int, int) int) (string, erro
 	}
 
 	secondNumber, err := strconv.Atoi(*second)
-
 	if err != nil {
 		return "", fmt.Errorf("This error is not meant to be seen. As the error checking is already done above. Error:\n%s", err.Error())
 	}
@@ -43,7 +42,7 @@ func handleOperation(first, second *string, op func(int, int) int) (string, erro
 
 func (tokens RPN) Evaluate() ([]string, error) {
 	var stack utils.Stack[string]
-	for _, token := range tokens.tokens {
+	for _, token := range tokens.Tokens {
 		switch token.Type {
 		case lexer.DIVIDE:
 			function := func(f, s int) int {
@@ -109,69 +108,67 @@ func (tokens RPN) Evaluate() ([]string, error) {
 }
 
 func Conversion(tokens []lexer.Token) RPN {
-    // Initialize precedence map
-    precedence := map[lexer.TokenType]int{
-        lexer.PLUS:     2,
-        lexer.MINUS:    2,
-        lexer.MULTIPLY: 3,
-        lexer.DIVIDE:   3,
-        lexer.ROOT:     4,
-        lexer.EXPONENTIATION:     4,
-    }
+	// Initialize precedence map
+	precedence := map[lexer.TokenType]int{
+		lexer.PLUS:           2,
+		lexer.MINUS:          2,
+		lexer.MULTIPLY:       3,
+		lexer.DIVIDE:         3,
+		lexer.ROOT:           4,
+		lexer.EXPONENTIATION: 4,
+	}
 
-    var result []lexer.Token
-    var operationStack []lexer.Token
+	var result []lexer.Token
+	var operationStack []lexer.Token
 
-    for _, token := range tokens {
+	for _, token := range tokens {
+		switch token.Type {
+		case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE:
+			for len(operationStack) > 0 {
+				top := operationStack[len(operationStack)-1]
+				if top.Type == lexer.LEFT_PAREN || precedence[top.Type] < precedence[token.Type] {
+					break
+				}
+				result = append(result, operationStack[len(operationStack)-1])
+				operationStack = operationStack[:len(operationStack)-1]
+			}
+			operationStack = append(operationStack, token)
 
-        switch token.Type {
-        case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE:
-            for len(operationStack) > 0 {
-                top := operationStack[len(operationStack)-1]
-                if top.Type == lexer.LEFT_PAREN || precedence[top.Type] < precedence[token.Type] {
-                    break
-                }
-                result = append(result, operationStack[len(operationStack)-1])
-                operationStack = operationStack[:len(operationStack)-1]
-            }
-            operationStack = append(operationStack, token)
+		case lexer.ROOT, lexer.EXPONENTIATION:
+			for len(operationStack) > 0 {
+				top := operationStack[len(operationStack)-1]
+				if top.Type == lexer.LEFT_PAREN || precedence[top.Type] < precedence[lexer.ROOT] {
+					break
+				}
+				result = append(result, operationStack[len(operationStack)-1])
+				operationStack = operationStack[:len(operationStack)-1]
+			}
+			operationStack = append(operationStack, token)
 
-        case lexer.ROOT, lexer.EXPONENTIATION:
-            for len(operationStack) > 0 {
-                top := operationStack[len(operationStack)-1]
-                if top.Type == lexer.LEFT_PAREN || precedence[top.Type] < precedence[lexer.ROOT] {
-                    break
-                }
-                result = append(result, operationStack[len(operationStack)-1])
-                operationStack = operationStack[:len(operationStack)-1]
-            }
-            operationStack = append(operationStack, token)
+		case lexer.LEFT_PAREN:
+			operationStack = append(operationStack, token)
 
-        case lexer.LEFT_PAREN:
-            operationStack = append(operationStack, token)
+		case lexer.RIGHT_PAREN:
+			for len(operationStack) > 0 && operationStack[len(operationStack)-1].Type != lexer.LEFT_PAREN {
+				result = append(result, operationStack[len(operationStack)-1])
+				operationStack = operationStack[:len(operationStack)-1]
+			}
+			if len(operationStack) > 0 && operationStack[len(operationStack)-1].Type == lexer.LEFT_PAREN {
+				operationStack = operationStack[:len(operationStack)-1] // Remove LEFT_PAREN
+			}
 
-        case lexer.RIGHT_PAREN:
-            for len(operationStack) > 0 && operationStack[len(operationStack)-1].Type != lexer.LEFT_PAREN {
-                result = append(result, operationStack[len(operationStack)-1])
-                operationStack = operationStack[:len(operationStack)-1]
-            }
-            if len(operationStack) > 0 && operationStack[len(operationStack)-1].Type == lexer.LEFT_PAREN {
-                operationStack = operationStack[:len(operationStack)-1] // Remove LEFT_PAREN
-            }
+		case lexer.NUMBER, lexer.VARIABLE:
+			result = append(result, token)
+		}
+	}
 
-        case lexer.NUMBER, lexer.VARIABLE:
-            result = append(result, token)
-        }
-    }
+	// Pop remaining operators to result
+	for len(operationStack) > 0 {
+		result = append(result, operationStack[len(operationStack)-1])
+		operationStack = operationStack[:len(operationStack)-1]
+	}
 
-    // Pop remaining operators to result
-    for len(operationStack) > 0 {
-        result = append(result, operationStack[len(operationStack)-1])
-        operationStack = operationStack[:len(operationStack)-1]
-    }
-
-    return RPN{
-        tokens: result,
-    }
+	return RPN{
+		Tokens: result,
+	}
 }
-

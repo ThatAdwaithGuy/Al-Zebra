@@ -10,7 +10,7 @@ import (
 
 func Treeify(tokens RPN) *Term {
 	var stack utils.Stack[Term]
-	for _, tok := range tokens.tokens {
+	for _, tok := range tokens.Tokens {
 		switch tok.Type {
     case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT, lexer.EXPONENTIATION:
 			t := OperationBuilder(tok.Type, *stack.PopBack(), *stack.PopBack())
