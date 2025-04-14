@@ -161,7 +161,9 @@ func (l *Lexer) NextToken() Token {
 
 // TokenizeAll returns all tokens in the input
 func (l *Lexer) TokenizeAll() []Token {
+
 	var tokens []Token
+  
 	for {
 		tok := l.NextToken()
 		tokens = append(tokens, tok)

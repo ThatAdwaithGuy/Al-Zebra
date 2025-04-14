@@ -6,7 +6,6 @@ import (
 	"github.com/al-zebra/lexer"
 )
 
-
 func TestRpn(t *testing.T) {
   ex := "x^2+1=10"
   lx := lexer.New(ex)
