@@ -27,5 +27,5 @@ func (v AsciiVisualization) Visualize() ( string ,error) {
   return t.StringVisualization()
   }), "")
   
-  return fmt.Sprintf("%s = %s", lhsVis, rhsVis), nil
+  return fmt.Sprintf("%s=%s", lhsVis, rhsVis), nil
 }
