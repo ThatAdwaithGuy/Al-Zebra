@@ -41,10 +41,34 @@ func (t TokenType) String() string {
 	}[t]
 }
 
+func (t TokenType) StringVisualization() string {
+	return [...]string{
+		"NUMBER",
+		"+",
+		"-",
+		"*",
+		"/",
+		"root",
+    "^",
+		"EQUALS",
+		"LEFT_PAREN",
+		"RIGHT_PAREN",
+		"VARIABLE", 
+		"EOF",
+	}[t]
+}
+
 // Token represents a lexical token
 type Token struct {
 	Type  TokenType
 	Value string
+}
+
+func (t Token) StringVisualization() string {
+	if t.Value != "" {
+		return t.Value
+  }
+	return t.Type.StringVisualization()
 }
 
 // String returns a string representation of the token

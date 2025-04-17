@@ -2,8 +2,11 @@ package ascii
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/parser"
+	"github.com/al-zebra/utils"
 )
 
 type AsciiVisualization struct {
@@ -15,20 +18,14 @@ func New(ast *parser.AST) AsciiVisualization {
 		ast: ast,
 	}
 }
+func (v AsciiVisualization) Visualize() ( string ,error) {
+  lhsVis := strings.Join(utils.Map( v.ast.LhsTokens , func(t lexer.Token) string { 
+  return t.StringVisualization()
+  }), "")
 
-func visualizeConstants(t parser.Term) (string, error) {
-	switch c := t.(type) {
-	case parser.Constant:
-		return fmt.Sprintf("%g", c.Value), nil
-	case parser.Variable:
-		return c.Name, nil
-	case parser.Operation:
-		return "", fmt.Errorf("Passed in invalid type of parser")
-	}
-	return "", fmt.Errorf("Bad term")
-}
-
-
-func (v AsciiVisualization) Visualize() string {
-	return ""
+  rhsVis := strings.Join(utils.Map( v.ast.RhsTokens , func(t lexer.Token) string { 
+  return t.StringVisualization()
+  }), "")
+  
+  return fmt.Sprintf("%s = %s", lhsVis, rhsVis), nil
 }
