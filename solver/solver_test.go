@@ -26,7 +26,7 @@ func TestCarry(t *testing.T) {
 	}
 	var threex parser.Multiplication
 	*threex.GetLhs() = parser.Variable{
-		Name: "x",
+		Value: "x",
 	}
 	*threex.GetRhs() = parser.Constant{
 		Value: 3,

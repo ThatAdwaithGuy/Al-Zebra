@@ -27,7 +27,7 @@ func Treeify(tokens RPN) *Term {
 
 		case lexer.VARIABLE:
 			t := Variable{
-				Name: tok.Value,
+				Value: tok.Value,
 			}
 			stack.PushFront(t)
 		}

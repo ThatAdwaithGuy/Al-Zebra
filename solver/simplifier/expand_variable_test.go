@@ -12,7 +12,7 @@ func TestExpandVariableConstantPositive(t *testing.T) {
 	actual := parser.Multiplication{
 		Lhs: parser.Constant{Value: 3},
 		Rhs: parser.Addition{
-			Lhs: parser.Variable{Name: "x"},
+			Lhs: parser.Variable{Value: "x"},
 			Rhs: parser.Constant{Value: 2},
 		},
 	}
@@ -20,7 +20,7 @@ func TestExpandVariableConstantPositive(t *testing.T) {
 	expected := parser.Addition{
 		Lhs: parser.Multiplication{
 			Lhs: parser.Constant{Value: 3},
-			Rhs: parser.Variable{Name: "x"},
+			Rhs: parser.Variable{Value: "x"},
 		},
 		Rhs: parser.Multiplication{
 			Lhs: parser.Constant{Value: 3},
@@ -37,7 +37,7 @@ func TestExpandVariableConstantNegative(t *testing.T) {
 	actual := parser.Addition{
 		Lhs: parser.Constant{Value: 3},
 		Rhs: parser.Addition{
-			Lhs: parser.Variable{Name: "x"},
+			Lhs: parser.Variable{Value: "x"},
 			Rhs: parser.Constant{Value: 2},
 		},
 	}

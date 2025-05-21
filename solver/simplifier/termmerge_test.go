@@ -9,22 +9,22 @@ import (
 
 func TestMatchPositive(t *testing.T) {
 	testTerm := parser.Addition{
-		Lhs: parser.Variable{Name: "x"},
-		Rhs: parser.Variable{Name: "x"},
+		Lhs: parser.Variable{Value: "x"},
+		Rhs: parser.Variable{Value: "x"},
 	}
 
 	twoTerm, _ := TwoTermMerge(testTerm)
 
 	assert.Equalf(t, parser.Multiplication{
-		Lhs: parser.Variable{Name: "x"},
+		Lhs: parser.Variable{Value: "x"},
 		Rhs: parser.Constant{Value: 2},
 	}, twoTerm, "Should be equal")
 }
 
 func TestMatchNegative(t *testing.T) {
 	testTerm := parser.Addition{
-		Lhs: parser.Variable{Name: "y"},
-		Rhs: parser.Variable{Name: "x"},
+		Lhs: parser.Variable{Value: "y"},
+		Rhs: parser.Variable{Value: "x"},
 	}
 
 	twoTerm, _ := TwoTermMerge(testTerm)

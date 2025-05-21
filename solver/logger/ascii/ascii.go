@@ -2,11 +2,9 @@ package ascii
 
 import (
 	"fmt"
-	"strings"
 
-	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/parser"
-	"github.com/al-zebra/utils"
+	"github.com/charmbracelet/bubbles/help"
 )
 
 type AsciiVisualization struct {
@@ -18,14 +16,45 @@ func New(ast *parser.AST) AsciiVisualization {
 		ast: ast,
 	}
 }
-func (v AsciiVisualization) Visualize() ( string ,error) {
-  lhsVis := strings.Join(utils.Map( v.ast.LhsTokens , func(t lexer.Token) string { 
-  return t.StringVisualization()
-  }), "")
 
-  rhsVis := strings.Join(utils.Map( v.ast.RhsTokens , func(t lexer.Token) string { 
-  return t.StringVisualization()
-  }), "")
-  
-  return fmt.Sprintf("%s=%s", lhsVis, rhsVis), nil
+func precedence(term parser.Term) int {
+	switch expr.(type) {
+	case parser.Addition, parser.Subtraction:
+		return 1 
+	case parser.Multiplication, parser.Division:
+		return 2 
+	case parser.Exponentiation, parser.Root:
+		return 3
+	default:
+		return -1
+	}
+}
+
+
+func helper(term parser.Term, prevPrec int) (string, error) {
+  leaf_term := parser.IsLeafNode(term)
+  if leaf_term != nil {
+    switch v := leaf_term.(type) {
+    case parser.Constant: 
+      return fmt.Sprintf("%g", v .Value ), nil
+    case parser.Variable: 
+      return v.Value, nil
+    }  
+  }
+  s := "" 
+  currPrec = precedence(term)
+  switch v := term.(type) {
+  case parser.Addition:
+    s = fmt.Sp
+  case parser.Subtraction:
+  case parser.Multiplication:
+  case parser.Division:
+  case parser.Exponentiation:
+  case parser.Root:
+  }
+
+}
+
+func (v AsciiVisualization) Visualize() (string, error) {
+  return "", nil
 }

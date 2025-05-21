@@ -33,8 +33,6 @@ func MultiplyPass(tokens []lexer.Token) []lexer.Token {
 type AST struct {
 	Lhs Term
 	Rhs Term
-  LhsTokens []lexer.Token
-  RhsTokens []lexer.Token
 }
 
 func helperDebug(term Term, level int) {
@@ -87,7 +85,7 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 		}
 	}
 
-	lhsRPN := Conversion(lhs)
+  lhsRPN := Conversion(lhs)
 	rhsRPN := Conversion(rhs)
 
 	lhsTree := Treeify(lhsRPN)
@@ -96,8 +94,6 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 	ast := AST{
 		Lhs: *lhsTree,
 		Rhs: *rhsTree,
-    LhsTokens: lhs,
-    RhsTokens: rhs,
 	}
 
 	return &ast, nil
@@ -110,7 +106,7 @@ type Term interface {
 }
 
 type Variable struct {
-	Name string
+	Value string
 }
 
 func (v Variable) IsTerm() bool {
@@ -118,7 +114,7 @@ func (v Variable) IsTerm() bool {
 }
 
 func (v Variable) GetName() string {
-	return v.Name
+	return v.Value
 }
 
 // A constant number. like 1, 2, 1.2, 1.5

@@ -15,7 +15,7 @@ func TestHasVariable(t *testing.T) {
 				Value: 3,
 			},
 			Rhs: parser.Variable{
-				Name: "x",
+				Value: "x",
 			},
 		},
 		Rhs: parser.Constant{
@@ -42,7 +42,7 @@ func TestBasicAlzebraPass(t *testing.T) {
 				Value: 3,
 			},
 			Rhs: parser.Variable{
-				Name: "x",
+				Value: "x",
 			},
 		},
 		Rhs: parser.Constant{
@@ -71,7 +71,7 @@ func TestBasicAlzebraFailExp(t *testing.T) {
 				Value: 3,
 			},
 			Rhs: parser.Variable{
-				Name: "x",
+				Value: "x",
 			},
 		},
 		Rhs: parser.Constant{
@@ -98,14 +98,14 @@ func TestBasicAlzebraFailRoot(t *testing.T) {
 		Lhs: parser.Root{
 			Lhs: parser.Subtraction{
 				Lhs: parser.Variable{
-					Name: "x",
+					Value: "x",
 				},
 				Rhs: parser.Constant{
 					Value: 4,
 				},
 			},
 			Rhs: parser.Variable{
-				Name: "x",
+				Value: "x",
 			},
 		},
 		Rhs: parser.Constant{

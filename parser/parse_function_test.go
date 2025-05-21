@@ -20,7 +20,7 @@ func TestParseSimple(t *testing.T) {
 			Value: 3,
 		},
 		Rhs: Variable{
-			Name: "x",
+			Value: "x",
 		},
 	}
 
@@ -56,7 +56,7 @@ func TestParseSimple2(t *testing.T) {
 			Value: 3,
 		},
 		Rhs: Variable{
-			Name: "x",
+			Value: "x",
 		},
 	}
 
