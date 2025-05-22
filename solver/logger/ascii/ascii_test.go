@@ -8,17 +8,33 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestConversion(t *testing.T)  {
-  ex := "3x+1=10"
-  lexer := lexer.New(ex)
-  ast, err := parser.Parse(*lexer)
-  if err != nil {
-    return 
-  }
-  asc := AsciiVisualization{ast:ast}
-  vis, err := asc.Visualize()
-  if err != nil {
-    return 
-  }
-  assert.Equal(t, "ad",  vis, "WRONG")
+func TestConversionSimplePass(t *testing.T) {
+	ex := "3x+1=10"
+	lexer := lexer.New(ex)
+	ast, err := parser.Parse(*lexer)
+	if err != nil {
+		return
+	}
+	asc := AsciiVisualization{ast: ast}
+	vis, err := asc.Visualize()
+	if err != nil {
+		return
+	}
+	assert.Equal(t, "3 * x + 1 = 10", vis, "WRONG")
+}
+
+func TestConversionComplexPass(t *testing.T) {
+	ex := "3 * (10 + x)=10"
+	lexer := lexer.New(ex)
+	ast, err := parser.Parse(*lexer)
+	if err != nil {
+		return
+	}
+
+	asc := AsciiVisualization{ast: ast}
+	vis, err := asc.Visualize()
+	if err != nil {
+		return
+	}
+	assert.Equal(t, "x * (x + 1) = 10", vis, "WRONG")
 }
