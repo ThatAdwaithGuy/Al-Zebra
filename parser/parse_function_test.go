@@ -77,3 +77,37 @@ func TestParseSimple2(t *testing.T) {
 
 	assert.Equal(t, &ast, par)
 }
+
+
+func TestParseComplex(t *testing.T) {
+	ex := "x*(x+1)=10"
+	lex := lexer.New(ex)
+	par, err := Parse(*lex)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	mul := Addition{
+		Lhs: Variable{
+			Value: "x",
+		},
+		Rhs: Constant{
+			Value:1 ,
+		},
+	}
+
+	add := Multiplication{
+    Lhs: Variable{Value: "x"},
+		Rhs: mul,
+	}
+
+	rhs := Constant{Value: 10}
+
+	ast := AST{
+		Lhs: add,
+		Rhs: rhs,
+	}
+  ast.Debug()
+
+	assert.Equal(t, &ast, par)
+}

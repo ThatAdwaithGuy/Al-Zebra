@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/al-zebra/lexer"
@@ -60,7 +61,7 @@ const DEBUG = true
 
 func Parse(lex lexer.Lexer) (*AST, error) {
 	tokens := lex.TokenizeAll()
-
+	log.Println(tokens)
 	// Validation
 	valid := validation.Validation(tokens)
 	isValid := valid.IsValid()
@@ -88,8 +89,10 @@ func Parse(lex lexer.Lexer) (*AST, error) {
   lhsRPN := Conversion(lhs)
 	rhsRPN := Conversion(rhs)
 
+
 	lhsTree := Treeify(lhsRPN)
 	rhsTree := Treeify(rhsRPN)
+  
 
 	ast := AST{
 		Lhs: *lhsTree,

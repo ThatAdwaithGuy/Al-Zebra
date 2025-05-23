@@ -42,7 +42,6 @@ func helper(term parser.Term, prevPrec int) string {
 
 	s := ""
 	currPrec := precedence(term)
-	fmt.Println(term, currPrec, prevPrec)
 
 	switch v := term.(type) {
 	case parser.Addition:
