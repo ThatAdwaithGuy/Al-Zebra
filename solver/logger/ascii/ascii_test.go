@@ -24,7 +24,7 @@ func TestConversionSimplePass(t *testing.T) {
 }
 
 func TestConversionComplexPass(t *testing.T) {
-	ex := "3 * (10 + x)=10"
+	ex := "x * (x + 1 ) = 10"
 	lexer := lexer.New(ex)
 	ast, err := parser.Parse(*lexer)
 	if err != nil {
