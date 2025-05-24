@@ -6,7 +6,8 @@ import (
 	"github.com/al-zebra/parser"
 	"github.com/al-zebra/utils"
 )
-
+// A pattern is a function which modifies a given term
+// if the returned term is nil, that indicates that the pattern is not applicable on the term
 type Pattern = func(parser.Term) (parser.Term, int)
 
 type Simplifier struct {
@@ -29,6 +30,7 @@ func (s *Simplifier) Register(p Pattern) {
 
 func (s *Simplifier) matchPatternSequential() parser.Term {
 	var bestPattern parser.Term
+  // int(^uint(0)>>1) = largest integer 
 	bestPerformance := -1 * int(^uint(0)>>1)
 
 	for _, pattern := range s.patterns {
@@ -77,7 +79,8 @@ func (s *Simplifier) Simplify() parser.Term {
 	var bestPattern parser.Term
 	bestPerformance := -1 * int(^uint(0)>>1)
 
-	for i := 0; i < len(s.patterns); i++ {
+  // Wow, a new for-loop feature
+	for range s.patterns {
 		result := <-results
 		if result.F != nil && result.S > bestPerformance {
 			bestPattern = result.F
