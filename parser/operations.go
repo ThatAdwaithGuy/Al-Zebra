@@ -2,6 +2,7 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 	"math"
 
 	"github.com/al-zebra/lexer"
@@ -12,19 +13,59 @@ func IsLeafNode(term Term) Term {
 	c, isConstant := term.(Constant)
 	v, isVariable := term.(Variable)
 
-  if isConstant {
-    return c
-  } else if isVariable {
-    return v
-  } else {
-    return nil
-  }
+	if isConstant {
+		return c
+	} else if isVariable {
+		return v
+	} else {
+		return nil
+	}
 }
 
 // Just a bunch of errors
 type UnhandledTermError struct{}
 
 // Some helper function
+// Return EOF if a non-operation term is given
+func TermToTokenType(term Operation) lexer.TokenType {
+	switch term.(type) {
+	case Addition:
+		return lexer.PLUS
+	case Subtraction:
+		return lexer.MINUS
+	case Multiplication:
+		return lexer.MULTIPLY
+	case Division:
+		return lexer.DIVIDE
+	case Exponentiation:
+		return lexer.EXPONENTIATION
+	case Root:
+		return lexer.ROOT
+	}
+	// SAFTY:
+	// The switch statement is exhauted. meaning there is not other brach to brach off from.
+	panic("if you see this, then a new operation is added but this function is not updated.")
+}
+
+// If this function returns EOF, that indicates a invalid token type given.
+func OppositeTokenType(tt lexer.TokenType) lexer.TokenType {
+	switch tt {
+	case lexer.PLUS:
+		return lexer.MINUS
+	case lexer.MINUS:
+		return lexer.PLUS
+	case lexer.MULTIPLY:
+		return lexer.DIVIDE
+	case lexer.DIVIDE:
+		return lexer.MULTIPLY
+	case lexer.EXPONENTIATION:
+		return lexer.ROOT
+	case lexer.ROOT:
+		return lexer.EXPONENTIATION
+	}
+
+	return lexer.EOF
+}
 
 // Returns nil if tt is not a operation
 func OperationBuilder(tt lexer.TokenType, lhs, rhs Term) Term {

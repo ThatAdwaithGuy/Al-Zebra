@@ -3,7 +3,6 @@ package simplifier
 import (
 	"github.com/al-zebra/parser"
 	"github.com/al-zebra/solver/logger"
-	"github.com/al-zebra/solver/logger/ascii"
 )
 
 // A interface to create a generic way to solve different "patterns" (forms of equations).
@@ -67,7 +66,7 @@ func (_ BasicAlgebra) IsValid(ast *parser.AST) bool {
 // Transfer the top-most term to the opposite side.
 func transferTerm(ast *parser.AST) *parser.AST {
 	if parser.IsLeafNode(ast.Lhs) != nil {
-		// TODO
+  
 	}
 	if parser.IsLeafNode(ast.Rhs) != nil {
 		//TODO
