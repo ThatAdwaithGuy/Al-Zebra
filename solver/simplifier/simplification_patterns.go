@@ -63,11 +63,20 @@ func (_ BasicAlgebra) IsValid(ast *parser.AST) bool {
 	return isValidHelper(ast.Lhs) && isValidHelper(ast.Rhs)
 }
 
+
 // Transfer the top-most term to the opposite side.
-func transferTerm(ast *parser.AST) *parser.AST {
+func transferTermLtoR(ast *parser.AST) *parser.AST {
+  if lhs, rhs := parser.IsLeafNode(ast.Lhs), parser.IsLeafNode(ast.Rhs); lhs != nil && rhs != nil && lhs != rhs  {
+    // This is a logical error as if this brank is entered it means that, two constant are equal (in the equation) but not actually equal.
+    // Thats why we are returning nil here as it cannot be processed.
+    return nil
+  }
+
 	if parser.IsLeafNode(ast.Lhs) != nil {
-  
+    // rhs is required to be a operation due to the logic-gate above.
+    rhsOperationType, err := 
 	}
+
 	if parser.IsLeafNode(ast.Rhs) != nil {
 		//TODO
 	}
