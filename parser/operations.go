@@ -2,7 +2,6 @@ package parser
 
 import (
 	"errors"
-	"fmt"
 	"math"
 
 	"github.com/al-zebra/lexer"
