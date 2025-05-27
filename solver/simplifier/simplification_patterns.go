@@ -112,15 +112,28 @@ func transferTermRtoL(ast *parser.AST) *parser.AST {
     // Lhs operation token type (lexer)
     lhsOptt := parser.TermToTokenType(lhsOp)
     opposite := parser.OppositeTokenType(lhsOptt)
-    // x = 3*y 
-    // x/y = 3
     operation := parser.OperationBuilder(opposite, ast.Lhs, *lhsOp.GetRhs())
     return &parser.AST{
     	Lhs: operation,
     	Rhs: *lhsOp.GetRhs(),
     }
 	}
-	return nil
+  
+		// rhs is required to be a operation due to the logic-gate above.
+    rhsOp, err := ast.Rhs.(parser.Operation)
+    if !err {
+      // SAFTY: This branch of logic is already dealt above
+      panic("This should not be raised")
+    }
+    // Rhs operation token type (lexer)
+    rhsOptt := parser.TermToTokenType(rhsOp)
+    opposite := parser.OppositeTokenType(rhsOptt)
+    operation := parser.OperationBuilder(opposite, ast.Lhs, *rhsOp.GetRhs())
+    return &parser.AST{
+    	Lhs: operation,
+    	Rhs: *rhsOp.GetLhs(),
+    }
+
 }
 
 func (_ BasicAlgebra) Solver(ast *parser.AST, logger *logger.Logger) {
