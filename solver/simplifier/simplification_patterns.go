@@ -64,18 +64,31 @@ func (_ BasicAlgebra) IsValid(ast *parser.AST) bool {
 }
 
 // Transfer the top-most term to the opposite side.
-func transferTermRtoL(ast *parser.AST) *parser.AST {
-	leafLhs, isVariableLhs := parser.IsLeafNode(ast.Lhs).(parser.Variable)
-	leafRhs, isConstantRhs := parser.IsLeafNode(ast.Rhs).(parser.Constant)
+func transferTermRtoL(ast *parser.AST, transferLhs bool) *parser.AST {
+	leafVariableLhs, isVariableLhs := parser.IsLeafNode(ast.Lhs).(parser.Variable)
+	leafConstantRhs, isConstantRhs := parser.IsLeafNode(ast.Rhs).(parser.Constant)
+	leafConstantLhs, isConstantLhs := parser.IsLeafNode(ast.Lhs).(parser.Constant)
+	leafVariableRhs, isVariableRhs := parser.IsLeafNode(ast.Rhs).(parser.Variable)
 
 	if isVariableLhs && isConstantRhs {
 		// Any equation in form like "x = 2" will be turned to "x-2=0"
 		return &parser.AST{
 			Lhs: parser.Subtraction{
-				Lhs: leafLhs,
-				Rhs: leafRhs,
+				Lhs: leafVariableLhs,
+				Rhs: leafConstantRhs,
 			},
 			Rhs: parser.Constant{Value: 0},
+		}
+	}
+
+	if isVariableRhs && isConstantLhs {
+		// Any equation in form like "x = 2" will be turned to "x-2=0"
+		return &parser.AST{
+			Rhs: parser.Constant{Value: 0},
+			Lhs: parser.Subtraction{
+				Lhs: leafConstantLhs,
+				Rhs: leafVariableRhs,
+			},
 		}
 	}
 
@@ -87,52 +100,63 @@ func transferTermRtoL(ast *parser.AST) *parser.AST {
 
 	if parser.IsLeafNode(ast.Lhs) != nil {
 		// rhs is required to be a operation due to the logic-gate above.
-    rhsOp, err := ast.Rhs.(parser.Operation)
-    if !err {
-      // SAFTY: This branch of logic is already dealt above
-      panic("This should not be raised")
-    }
-    // Rhs operation token type (lexer)
-    rhsOptt := parser.TermToTokenType(rhsOp)
-    opposite := parser.OppositeTokenType(rhsOptt)
-    operation := parser.OperationBuilder(opposite, ast.Lhs, *rhsOp.GetRhs())
-    return &parser.AST{
-    	Lhs: operation,
-    	Rhs: *rhsOp.GetLhs(),
-    }
+		rhsOp, err := ast.Rhs.(parser.Operation)
+		if !err {
+			// SAFTY: This branch of logic is already dealt above
+			panic("This should not be raised")
+		}
+		// Rhs operation token type (lexer)
+		rhsOptt := parser.TermToTokenType(rhsOp)
+		opposite := parser.OppositeTokenType(rhsOptt)
+		operation := parser.OperationBuilder(opposite, ast.Lhs, *rhsOp.GetRhs())
+		return &parser.AST{
+			Lhs: operation,
+			Rhs: *rhsOp.GetLhs(),
+		}
 	}
 
 	if parser.IsLeafNode(ast.Rhs) != nil {
 		// lhs is required to be a operation due to the logic-gate above.
-    lhsOp, err := ast.Lhs.(parser.Operation)
-    if !err {
-      // SAFTY: This branch of logic is already dealt above
-      panic("This should not be raised")
-    }
-    // Lhs operation token type (lexer)
-    lhsOptt := parser.TermToTokenType(lhsOp)
-    opposite := parser.OppositeTokenType(lhsOptt)
-    operation := parser.OperationBuilder(opposite, ast.Lhs, *lhsOp.GetRhs())
-    return &parser.AST{
-    	Lhs: operation,
-    	Rhs: *lhsOp.GetRhs(),
-    }
+		lhsOp, err := ast.Lhs.(parser.Operation)
+		if !err {
+			// SAFTY: This branch of logic is already dealt above
+			panic("This should not be raised")
+		}
+
+		switch lhsOp.(type) {
+		case parser.Addition, parser.Subtraction, parser.Exponentiation, parser.Root:
+			return &parser.AST{
+				Lhs: parser.Subtraction{
+					Lhs: ast.Lhs,
+					Rhs: ast.Rhs,
+				},
+				Rhs: parser.Constant{Value: 0},
+			}
+		case parser.Multiplication, parser.Division:
+			return &parser.AST{
+				Lhs: parser.Division{
+					Lhs: ast.Lhs,
+					Rhs: ast.Rhs,
+				},
+				Rhs: parser.Constant{Value: 1},
+			}
+		}
 	}
-  
-		// rhs is required to be a operation due to the logic-gate above.
-    rhsOp, err := ast.Rhs.(parser.Operation)
-    if !err {
-      // SAFTY: This branch of logic is already dealt above
-      panic("This should not be raised")
-    }
-    // Rhs operation token type (lexer)
-    rhsOptt := parser.TermToTokenType(rhsOp)
-    opposite := parser.OppositeTokenType(rhsOptt)
-    operation := parser.OperationBuilder(opposite, ast.Lhs, *rhsOp.GetRhs())
-    return &parser.AST{
-    	Lhs: operation,
-    	Rhs: *rhsOp.GetLhs(),
-    }
+
+	// rhs is required to be a operation due to the logic-gate above.
+	rhsOp, err := ast.Rhs.(parser.Operation)
+	if !err {
+		// SAFTY: This branch of logic is already dealt above
+		panic("This should not be raised")
+	}
+	// Rhs operation token type (lexer)
+	rhsOptt := parser.TermToTokenType(rhsOp)
+	opposite := parser.OppositeTokenType(rhsOptt)
+	operation := parser.OperationBuilder(opposite, ast.Lhs, *rhsOp.GetRhs())
+	return &parser.AST{
+		Lhs: operation,
+		Rhs: *rhsOp.GetLhs(),
+	}
 
 }
 
