@@ -1,6 +1,8 @@
 package simplifier
 
 import (
+	"errors"
+
 	"github.com/al-zebra/parser"
 	"github.com/al-zebra/solver/logger"
 )
@@ -62,9 +64,7 @@ func isValidHelper(t parser.Term) bool {
 func (_ BasicAlgebra) IsValid(ast *parser.AST) bool {
 	return isValidHelper(ast.Lhs) && isValidHelper(ast.Rhs)
 }
-
-// Transfer the top-most term to the opposite side.
-func transferTermRtoL(ast *parser.AST, transferLhs bool) *parser.AST {
+func transferBaseCase(ast *parser.AST) (*parser.AST, error) {
 	leafVariableLhs, isVariableLhs := parser.IsLeafNode(ast.Lhs).(parser.Variable)
 	leafConstantRhs, isConstantRhs := parser.IsLeafNode(ast.Rhs).(parser.Constant)
 	leafConstantLhs, isConstantLhs := parser.IsLeafNode(ast.Lhs).(parser.Constant)
@@ -78,24 +78,33 @@ func transferTermRtoL(ast *parser.AST, transferLhs bool) *parser.AST {
 				Rhs: leafConstantRhs,
 			},
 			Rhs: parser.Constant{Value: 0},
-		}
+		}, nil
 	}
 
 	if isVariableRhs && isConstantLhs {
-		// Any equation in form like "x = 2" will be turned to "x-2=0"
+		// Any equation in form like "2=x" will be turned to "0=x-2"
 		return &parser.AST{
 			Rhs: parser.Constant{Value: 0},
 			Lhs: parser.Subtraction{
-				Lhs: leafConstantLhs,
-				Rhs: leafVariableRhs,
+				Rhs: leafConstantLhs,
+				Lhs: leafVariableRhs,
 			},
-		}
+		}, nil
 	}
 
 	if lhs, rhs := parser.IsLeafNode(ast.Lhs), parser.IsLeafNode(ast.Rhs); lhs != nil && rhs != nil && lhs != rhs {
 		// This is a logical error as if this brank is entered it means that, two constant are equal (in the equation) but not actually equal.
 		// Thats why we are returning nil here as it cannot be processed.
-		return nil
+		return nil, nil
+	}
+
+	return nil, errors.New("Base cases does not cover this ast.")
+}
+
+// Transfer the top-most rhs term to the opposite side.
+func transferRhsTerm(ast *parser.AST) *parser.AST {
+	if v, e := transferBaseCase(ast); e != nil {
+		return v
 	}
 
 	if parser.IsLeafNode(ast.Lhs) != nil {
@@ -157,9 +166,75 @@ func transferTermRtoL(ast *parser.AST, transferLhs bool) *parser.AST {
 		Lhs: operation,
 		Rhs: *rhsOp.GetLhs(),
 	}
-
 }
 
+
+// Transfer the top-most Lhs term to the opposite side.
+func transferLhsTerm(ast *parser.AST) *parser.AST {
+	if v, e := transferBaseCase(ast); e != nil {
+		return v
+	}
+	if parser.IsLeafNode(ast.Lhs) != nil {
+		// rhs is required to be a operation due to the logic-gate above.
+		rhsOp, err := ast.Rhs.(parser.Operation)
+		if !err {
+			// SAFTY: This branch of logic is already dealt above
+			panic("This should not be raised")
+		}
+		// Rhs operation token type (lexer)
+		rhsOptt := parser.TermToTokenType(rhsOp)
+		opposite := parser.OppositeTokenType(rhsOptt)
+		operation := parser.OperationBuilder(opposite, ast.Lhs, *rhsOp.GetRhs())
+		return &parser.AST{
+			Lhs: operation,
+			Rhs: *rhsOp.GetLhs(),
+		}
+	}
+
+	if parser.IsLeafNode(ast.Rhs) != nil {
+		// lhs is required to be a operation due to the logic-gate above.
+		lhsOp, err := ast.Lhs.(parser.Operation)
+		if !err {
+			// SAFTY: This branch of logic is already dealt above
+			panic("This should not be raised")
+		}
+
+		switch lhsOp.(type) {
+		case parser.Addition, parser.Subtraction, parser.Exponentiation, parser.Root:
+			return &parser.AST{
+				Lhs: parser.Subtraction{
+					Lhs: ast.Lhs,
+					Rhs: ast.Rhs,
+				},
+				Rhs: parser.Constant{Value: 0},
+			}
+		case parser.Multiplication, parser.Division:
+			return &parser.AST{
+				Lhs: parser.Division{
+					Lhs: ast.Lhs,
+					Rhs: ast.Rhs,
+				},
+				Rhs: parser.Constant{Value: 1},
+			}
+		}
+	}
+
+	// rhs is required to be a operation due to the logic-gate above.
+	rhsOp, err := ast.Rhs.(parser.Operation)
+	if !err {
+		// SAFTY: This branch of logic is already dealt above
+		panic("This should not be raised")
+	}
+	// Rhs operation token type (lexer)
+	rhsOptt := parser.TermToTokenType(rhsOp)
+	opposite := parser.OppositeTokenType(rhsOptt)
+	operation := parser.OperationBuilder(opposite, ast.Lhs, *rhsOp.GetRhs())
+	return &parser.AST{
+		Lhs: operation,
+		Rhs: *rhsOp.GetLhs(),
+	}
+}
+// Transfer the top-most rhs term to the opposite side.
 func (_ BasicAlgebra) Solver(ast *parser.AST, logger *logger.Logger) {
 
 }

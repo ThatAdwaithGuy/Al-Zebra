@@ -89,7 +89,7 @@ func TestBasicAlzebraFailExp(t *testing.T) {
 
 	pattern := BasicAlgebra{}
 
-	assert.Equal(t, false, pattern.IsValid(&ast), "Validation is incorrect. expected false but got true")
+	assert.Equal(t, pattern.IsValid(&ast), "Validation is incorrect. expected false but got true")
 }
 
 func TestBasicAlzebraFailRoot(t *testing.T) {
@@ -123,7 +123,7 @@ func TestBasicAlzebraFailRoot(t *testing.T) {
 
 	pattern := BasicAlgebra{}
 
-	assert.Equal(t, false, pattern.IsValid(&ast), "Validation is incorrect. expected false but got true")
+	assert.Equal(t, pattern.IsValid(&ast), "Validation is incorrect. expected false but got true")
 }
 
 func TestTransferFunctionVariableConstantNil(t *testing.T) {
@@ -131,14 +131,14 @@ func TestTransferFunctionVariableConstantNil(t *testing.T) {
 		Lhs: parser.Constant{Value: 1},
 		Rhs: parser.Constant{Value: 3},
 	}
-	assert.Nil(t, transferTermRtoL(&astContant, false))
+	assert.Nil(t, transferRhsTerm(&astContant))
 
 	astVariable := parser.AST{
 		Lhs: parser.Variable{Value: "x"},
 		Rhs: parser.Variable{Value: "y"},
 	}
 
-	assert.Nil(t, transferTermRtoL(&astVariable, false))
+	assert.Nil(t, transferRhsTerm(&astVariable))
 }
 
 func TestTransferFunctionVariableConstantPass(t *testing.T) {
@@ -154,7 +154,7 @@ func TestTransferFunctionVariableConstantPass(t *testing.T) {
 		Rhs: parser.Constant{Value: 0},
 	}
 
-	assert.Equal(t, res, *transferTermRtoL(&ast, false))
+	assert.Equal(t, res, *transferRhsTerm(&ast))
 }
 
 func TestTransferFunction1(t *testing.T) {
@@ -169,7 +169,7 @@ func TestTransferFunction1(t *testing.T) {
 		Rhs: parser.Variable{Value: "x"},
 	}
 
-	assert.Equal(t, res, *transferTermRtoL(&ast, false))
+	assert.Equal(t, res, *transferRhsTerm(&ast))
 }
 
 func TestTransferFunction2(t *testing.T) {
@@ -181,19 +181,17 @@ func TestTransferFunction2(t *testing.T) {
 
 	res := parser.AST{Lhs: parser.Subtraction{Lhs: parser.Subtraction{Lhs: parser.Variable{Value: "x"}, Rhs: parser.Constant{Value: 5}}, Rhs: parser.Constant{Value: 1}}, Rhs: parser.Constant{Value: 0}}
 
-	assert.Equal(t, res, *transferTermRtoL(&ast, false))
+	assert.Equal(t, res, *transferRhsTerm(&ast))
 }
 
 func TestTransferFunction3(t *testing.T) {
-
-	// 1+y = x-5
-	/// 1+y+5=x
+	//x-5=1+y
 	ast := parser.AST{
-		Rhs: parser.Addition{Lhs: parser.Constant{Value: 1}, Rhs: parser.Variable{Value: "y"}},
 		Lhs: parser.Subtraction{Lhs: parser.Variable{Value: "x"}, Rhs: parser.Constant{Value: 5}},
+		Rhs: parser.Addition{Lhs: parser.Constant{Value: 1}, Rhs: parser.Variable{Value: "y"}},
 	}
 
-	res := parser.AST{Lhs: parser.Subtraction{Lhs: parser.Subtraction{Lhs: parser.Variable{Value: "x"}, Rhs: parser.Constant{Value: 5}}, Rhs: parser.Constant{Value: 1}}, Rhs: parser.Constant{Value: 0}}
+	res := parser.AST{Lhs: parser.Subtraction{Lhs: parser.Subtraction{Lhs: parser.Variable{Value: "x"}, Rhs: parser.Constant{Value: 5}}, Rhs: parser.Variable{Value: "y"}}, Rhs: parser.Constant{Value: 1}}
 
-	assert.Equal(t, res, *transferTermRtoL(&ast, false))
+	assert.Equal(t, res, *transferRhsTerm(&ast))
 }

@@ -36,6 +36,15 @@ type AST struct {
 	Rhs Term
 }
 
+func (ast AST) SwapInPlace() {
+	ast.Lhs, ast.Rhs = ast.Rhs, ast.Lhs
+}
+
+func (ast AST) Swap() AST {
+	ast.Lhs, ast.Rhs = ast.Rhs, ast.Lhs
+	return ast
+}
+
 func helperDebug(term Term, level int) {
 	if term == nil {
 		return
@@ -59,6 +68,16 @@ func (ast *AST) Debug() {
 
 const DEBUG = true
 
+// Parse converts a lexer's tokens into an Abstract Syntax Tree (AST)
+// by processing the tokens through several stages:
+// 1. Tokenization
+// 2. Validation
+// 3. Multiplication pass
+// 4. Separating left-hand side and right-hand side tokens
+// 5. Converting tokens to Reverse Polish Notation (RPN)
+// 6. Creating expression trees for both sides
+//
+// It returns a pointer to the constructed AST or an error if validation fails.
 func Parse(lex lexer.Lexer) (*AST, error) {
 	tokens := lex.TokenizeAll()
 	log.Println(tokens)
@@ -86,13 +105,11 @@ func Parse(lex lexer.Lexer) (*AST, error) {
 		}
 	}
 
-  lhsRPN := Conversion(lhs)
+	lhsRPN := Conversion(lhs)
 	rhsRPN := Conversion(rhs)
-
 
 	lhsTree := Treeify(lhsRPN)
 	rhsTree := Treeify(rhsRPN)
-  
 
 	ast := AST{
 		Lhs: *lhsTree,
