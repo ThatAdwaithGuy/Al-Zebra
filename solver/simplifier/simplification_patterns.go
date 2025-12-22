@@ -7,6 +7,20 @@ import (
 	"github.com/al-zebra/solver/logger"
 )
 
+func doesTermContainVariable(term *parser.Term) bool {
+	if _, x := (*term).(parser.Constant); x {
+		return true
+	}
+  op, isOp := (*term).(parser.Operation)
+  if !isOp {
+    panic("THIS IS STUPID")
+  }
+  // Check LHS
+
+
+	return false
+}
+
 // A interface to create a generic way to solve different "patterns" (forms of equations).
 // IsValid method verifies if the equation is suitable (or possible) to solve (or in this case to apply that change)
 // Solver method's answer will be logged into injected logger.
@@ -101,6 +115,15 @@ func transferBaseCase(ast *parser.AST) (*parser.AST, error) {
 	return nil, errors.New("Base cases does not cover this ast.")
 }
 
+func TransLhsTerm(ast *parser.AST) *parser.AST {
+	_, err := ast.Lhs.(parser.Operation)
+	if !err {
+		return nil
+	}
+
+	return nil
+}
+
 // Transfer the top-most rhs term to the opposite side.
 func transferRhsTerm(ast *parser.AST) *parser.AST {
 	if v, e := transferBaseCase(ast); e != nil {
@@ -168,9 +191,8 @@ func transferRhsTerm(ast *parser.AST) *parser.AST {
 	}
 }
 
-
 // Transfer the top-most Lhs term to the opposite side.
-func transferLhsTerm(ast *parser.AST) *parser.AST {
+func TransferLhsTerm(ast *parser.AST) *parser.AST {
 	if v, e := transferBaseCase(ast); e != nil {
 		return v
 	}
@@ -234,6 +256,7 @@ func transferLhsTerm(ast *parser.AST) *parser.AST {
 		Rhs: *rhsOp.GetLhs(),
 	}
 }
+
 // Transfer the top-most rhs term to the opposite side.
 func (_ BasicAlgebra) Solver(ast *parser.AST, logger *logger.Logger) {
 

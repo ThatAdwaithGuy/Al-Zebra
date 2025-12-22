@@ -1,9 +1,11 @@
 package main
 
 import (
+	// "fmt"
 
 	"github.com/al-zebra/lexer"
 	"github.com/al-zebra/parser"
+	"github.com/al-zebra/solver/simplifier"
 )
 
 func main() {
@@ -11,7 +13,7 @@ func main() {
 	lex := lexer.New(ex)
 	par, err := parser.Parse(*lex)
 	if err != nil {
-    return
+		return
 	}
-  par.Debug()
+	simplifier.TransLhsTerm(par)
 }
