@@ -16,34 +16,34 @@ func TestMultiplyPass(t *testing.T) {
 	// Mock data, this is not valid
 	ex := "3x+2x"
 	tokens := lexer.New(ex).TokenizeAll()
-  pass := MultiplyPass(tokens)
+	pass := MultiplyPass(tokens)
 	expected := []lexer.Token{
 		{
 			Type:  lexer.NUMBER,
 			Value: "3",
 		},
 		{
-			Type: lexer.MULTIPLY,
+			Type:  lexer.MULTIPLY,
 			Value: "",
 		},
 		{
-			Type: lexer.VARIABLE,
+			Type:  lexer.VARIABLE,
 			Value: "x",
 		},
 		{
-			Type: lexer.PLUS,
+			Type:  lexer.PLUS,
 			Value: "",
 		},
 		{
-			Type: lexer.NUMBER,
+			Type:  lexer.NUMBER,
 			Value: "2",
 		},
 		{
-			Type: lexer.MULTIPLY,
+			Type:  lexer.MULTIPLY,
 			Value: "",
 		},
 		{
-			Type: lexer.VARIABLE,
+			Type:  lexer.VARIABLE,
 			Value: "x",
 		},
 	}

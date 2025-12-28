@@ -106,9 +106,9 @@ func transferBaseCase(ast *parser.AST) (*parser.AST, error) {
 	leafVariableRhs, isVariableRhs := parser.IsLeafNode(ast.Rhs).(parser.Variable)
 	_, isNotLeafLhs := (ast.Lhs).(parser.Operation)
 	_, isNotLeafRhs := (ast.Rhs).(parser.Operation)
-  if isNotLeafLhs || isNotLeafRhs {
-    return nil, nil
-  }
+	if isNotLeafLhs || isNotLeafRhs {
+		return nil, nil
+	}
 
 	if isVariableLhs && isConstantRhs {
 		// Any equation in form like "x = 2" will be turned to "x-2=0"
@@ -221,13 +221,40 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 			// SAFTY: This branch of logic is already dealt above
 			panic("This should not be raised LHS")
 		}
-		// Rhs operation token type (lexer)
-		rhsOptt := parser.TermToTokenType(rhsOp)
-		opposite := parser.OppositeTokenType(rhsOptt)
-		operation := parser.OperationBuilder(opposite, ast.Lhs, *rhsOp.GetRhs())
-		return &parser.AST{
-			Lhs: operation,
-			Rhs: *rhsOp.GetLhs(),
+
+		switch rhsOp.(type) {
+		case parser.Addition:
+			return &parser.AST{
+				Lhs: parser.Constant{Value: 0},
+				Rhs: parser.Subtraction{
+					Lhs: ast.Rhs,
+					Rhs: ast.Lhs,
+				},
+			}
+		case parser.Subtraction:
+			return &parser.AST{
+				Lhs: parser.Constant{Value: 0},
+				Rhs: parser.Addition{
+					Lhs: ast.Rhs,
+					Rhs: ast.Lhs,
+				},
+			}
+		case parser.Multiplication:
+			return &parser.AST{
+				Lhs: parser.Constant{Value: 0},
+				Rhs: parser.Division{
+					Lhs: ast.Rhs,
+					Rhs: ast.Lhs,
+				},
+			}
+		case parser.Division:
+			return &parser.AST{
+				Lhs: parser.Constant{Value: 0},
+				Rhs: parser.Multiplication{
+					Lhs: ast.Rhs,
+					Rhs: ast.Lhs,
+				},
+			}
 		}
 	}
 
@@ -238,9 +265,9 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 			// SAFTY: This branch of logic is already dealt above
 			panic("This should not be raised RHS")
 		}
-    lhsTopOp := parser.TermToTokenType(lhsOp) 
-    opposite := parser.OppositeTokenType(lhsTopOp)  
-    operation := parser.OperationBuilder(opposite, ast.Rhs, *lhsOp.GetRhs())
+		lhsTopOp := parser.TermToTokenType(lhsOp)
+		opposite := parser.OppositeTokenType(lhsTopOp)
+		operation := parser.OperationBuilder(opposite, ast.Rhs, *lhsOp.GetRhs())
 		return &parser.AST{
 			Lhs: *lhsOp.GetLhs(),
 			Rhs: operation,

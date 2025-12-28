@@ -55,7 +55,7 @@ func TestRootPass(t *testing.T) {
 	test := "3x+1=root2(10)"
 	l := lexer.New(test)
 	tokens := Validation(l.TokenizeAll())
-	check := tokens.RootPreceding() 
+	check := tokens.RootPreceding()
 
 	assert.Nil(t, check, `The root use here is correct but the validation function returned with error`)
 }
@@ -64,8 +64,7 @@ func TestRootFail(t *testing.T) {
 	test := "32+x=root(10)"
 	l := lexer.New(test)
 	tokens := Validation(l.TokenizeAll())
-	check := tokens.RootPreceding() 
+	check := tokens.RootPreceding()
 
 	assert.NotNil(t, check, `The root use here is incorrect but the validation function returned as a valid equation`)
 }
-

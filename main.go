@@ -11,16 +11,16 @@ import (
 )
 
 func main() {
-	ex := "x*(x+1)=10"
+	ex := "10=x*(x+1)"
 	lex := lexer.New(ex)
 	par, err := parser.Parse(*lex)
 	if err != nil {
 		return
 	}
 
-  fmt.Println("BEFORE")
-  par.Debug()
-  fmt.Println("AFTER")
-  trans := simplifier.TransferLhsTerm(par)
-  trans.Debug()
+	fmt.Println("BEFORE")
+	par.Debug()
+	fmt.Println("AFTER")
+	trans := simplifier.TransferLhsTerm(par)
+	trans.Debug()
 }

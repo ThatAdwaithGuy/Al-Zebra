@@ -1,6 +1,5 @@
 package utils
 
-
 type Stack[T any] []T
 
 func (s *Stack[T]) PushBack(item T) {
@@ -17,7 +16,6 @@ func (s *Stack[T]) PeekBack() *T {
 		return nil
 	}
 
-
 	return &(*s)[0]
 }
 
@@ -26,7 +24,6 @@ func (s *Stack[T]) PeekFront() *T {
 	if length == 0 {
 		return nil
 	}
-
 
 	return &(*s)[length-1]
 }
@@ -45,7 +42,7 @@ func (s *Stack[T]) PopBack() *T {
 
 func (s *Stack[T]) PopFront() *T {
 	length := len(*s)
-  
+
 	if length == 0 {
 		return nil
 	}

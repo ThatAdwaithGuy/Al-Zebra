@@ -9,18 +9,17 @@ import (
 	"github.com/al-zebra/utils"
 )
 
-
 func Treeify(tokens RPN) *Term {
 	var stack utils.Stack[Term]
 	for _, tok := range tokens.Tokens {
 
 		switch tok.Type {
-    case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT, lexer.EXPONENTIATION:
-      log.Println(tok, stack, len(stack))
-      f := *stack.PopFront()
-      s := *stack.PopFront()
-      fmt.Println(f, s)
-			t := OperationBuilder(tok.Type,s, f)
+		case lexer.PLUS, lexer.MINUS, lexer.MULTIPLY, lexer.DIVIDE, lexer.ROOT, lexer.EXPONENTIATION:
+			log.Println(tok, stack, len(stack))
+			f := *stack.PopFront()
+			s := *stack.PopFront()
+			fmt.Println(f, s)
+			t := OperationBuilder(tok.Type, s, f)
 			stack.PushFront(t)
 		case lexer.NUMBER:
 			fl, err := strconv.ParseFloat(tok.Value, 32)

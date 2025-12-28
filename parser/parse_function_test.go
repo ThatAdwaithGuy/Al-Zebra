@@ -37,11 +37,10 @@ func TestParseSimple(t *testing.T) {
 		Lhs: add,
 		Rhs: rhs,
 	}
-  ast.Debug()
+	ast.Debug()
 
 	assert.Equal(t, &ast, par)
 }
-
 
 func TestParseSimple2(t *testing.T) {
 	ex := "3x+1=root2(10)"
@@ -73,11 +72,10 @@ func TestParseSimple2(t *testing.T) {
 		Lhs: add,
 		Rhs: rhs,
 	}
-  ast.Debug()
+	ast.Debug()
 
 	assert.Equal(t, &ast, par)
 }
-
 
 func TestParseComplex(t *testing.T) {
 	ex := "x*(x+1)=10"
@@ -92,12 +90,12 @@ func TestParseComplex(t *testing.T) {
 			Value: "x",
 		},
 		Rhs: Constant{
-			Value:1 ,
+			Value: 1,
 		},
 	}
 
 	add := Multiplication{
-    Lhs: Variable{Value: "x"},
+		Lhs: Variable{Value: "x"},
 		Rhs: mul,
 	}
 
@@ -107,7 +105,7 @@ func TestParseComplex(t *testing.T) {
 		Lhs: add,
 		Rhs: rhs,
 	}
-  ast.Debug()
+	ast.Debug()
 
 	assert.Equal(t, &ast, par)
 }

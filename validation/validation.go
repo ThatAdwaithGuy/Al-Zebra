@@ -11,22 +11,22 @@ import (
 type Validation []lexer.Token
 
 func (tokens *Validation) IsValid() error {
-  onlyOne := tokens.OneTypeOfVariable()
-  if onlyOne != nil {
-    return onlyOne
-  }
-  
-  onlyEqual := tokens.OnlyOneEqual()
-  if onlyEqual != nil {
-    return onlyEqual
-  }
+	onlyOne := tokens.OneTypeOfVariable()
+	if onlyOne != nil {
+		return onlyOne
+	}
 
-  root := tokens.RootPreceding()
-  if root != nil {
-    return root
-  }
+	onlyEqual := tokens.OnlyOneEqual()
+	if onlyEqual != nil {
+		return onlyEqual
+	}
 
-  return nil
+	root := tokens.RootPreceding()
+	if root != nil {
+		return root
+	}
+
+	return nil
 }
 
 // Checks if there are more or less than one equal sign in the given equation
@@ -51,27 +51,26 @@ func (tokens *Validation) OnlyOneEqual() error {
 type ErrorNoVariables []lexer.Token
 
 func (e ErrorNoVariables) Error() string {
-  return fmt.Sprintf("Your equation %s has no variables", []lexer.Token(e))
+	return fmt.Sprintf("Your equation %s has no variables", []lexer.Token(e))
 }
-
 
 // OneTypeOfVariable Checks if there are only one type of variable in the equation
 func (tokens *Validation) OneTypeOfVariable() error {
 	var variableName *string
-  variables := utils.Filter(*tokens, func(tok lexer.Token) bool {
-    return tok.Type == lexer.VARIABLE
-  })
+	variables := utils.Filter(*tokens, func(tok lexer.Token) bool {
+		return tok.Type == lexer.VARIABLE
+	})
 
-  if len(variables) == 0 {
-    return ErrorNoVariables(*tokens)
-  }
-  variableName = &variables[0].Value
-  
-  for _, ele := range variables {
-    if ele.Value != *variableName {
-      return errors.New("Equation has many variable types")
-    }
-  }
+	if len(variables) == 0 {
+		return ErrorNoVariables(*tokens)
+	}
+	variableName = &variables[0].Value
+
+	for _, ele := range variables {
+		if ele.Value != *variableName {
+			return errors.New("Equation has many variable types")
+		}
+	}
 
 	return nil
 }
@@ -92,5 +91,3 @@ func (tokens *Validation) RootPreceding() error {
 	}
 	return nil
 }
-
-

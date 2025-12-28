@@ -48,9 +48,9 @@ func TestDoesVarConTerm(t *testing.T) {
 			Value: 1,
 		},
 	}
-  var te parser.Term = lhs
+	var te parser.Term = lhs
 
-  assert.Equal(t, true, doesTermContainVariable(&te)) 
+	assert.Equal(t, true, doesTermContainVariable(&te))
 }
 
 func TestBasicAlzebraPass(t *testing.T) {

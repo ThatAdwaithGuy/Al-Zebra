@@ -1,4 +1,4 @@
-package logger 
+package logger
 
 import (
 	"io"
@@ -22,4 +22,3 @@ func (l *Logger) WriteStdOut() error {
 	_, err := l.Write(os.Stdout)
 	return err
 }
-

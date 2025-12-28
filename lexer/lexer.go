@@ -15,11 +15,11 @@ const (
 	MULTIPLY           // 3
 	DIVIDE             // 4
 	ROOT               // 5
-  EXPONENTIATION
+	EXPONENTIATION
 	EQUALS
 	LEFT_PAREN
 	RIGHT_PAREN
-	VARIABLE 
+	VARIABLE
 	EOF
 )
 
@@ -32,11 +32,11 @@ func (t TokenType) String() string {
 		"MULTIPLY",
 		"DIVIDE",
 		"ROOT",
-    "EXPONENTIATION",
+		"EXPONENTIATION",
 		"EQUALS",
 		"LEFT_PAREN",
 		"RIGHT_PAREN",
-		"VARIABLE", 
+		"VARIABLE",
 		"EOF",
 	}[t]
 }
@@ -49,11 +49,11 @@ func (t TokenType) StringVisualization() string {
 		"*",
 		"/",
 		"root",
-    "^",
+		"^",
 		"EQUALS",
 		"LEFT_PAREN",
 		"RIGHT_PAREN",
-		"VARIABLE", 
+		"VARIABLE",
 		"EOF",
 	}[t]
 }
@@ -67,7 +67,7 @@ type Token struct {
 func (t Token) StringVisualization() string {
 	if t.Value != "" {
 		return t.Value
-  }
+	}
 	return t.Type.StringVisualization()
 }
 
@@ -187,7 +187,7 @@ func (l *Lexer) NextToken() Token {
 func (l *Lexer) TokenizeAll() []Token {
 
 	var tokens []Token
-  
+
 	for {
 		tok := l.NextToken()
 		tokens = append(tokens, tok)

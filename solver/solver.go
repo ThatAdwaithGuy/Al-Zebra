@@ -1,4 +1,5 @@
 package solver
+
 import (
 	//	"errors"
 
@@ -17,43 +18,43 @@ func createOpposite(op parser.Operation, lhs, rhs parser.Term) parser.Operation 
 
 	// Bozo time
 	if isAdd {
-    ret := parser.Subtraction{
-      Lhs: lhs,
-      Rhs: rhs,
-    }
-    return ret
+		ret := parser.Subtraction{
+			Lhs: lhs,
+			Rhs: rhs,
+		}
+		return ret
 	} else if isSub {
-    ret := parser.Addition{
-      Lhs: lhs,
-      Rhs: rhs,
-    }
-    return ret
+		ret := parser.Addition{
+			Lhs: lhs,
+			Rhs: rhs,
+		}
+		return ret
 	} else if isMul {
-    ret := parser.Division{
-      Lhs: lhs,
-      Rhs: rhs,
-    }
-    return ret
+		ret := parser.Division{
+			Lhs: lhs,
+			Rhs: rhs,
+		}
+		return ret
 	} else if isDiv {
-    ret := parser.Multiplication{
-      Lhs: lhs,
-      Rhs: rhs,
-    }
-    return ret
+		ret := parser.Multiplication{
+			Lhs: lhs,
+			Rhs: rhs,
+		}
+		return ret
 	} else if isExp {
-    ret := parser.Root{
-      Lhs: lhs,
-      Rhs: rhs,
-    }
-    return ret
+		ret := parser.Root{
+			Lhs: lhs,
+			Rhs: rhs,
+		}
+		return ret
 	} else if isRoo {
-    ret := parser.Exponentiation{
-      Lhs: lhs,
-      Rhs: rhs,
-    }
-    return ret
+		ret := parser.Exponentiation{
+			Lhs: lhs,
+			Rhs: rhs,
+		}
+		return ret
 	} else {
-    return nil
+		return nil
 	}
 }
 
@@ -64,9 +65,9 @@ func CarryOperation(ast *parser.AST) (parser.AST, error) {
 	}
 	getTop := lhsOp.GetRhs()
 	newRhs := createOpposite(lhsOp, ast.Rhs, *getTop)
-  if newRhs == nil {
-    return parser.AST{}, errors.New("Unhandled Error at solver.CarryOperation")
-  }
+	if newRhs == nil {
+		return parser.AST{}, errors.New("Unhandled Error at solver.CarryOperation")
+	}
 	newLhs := *lhsOp.GetLhs()
 	retAST := parser.AST{
 		Lhs: newLhs,
