@@ -34,6 +34,25 @@ func TestHasVariable(t *testing.T) {
 	assert.Equal(t, true, hasVariable(lhs))
 }
 
+func TestDoesVarConTerm(t *testing.T) {
+	lhs := parser.Addition{
+		Lhs: parser.Multiplication{
+			Lhs: parser.Constant{
+				Value: 3,
+			},
+			Rhs: parser.Variable{
+				Value: "x",
+			},
+		},
+		Rhs: parser.Constant{
+			Value: 1,
+		},
+	}
+  var te parser.Term = lhs
+
+  assert.Equal(t, true, doesTermContainVariable(&te)) 
+}
+
 func TestBasicAlzebraPass(t *testing.T) {
 	lhs := parser.Addition{
 		Lhs: parser.Multiplication{
@@ -131,14 +150,14 @@ func TestTransferFunctionVariableConstantNil(t *testing.T) {
 		Lhs: parser.Constant{Value: 1},
 		Rhs: parser.Constant{Value: 3},
 	}
-	assert.Nil(t, transferRhsTerm(&astContant))
+	assert.Nil(t, TransferRhsTerm(&astContant))
 
 	astVariable := parser.AST{
 		Lhs: parser.Variable{Value: "x"},
 		Rhs: parser.Variable{Value: "y"},
 	}
 
-	assert.Nil(t, transferRhsTerm(&astVariable))
+	assert.Nil(t, TransferRhsTerm(&astVariable))
 }
 
 func TestTransferFunctionVariableConstantPass(t *testing.T) {
@@ -154,7 +173,7 @@ func TestTransferFunctionVariableConstantPass(t *testing.T) {
 		Rhs: parser.Constant{Value: 0},
 	}
 
-	assert.Equal(t, res, *transferRhsTerm(&ast))
+	assert.Equal(t, res, *TransferRhsTerm(&ast))
 }
 
 func TestTransferFunction1(t *testing.T) {
@@ -169,7 +188,7 @@ func TestTransferFunction1(t *testing.T) {
 		Rhs: parser.Variable{Value: "x"},
 	}
 
-	assert.Equal(t, res, *transferRhsTerm(&ast))
+	assert.Equal(t, res, *TransferRhsTerm(&ast))
 }
 
 func TestTransferFunction2(t *testing.T) {
@@ -181,7 +200,7 @@ func TestTransferFunction2(t *testing.T) {
 
 	res := parser.AST{Lhs: parser.Subtraction{Lhs: parser.Subtraction{Lhs: parser.Variable{Value: "x"}, Rhs: parser.Constant{Value: 5}}, Rhs: parser.Constant{Value: 1}}, Rhs: parser.Constant{Value: 0}}
 
-	assert.Equal(t, res, *transferRhsTerm(&ast))
+	assert.Equal(t, res, *TransferRhsTerm(&ast))
 }
 
 func TestTransferFunction3(t *testing.T) {
@@ -193,5 +212,5 @@ func TestTransferFunction3(t *testing.T) {
 
 	res := parser.AST{Lhs: parser.Subtraction{Lhs: parser.Subtraction{Lhs: parser.Variable{Value: "x"}, Rhs: parser.Constant{Value: 5}}, Rhs: parser.Variable{Value: "y"}}, Rhs: parser.Constant{Value: 1}}
 
-	assert.Equal(t, res, *transferRhsTerm(&ast))
+	assert.Equal(t, res, *TransferRhsTerm(&ast))
 }

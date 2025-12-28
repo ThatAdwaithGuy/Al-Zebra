@@ -7,7 +7,8 @@ import (
 	"github.com/al-zebra/lexer"
 )
 
-// Helper
+// Checks if term is either a constant or a variable, if it is then it return them 
+// if not then returns nil.
 func IsLeafNode(term Term) Term {
 	c, isConstant := term.(Constant)
 	v, isVariable := term.(Variable)
@@ -20,6 +21,31 @@ func IsLeafNode(term Term) Term {
 		return nil
 	}
 }
+
+func IsVariable(term Term) *Variable {
+  c, isVariable := term.(Variable)
+  if isVariable {
+    return &c
+  }
+  return nil
+}
+
+func IsConstant(term Term) *Constant {
+  c, isConstant := term.(Constant)
+  if isConstant {
+    return &c
+  }
+  return nil
+}
+
+func IsOperation(term Term) *Operation {
+  c, isOperation := term.(Operation)
+  if isOperation {
+    return &c
+  }
+  return nil
+}
+
 
 // Just a bunch of errors
 type UnhandledTermError struct{}

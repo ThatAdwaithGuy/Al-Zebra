@@ -125,6 +125,7 @@ type Term interface {
 	GetName() string
 }
 
+
 type Variable struct {
 	Value string
 }

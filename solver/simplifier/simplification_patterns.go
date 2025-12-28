@@ -7,16 +7,37 @@ import (
 	"github.com/al-zebra/solver/logger"
 )
 
+// Future me, I wrote this after I wrote the same function 7 months back because I forgot I had this function already and wasted a hour of my life
+// and also how is life after boards? - 28/12/2025
 func doesTermContainVariable(term *parser.Term) bool {
-	if _, x := (*term).(parser.Constant); x {
+	if _, x := (*term).(parser.Variable); x {
 		return true
 	}
-  op, isOp := (*term).(parser.Operation)
-  if !isOp {
-    panic("THIS IS STUPID")
-  }
-  // Check LHS
+	if _, x := (*term).(parser.Constant); x {
+		return false
+	}
 
+	op, isOp := (*term).(parser.Operation)
+	if !isOp {
+		panic("THIS IS STUPID")
+	}
+	opLhs := *op.GetLhs()
+	opRhs := *op.GetRhs()
+
+	// Check LHS and RHS for variable
+	if parser.IsVariable(opLhs) != nil || parser.IsVariable(opRhs) != nil {
+		return true
+	}
+
+	if x := parser.IsOperation(opLhs); x != nil {
+		var t parser.Term = *x
+		return doesTermContainVariable(&t)
+	}
+
+	if x := parser.IsOperation(opRhs); x != nil {
+		var t parser.Term = *x
+		return doesTermContainVariable(&t)
+	}
 
 	return false
 }
@@ -83,6 +104,11 @@ func transferBaseCase(ast *parser.AST) (*parser.AST, error) {
 	leafConstantRhs, isConstantRhs := parser.IsLeafNode(ast.Rhs).(parser.Constant)
 	leafConstantLhs, isConstantLhs := parser.IsLeafNode(ast.Lhs).(parser.Constant)
 	leafVariableRhs, isVariableRhs := parser.IsLeafNode(ast.Rhs).(parser.Variable)
+	_, isNotLeafLhs := (ast.Lhs).(parser.Operation)
+	_, isNotLeafRhs := (ast.Rhs).(parser.Operation)
+  if isNotLeafLhs || isNotLeafRhs {
+    return nil, nil
+  }
 
 	if isVariableLhs && isConstantRhs {
 		// Any equation in form like "x = 2" will be turned to "x-2=0"
@@ -105,27 +131,18 @@ func transferBaseCase(ast *parser.AST) (*parser.AST, error) {
 			},
 		}, nil
 	}
-
+	// 2=3 or 4=81
 	if lhs, rhs := parser.IsLeafNode(ast.Lhs), parser.IsLeafNode(ast.Rhs); lhs != nil && rhs != nil && lhs != rhs {
-		// This is a logical error as if this brank is entered it means that, two constant are equal (in the equation) but not actually equal.
+		// This is a logical error as if this branch is entered it means that, two constant are equal (in the equation) but not actually equal.
 		// Thats why we are returning nil here as it cannot be processed.
-		return nil, nil
+		return nil, errors.New("Invalid math equation")
 	}
 
 	return nil, errors.New("Base cases does not cover this ast.")
 }
 
-func TransLhsTerm(ast *parser.AST) *parser.AST {
-	_, err := ast.Lhs.(parser.Operation)
-	if !err {
-		return nil
-	}
-
-	return nil
-}
-
 // Transfer the top-most rhs term to the opposite side.
-func transferRhsTerm(ast *parser.AST) *parser.AST {
+func TransferRhsTerm(ast *parser.AST) *parser.AST {
 	if v, e := transferBaseCase(ast); e != nil {
 		return v
 	}
@@ -135,7 +152,7 @@ func transferRhsTerm(ast *parser.AST) *parser.AST {
 		rhsOp, err := ast.Rhs.(parser.Operation)
 		if !err {
 			// SAFTY: This branch of logic is already dealt above
-			panic("This should not be raised")
+			panic("This should not be raised LHS")
 		}
 		// Rhs operation token type (lexer)
 		rhsOptt := parser.TermToTokenType(rhsOp)
@@ -152,7 +169,7 @@ func transferRhsTerm(ast *parser.AST) *parser.AST {
 		lhsOp, err := ast.Lhs.(parser.Operation)
 		if !err {
 			// SAFTY: This branch of logic is already dealt above
-			panic("This should not be raised")
+			panic("This should not be raised RHS")
 		}
 
 		switch lhsOp.(type) {
@@ -178,7 +195,7 @@ func transferRhsTerm(ast *parser.AST) *parser.AST {
 	// rhs is required to be a operation due to the logic-gate above.
 	rhsOp, err := ast.Rhs.(parser.Operation)
 	if !err {
-		// SAFTY: This branch of logic is already dealt above
+		// SAFETY: This branch of logic is already dealt above
 		panic("This should not be raised")
 	}
 	// Rhs operation token type (lexer)
@@ -196,12 +213,13 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 	if v, e := transferBaseCase(ast); e != nil {
 		return v
 	}
+
 	if parser.IsLeafNode(ast.Lhs) != nil {
 		// rhs is required to be a operation due to the logic-gate above.
 		rhsOp, err := ast.Rhs.(parser.Operation)
 		if !err {
 			// SAFTY: This branch of logic is already dealt above
-			panic("This should not be raised")
+			panic("This should not be raised LHS")
 		}
 		// Rhs operation token type (lexer)
 		rhsOptt := parser.TermToTokenType(rhsOp)
@@ -218,11 +236,11 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 		lhsOp, err := ast.Lhs.(parser.Operation)
 		if !err {
 			// SAFTY: This branch of logic is already dealt above
-			panic("This should not be raised")
+			panic("This should not be raised RHS")
 		}
 
 		switch lhsOp.(type) {
-		case parser.Addition, parser.Subtraction, parser.Exponentiation, parser.Root:
+		case parser.Addition:
 			return &parser.AST{
 				Lhs: parser.Subtraction{
 					Lhs: ast.Lhs,
@@ -230,9 +248,25 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 				},
 				Rhs: parser.Constant{Value: 0},
 			}
-		case parser.Multiplication, parser.Division:
+		case  parser.Subtraction:
+			return &parser.AST{
+				Lhs: parser.Addition{
+					Lhs: ast.Lhs,
+					Rhs: ast.Rhs,
+				},
+				Rhs: parser.Constant{Value: 0},
+			}
+		case parser.Multiplication:
 			return &parser.AST{
 				Lhs: parser.Division{
+					Lhs: ast.Lhs,
+					Rhs: ast.Rhs,
+				},
+				Rhs: parser.Constant{Value: 1},
+			}
+		case  parser.Division:
+			return &parser.AST{
+				Lhs: parser.Multiplication{
 					Lhs: ast.Lhs,
 					Rhs: ast.Rhs,
 				},
