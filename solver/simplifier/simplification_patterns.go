@@ -238,41 +238,14 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 			// SAFTY: This branch of logic is already dealt above
 			panic("This should not be raised RHS")
 		}
-
-		switch lhsOp.(type) {
-		case parser.Addition:
-			return &parser.AST{
-				Lhs: parser.Subtraction{
-					Lhs: ast.Lhs,
-					Rhs: ast.Rhs,
-				},
-				Rhs: parser.Constant{Value: 0},
-			}
-		case  parser.Subtraction:
-			return &parser.AST{
-				Lhs: parser.Addition{
-					Lhs: ast.Lhs,
-					Rhs: ast.Rhs,
-				},
-				Rhs: parser.Constant{Value: 0},
-			}
-		case parser.Multiplication:
-			return &parser.AST{
-				Lhs: parser.Division{
-					Lhs: ast.Lhs,
-					Rhs: ast.Rhs,
-				},
-				Rhs: parser.Constant{Value: 1},
-			}
-		case  parser.Division:
-			return &parser.AST{
-				Lhs: parser.Multiplication{
-					Lhs: ast.Lhs,
-					Rhs: ast.Rhs,
-				},
-				Rhs: parser.Constant{Value: 1},
-			}
+    lhsTopOp := parser.TermToTokenType(lhsOp) 
+    opposite := parser.OppositeTokenType(lhsTopOp)  
+    operation := parser.OperationBuilder(opposite, ast.Rhs, *lhsOp.GetRhs())
+		return &parser.AST{
+			Lhs: *lhsOp.GetLhs(),
+			Rhs: operation,
 		}
+
 	}
 
 	// rhs is required to be a operation due to the logic-gate above.
