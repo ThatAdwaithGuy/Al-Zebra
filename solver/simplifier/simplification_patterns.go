@@ -241,7 +241,7 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 			}
 		case parser.Multiplication:
 			return &parser.AST{
-				Lhs: parser.Constant{Value: 0},
+				Lhs: parser.Constant{Value: 1},
 				Rhs: parser.Division{
 					Lhs: ast.Rhs,
 					Rhs: ast.Lhs,
@@ -249,7 +249,7 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 			}
 		case parser.Division:
 			return &parser.AST{
-				Lhs: parser.Constant{Value: 0},
+				Lhs: parser.Constant{Value: 1},
 				Rhs: parser.Multiplication{
 					Lhs: ast.Rhs,
 					Rhs: ast.Lhs,
