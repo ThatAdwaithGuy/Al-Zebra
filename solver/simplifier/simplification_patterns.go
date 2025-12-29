@@ -291,7 +291,20 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 	}
 }
 
+func ProduceLogForTransfer(isLhs bool, before, after *parser.AST) string {
+  ret := "" 
+  if isLhs {
+    ret += "Transfer the left hand side term to the right\n\n"
+  } else {
+    ret += "Transfer the right hand side term to the right\n\n"
+  }
+
+  
+
+  return ""
+}
+
 // Transfer the top-most rhs term to the opposite side.
 func (_ BasicAlgebra) Solver(ast *parser.AST, logger *logger.Logger) {
-
+  
 }
