@@ -30,7 +30,7 @@ func precedence(term parser.Term) int {
 }
 
 func helper(term parser.Term, prevPrec int) string {
-	leaf_term := parser.IsLeafNode(term)
+	leaf_term := parser.IsLeafNode(&term)
 	if leaf_term != nil {
 		switch v := leaf_term.(type) {
 		case parser.Constant:

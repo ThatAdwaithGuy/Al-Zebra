@@ -100,10 +100,10 @@ func (_ BasicAlgebra) IsValid(ast *parser.AST) bool {
 	return isValidHelper(ast.Lhs) && isValidHelper(ast.Rhs)
 }
 func transferBaseCase(ast *parser.AST) (*parser.AST, error) {
-	leafVariableLhs, isVariableLhs := parser.IsLeafNode(ast.Lhs).(parser.Variable)
-	leafConstantRhs, isConstantRhs := parser.IsLeafNode(ast.Rhs).(parser.Constant)
-	leafConstantLhs, isConstantLhs := parser.IsLeafNode(ast.Lhs).(parser.Constant)
-	leafVariableRhs, isVariableRhs := parser.IsLeafNode(ast.Rhs).(parser.Variable)
+	leafVariableLhs, isVariableLhs := parser.IsLeafNode(&ast.Lhs).(parser.Variable)
+	leafConstantRhs, isConstantRhs := parser.IsLeafNode(&ast.Rhs).(parser.Constant)
+	leafConstantLhs, isConstantLhs := parser.IsLeafNode(&ast.Lhs).(parser.Constant)
+	leafVariableRhs, isVariableRhs := parser.IsLeafNode(&ast.Rhs).(parser.Variable)
 	_, isNotLeafLhs := (ast.Lhs).(parser.Operation)
 	_, isNotLeafRhs := (ast.Rhs).(parser.Operation)
 	if isNotLeafLhs || isNotLeafRhs {
@@ -132,7 +132,7 @@ func transferBaseCase(ast *parser.AST) (*parser.AST, error) {
 		}, nil
 	}
 	// 2=3 or 4=81
-	if lhs, rhs := parser.IsLeafNode(ast.Lhs), parser.IsLeafNode(ast.Rhs); lhs != nil && rhs != nil && lhs != rhs {
+	if lhs, rhs := parser.IsLeafNode(&ast.Lhs), parser.IsLeafNode(&ast.Rhs); lhs != nil && rhs != nil && lhs != rhs {
 		// This is a logical error as if this branch is entered it means that, two constant are equal (in the equation) but not actually equal.
 		// Thats why we are returning nil here as it cannot be processed.
 		return nil, errors.New("Invalid math equation")
@@ -147,7 +147,7 @@ func TransferRhsTerm(ast *parser.AST) *parser.AST {
 		return v
 	}
 
-	if parser.IsLeafNode(ast.Lhs) != nil {
+	if parser.IsLeafNode(&ast.Lhs) != nil {
 		// rhs is required to be a operation due to the logic-gate above.
 		rhsOp, err := ast.Rhs.(parser.Operation)
 		if !err {
@@ -164,7 +164,7 @@ func TransferRhsTerm(ast *parser.AST) *parser.AST {
 		}
 	}
 
-	if parser.IsLeafNode(ast.Rhs) != nil {
+	if parser.IsLeafNode(&ast.Rhs) != nil {
 		// lhs is required to be a operation due to the logic-gate above.
 		lhsOp, err := ast.Lhs.(parser.Operation)
 		if !err {
@@ -214,7 +214,7 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 		return v
 	}
 
-	if parser.IsLeafNode(ast.Lhs) != nil {
+	if parser.IsLeafNode(&ast.Lhs) != nil {
 		// rhs is required to be a operation due to the logic-gate above.
 		rhsOp, err := ast.Rhs.(parser.Operation)
 		if !err {
@@ -258,7 +258,7 @@ func TransferLhsTerm(ast *parser.AST) *parser.AST {
 		}
 	}
 
-	if parser.IsLeafNode(ast.Rhs) != nil {
+	if parser.IsLeafNode(&ast.Rhs) != nil {
 		// lhs is required to be a operation due to the logic-gate above.
 		lhsOp, err := ast.Lhs.(parser.Operation)
 		if !err {

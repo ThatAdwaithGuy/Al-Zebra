@@ -9,9 +9,9 @@ import (
 
 // Checks if term is either a constant or a variable, if it is then it return them
 // if not then returns nil.
-func IsLeafNode(term Term) Term {
-	c, isConstant := term.(Constant)
-	v, isVariable := term.(Variable)
+func IsLeafNode(term *Term) Term {
+	c, isConstant := (*term).(Constant)
+	v, isVariable := (*term).(Variable)
 
 	if isConstant {
 		return c

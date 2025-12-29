@@ -36,6 +36,72 @@ type AST struct {
 	Rhs Term
 }
 
+func precedence(term *Term) int {
+	switch (*term).(type) {
+	case Addition, Subtraction:
+		return 1
+	case Multiplication, Division:
+		return 2
+	case Exponentiation, Root:
+		return 3
+	}
+	return -1
+}
+
+func infixHelper(term *Term) string {
+	if x := IsLeafNode(term); x != nil {
+		switch c := x.(type) {
+		case Constant:
+			return fmt.Sprintf("%g", c.Value)
+		case Variable:
+			return c.Value
+		}
+	}
+	op, isOp := (*term).(Operation)
+	if !isOp {
+		panic("NOT POSSIBLE")
+	}
+
+	left := infixHelper(op.GetLhs())
+	right := infixHelper(op.GetRhs())
+
+	if IsLeafNode(op.GetLhs()) != nil && precedence(op.GetLhs()) < precedence(term) {
+		left = "(" + left + ")"
+	}
+
+	if IsLeafNode(op.GetRhs()) != nil && precedence(op.GetRhs()) < precedence(term) {
+		left = "(" + left + ")"
+	}
+	val := ""
+	switch op.(type) {
+	case Addition:
+		val = "+"
+	case Division:
+		val = "/"
+	case Exponentiation:
+		val = "^"
+	case Multiplication:
+		val = "*"
+	case Root:
+		val = "root"
+	case Subtraction:
+		val = "-"
+	default:
+		panic(fmt.Sprintf("unexpected parser.Operation: %#v", op))
+	}
+
+	if val == "root" {
+		return fmt.Sprintf("root%s(%s)", left, right)
+	} else {
+		return left + " " + val + " " + right
+	}
+
+}
+
+func (ast AST) ToInfixNotation() string {
+  return infixHelper(&ast.Lhs) + "=" + infixHelper(&ast.Rhs)
+}
+
 func (ast AST) SwapInPlace() {
 	ast.Lhs, ast.Rhs = ast.Rhs, ast.Lhs
 }

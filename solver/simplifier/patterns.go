@@ -24,19 +24,19 @@ func TwoTermMerge(term parser.Term) (parser.Term, int) {
 func constantOperation(term *parser.Term) bool {
 	add, isAdd := (*term).(parser.Addition)
 	if isAdd {
-		return parser.IsLeafNode(add.Lhs) != nil && parser.IsLeafNode(add.Rhs) != nil
+		return parser.IsLeafNode(&add.Lhs) != nil && parser.IsLeafNode(&add.Rhs) != nil
 	}
 	sub, isSub := (*term).(parser.Subtraction)
 	if !isSub {
-		return parser.IsLeafNode(sub.Lhs) != nil && parser.IsLeafNode(sub.Rhs) != nil
+		return parser.IsLeafNode(&sub.Lhs) != nil && parser.IsLeafNode(&sub.Rhs) != nil
 	}
 	mul, isMul := (*term).(parser.Multiplication)
 	if !isMul {
-		return parser.IsLeafNode(mul.Lhs) != nil && parser.IsLeafNode(mul.Rhs) != nil
+		return parser.IsLeafNode(&mul.Lhs) != nil && parser.IsLeafNode(&mul.Rhs) != nil
 	}
 	div, isDiv := (*term).(parser.Division)
 	if !isDiv {
-		return parser.IsLeafNode(div.Lhs) != nil && parser.IsLeafNode(div.Rhs) != nil
+		return parser.IsLeafNode(&div.Lhs) != nil && parser.IsLeafNode(&div.Rhs) != nil
 	}
 	return false
 }
@@ -48,7 +48,7 @@ func ExpandVariableConstantOperation(term parser.Term) (parser.Term, int) {
 		return nil, 50
 	}
 
-	leaf := parser.IsLeafNode(op.Lhs)
+	leaf := parser.IsLeafNode(&op.Lhs)
 	if leaf == nil {
 		return nil, 50
 	}
